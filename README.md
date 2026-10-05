@@ -48,6 +48,14 @@ home (including relatives who may temporarily stay with you).
   ⚠).
 - **Shopping list**: a clean, printable, cost-ordered list grouped by category,
   with running totals.
+- **Price journal** *(Milestone 2)*: log what you actually pay each time you buy
+  a food. See the latest price vs. your recent average, a **buy-ahead signal**
+  (dip → buy, spike → wait), and the cost per 100k calories. Logging a price
+  also updates that food's baseline in the library.
+- **Rotation calendar** *(Milestone 2)*: a per-food rotation schedule (staples
+  default to a 6-month cadence, shelf goods to 3; both editable). Shows last
+  rotated, next due, and status — and "mark rotated" in one tap keeps the
+  store fresh and the household practiced on disaster meals.
 - **All data is private and local** — stored only in your own browser.
 
 ---
@@ -92,19 +100,24 @@ what you actually paid and how much you actually eat.
 calorie/water/quantity calculator, food library, and shopping list described
 above.
 
-**Milestone 2 (upcoming):** a longer-horizon **food-inflation hedge** layer,
-designed around the expectation that wide commodity swings (such as those
+**Milestone 2 (complete):** the longer-horizon **food-inflation hedge**,
+built around the expectation that wide commodity swings (such as those
 potentially accompanied by the 2026–27 El Niño) will push prices of specific
-staples higher over many months. This will add:
+staples higher over many months. It adds two new tabs that build directly on
+the Milestone 1 data model (the library's ⚠ "exposed" flag drives both):
 
-- Buy-ahead timing suggestions (when to buy the most price-exposed staples)
-- A rotation calendar (so food is consumed and replaced on a schedule, keeping
-  the store fresh)
-- Tracking of the cost-per-100k-calorie of each exposed staple over time
+- **Price Journal** — the core mechanic of the hedge: log every real receipt
+  price, and when a price-sensitive staple dips below its recent average you
+  get a "buy ahead" signal (and a "wait" when it spikes).
+- **Rotation calendar** — so the hedge stays fresh: each stored food is on a
+  cadence, you mark it rotated as you eat through and replace it, and the
+  calendar flags overdue / due-soon items.
 
-Because the food library in Milestone 1 already carries an "exposed" flag on
-each item, Milestone 2 will build on top of the existing data model rather
-than replacing it.
+All journal and rotation state persists in `localStorage` (`food.stock`).
+
+**Milestone 3 (roadmap):** trend charts of cost per 100k calories over time,
+a 12–24 month buy-ahead plan generator (current store cost vs. projected
+inflation, "what to buy this month"), and import/export of your price history.
 
 ---
 
@@ -117,16 +130,20 @@ src/
     foodDatabase.js   # the seeded (editable) food library
   lib/
     calc.js           # all the planning math (quantities, calories, water, costs)
+    rotation.js       # rotation-cadence date math (Milestone 2)
+    inflation.js      # price-history / buy-ahead analysis (Milestone 2)
     format.js         # small number-formatting helpers
   hooks/
     useLocalStorage.js # persistence hook
   components/         # reusable building blocks (people, plan, library, badges)
-  views/              # the four main screens (dashboard, calculator, library, list)
+  views/              # the six main screens (dashboard, calculator, library, list, rotation, journal)
   App.jsx             # state owner + navigation
   main.jsx            # entry point
   index.css           # all styling
 tests/
   calc.test.js        # unit tests for the calculation library
+  rotation.test.js    # unit tests for the rotation calendar (Milestone 2)
+  inflation.test.js   # unit tests for the price journal / buy-ahead logic (Milestone 2)
 ```
 
 ## License

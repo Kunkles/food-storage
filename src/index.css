@@ -135,6 +135,14 @@ label.num input { width: 90px; }
 
 .exposed { color: var(--warn); font-weight: 700; margin-right: 2px; }
 
+/* ---- Milestone 2: price journal + rotation calendar ---- */
+.badge-muted { background: var(--line); color: var(--muted); }
+.journal-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-top: 8px; }
+.journal-form label.grow, .journal-form label:first-child { min-width: 180px; flex: 1; }
+.journal-form input[type="date"] { width: 150px; }
+.trend-down { color: var(--ok); font-weight: 600; }
+.trend-up { color: var(--danger); font-weight: 600; }
+
 footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 footer a { color: var(--accent); }
 
