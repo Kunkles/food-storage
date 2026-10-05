@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-ssr/
+npm-*.log
+yarn-*.log
+.DS_Store
+.env
+.env.local
+*.local
+.vscode/
+.idea/
