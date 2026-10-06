@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "description": "Practical disaster food preparation planner: 2-4 week disruption kit, age-aware calories and water, inflation-exposed staple tracking.",
   "scripts": {
