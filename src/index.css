@@ -145,6 +145,11 @@ label.num input { width: 90px; }
 .trend-down { color: var(--ok); font-weight: 600; }
 .trend-up { color: var(--danger); font-weight: 600; }
 
+/* ---- backup + sync ---- */
+.sync-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sync-row .hint { margin: 0; }
+.sync-error { color: var(--danger); }
+
 footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 footer a { color: var(--accent); }
 

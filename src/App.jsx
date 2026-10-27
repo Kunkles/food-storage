@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
+import { useDriveSync } from './hooks/useDriveSync.js'
 import { makePerson } from './data/ageTiers.js'
 import { FOOD_DATABASE } from './data/foodDatabase.js'
 import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.js'
@@ -13,6 +14,7 @@ import ShoppingList from './views/ShoppingList.jsx'
 import RotationView from './views/RotationView.jsx'
 import JournalView from './views/JournalView.jsx'
 import InventoryView from './views/InventoryView.jsx'
+import BackupCard from './components/BackupCard.jsx'
 
 const VIEWS = ['dashboard', 'onhand', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
@@ -59,6 +61,34 @@ export default function App() {
   // What's already stored (as opposed to the plan, which is what to buy).
   const [inventory, setInventory] = useLocalStorage('food.inventory', () => [])
   const [waterOnHand, setWaterOnHand] = useLocalStorage('food.waterOnHand', 0)
+
+  // ---- backup + Google Drive sync ----
+  // Keyed by localStorage key, the same shape a backup file holds.
+  const snapshot = useMemo(() => ({
+    'food.people': people,
+    'food.days': days,
+    'food.hygieneWater': hygieneWater,
+    'food.plan': plan,
+    'food.library': library,
+    'food.stock': stock,
+    'food.inventory': inventory,
+    'food.waterOnHand': waterOnHand,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand])
+  // Replaces the data with a loaded backup. Keys missing from it are left alone.
+  const applyData = useCallback((data) => {
+    const setters = {
+      'food.people': setPeople,
+      'food.days': setDays,
+      'food.hygieneWater': setHygieneWater,
+      'food.plan': setPlan,
+      'food.library': setLibrary,
+      'food.stock': setStock,
+      'food.inventory': setInventory,
+      'food.waterOnHand': setWaterOnHand,
+    }
+    for (const [key, value] of Object.entries(data)) setters[key]?.(value)
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand])
+  const drive = useDriveSync(snapshot, applyData)
 
   // ---- plan mutation handlers (shared between views) ----
   const onItemChange = (id, patch) =>
@@ -112,6 +142,9 @@ export default function App() {
             onScale={onScale}
             goTo={(v) => setView(v)}
           />
+        )}
+        {view === 'dashboard' && (
+          <BackupCard snapshot={snapshot} applyData={applyData} drive={drive} />
         )}
         {view === 'onhand' && (
           <InventoryView
