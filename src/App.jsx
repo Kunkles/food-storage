@@ -4,6 +4,7 @@ import { makePerson } from './data/ageTiers.js'
 import { FOOD_DATABASE } from './data/foodDatabase.js'
 import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.js'
 import { addJournalEntry, markRotated, setRotationMonths } from './lib/inflation.js'
+import { importOrder } from './lib/inventory.js'
 
 import Dashboard from './views/Dashboard.jsx'
 import Calculator from './views/Calculator.jsx'
@@ -11,11 +12,13 @@ import FoodLibrary from './views/FoodLibrary.jsx'
 import ShoppingList from './views/ShoppingList.jsx'
 import RotationView from './views/RotationView.jsx'
 import JournalView from './views/JournalView.jsx'
+import InventoryView from './views/InventoryView.jsx'
 
-const VIEWS = ['dashboard', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
+const VIEWS = ['dashboard', 'onhand', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
 const VIEW_LABELS = {
   dashboard: 'Dashboard',
+  onhand: 'On Hand',
   calculator: 'Calculator',
   foodlibrary: 'Food Library',
   shoppinglist: 'Shopping List',
@@ -53,6 +56,9 @@ export default function App() {
   // touched (rotated, or logged a price for) appear here; everything else falls
   // back to library defaults in the views.
   const [stock, setStock] = useLocalStorage('food.stock', () => ({}))
+  // What's already stored (as opposed to the plan, which is what to buy).
+  const [inventory, setInventory] = useLocalStorage('food.inventory', () => [])
+  const [waterOnHand, setWaterOnHand] = useLocalStorage('food.waterOnHand', 0)
 
   // ---- plan mutation handlers (shared between views) ----
   const onItemChange = (id, patch) =>
@@ -74,6 +80,7 @@ export default function App() {
   }
   const onMarkRotated = (foodId, date) => setStock((s) => markRotated(foodId, s, date))
   const onSetRotation = (foodId, months) => setStock((s) => setRotationMonths(foodId, s, months))
+  const onImportOrder = (order) => setInventory((inv) => importOrder(inv, order))
 
   const state = { people, days, plan, library, hygieneWater, sortMode }
 
@@ -101,9 +108,17 @@ export default function App() {
             people={people} setPeople={setPeople}
             days={days} setDays={setDays}
             hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
-            plan={plan}
+            plan={plan} inventory={inventory}
             onScale={onScale}
             goTo={(v) => setView(v)}
+          />
+        )}
+        {view === 'onhand' && (
+          <InventoryView
+            people={people} hygieneWater={hygieneWater}
+            inventory={inventory} setInventory={setInventory}
+            waterOnHand={waterOnHand} setWaterOnHand={setWaterOnHand}
+            onImportOrder={onImportOrder}
           />
         )}
         {view === 'calculator' && (
