@@ -5,7 +5,8 @@ import { makePerson } from './data/ageTiers.js'
 import { FOOD_DATABASE } from './data/foodDatabase.js'
 import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.js'
 import { addJournalEntry, markRotated, setRotationMonths } from './lib/inflation.js'
-import { importOrder } from './lib/inventory.js'
+import { daysCovered, importOrder } from './lib/inventory.js'
+import { DEFAULT_FUEL } from './data/fuel.js'
 
 import Dashboard from './views/Dashboard.jsx'
 import Calculator from './views/Calculator.jsx'
@@ -14,13 +15,15 @@ import ShoppingList from './views/ShoppingList.jsx'
 import RotationView from './views/RotationView.jsx'
 import JournalView from './views/JournalView.jsx'
 import InventoryView from './views/InventoryView.jsx'
+import FuelView from './views/FuelView.jsx'
 import BackupCard from './components/BackupCard.jsx'
 
-const VIEWS = ['dashboard', 'onhand', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
+const VIEWS = ['dashboard', 'onhand', 'fuel', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
 const VIEW_LABELS = {
   dashboard: 'Dashboard',
   onhand: 'On Hand',
+  fuel: 'Fuel',
   calculator: 'Calculator',
   foodlibrary: 'Food Library',
   shoppinglist: 'Shopping List',
@@ -61,6 +64,10 @@ export default function App() {
   // What's already stored (as opposed to the plan, which is what to buy).
   const [inventory, setInventory] = useLocalStorage('food.inventory', () => [])
   const [waterOnHand, setWaterOnHand] = useLocalStorage('food.waterOnHand', 0)
+  const [storedFuel, setFuel] = useLocalStorage('food.fuel', DEFAULT_FUEL)
+  // Fill in settings added after this browser first saved its fuel.
+  const fuel = { ...DEFAULT_FUEL, ...storedFuel }
+  const foodDays = daysCovered(inventory, people).emergencyDays
 
   // ---- backup + Google Drive sync ----
   // Keyed by localStorage key, the same shape a backup file holds.
@@ -73,7 +80,8 @@ export default function App() {
     'food.stock': stock,
     'food.inventory': inventory,
     'food.waterOnHand': waterOnHand,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand])
+    'food.fuel': storedFuel,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedFuel])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -85,9 +93,10 @@ export default function App() {
       'food.stock': setStock,
       'food.inventory': setInventory,
       'food.waterOnHand': setWaterOnHand,
+      'food.fuel': setFuel,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setFuel])
   const drive = useDriveSync(snapshot, applyData)
 
   // ---- plan mutation handlers (shared between views) ----
@@ -138,7 +147,7 @@ export default function App() {
             people={people} setPeople={setPeople}
             days={days} setDays={setDays}
             hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
-            plan={plan} inventory={inventory}
+            plan={plan} inventory={inventory} fuel={fuel}
             onScale={onScale}
             goTo={(v) => setView(v)}
           />
@@ -153,6 +162,9 @@ export default function App() {
             waterOnHand={waterOnHand} setWaterOnHand={setWaterOnHand}
             onImportOrder={onImportOrder}
           />
+        )}
+        {view === 'fuel' && (
+          <FuelView people={people} days={days} foodDays={foodDays} fuel={fuel} setFuel={setFuel} />
         )}
         {view === 'calculator' && (
           <Calculator {...state}

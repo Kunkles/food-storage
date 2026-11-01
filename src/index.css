@@ -145,6 +145,11 @@ label.num input { width: 90px; }
 .trend-down { color: var(--ok); font-weight: 600; }
 .trend-up { color: var(--danger); font-weight: 600; }
 
+/* ---- fuel ---- */
+label.check { flex-direction: row; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.88rem; color: var(--ink); }
+ul.tips { margin: 6px 0 0; padding-left: 20px; font-size: 0.88rem; }
+ul.tips li { margin-bottom: 6px; }
+
 /* ---- backup + sync ---- */
 .sync-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .sync-row .hint { margin: 0; }
