@@ -1,17 +1,18 @@
 import { planSummary } from '../lib/calc.js'
-import { daysCovered } from '../lib/inventory.js'
+import { daysCovered, waterDaysCovered } from '../lib/inventory.js'
 import { fuelSummary } from '../lib/fuel.js'
 import { fmtMoney, fmtKcal, fmtGallons } from '../lib/format.js'
 import StatBadge from '../components/StatBadge.jsx'
 
 export default function Dashboard({
   people, setPeople, days, setDays,
-  hygieneWater, setHygieneWater, plan, inventory, fuel, onScale, goTo,
+  hygieneWater, setHygieneWater, plan, inventory, fuel, waterGallons, onScale, goTo,
 }) {
   const summary = planSummary(people, days, plan, hygieneWater)
   const barPct = Math.min(100, Math.round((summary.ratio ?? 0) * 100))
   const onHand = daysCovered(inventory, people)
   const fuelDays = fuelSummary(fuel, people, days).daysCovered
+  const waterDays = waterDaysCovered(waterGallons, people, hygieneWater)
 
   return (
     <>
@@ -79,6 +80,14 @@ export default function Dashboard({
             <div className="s">
               stored food at emergency rations ·{' '}
               <a href="#" onClick={(e) => { e.preventDefault(); goTo('onhand') }}>details</a>
+            </div>
+          </div>
+          <div className="stat">
+            <div className="k">Stored water</div>
+            <div className="v">{Math.floor(waterDays)} days</div>
+            <div className="s">
+              {fmtGallons(waterGallons)} on hand ·{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); goTo('water') }}>details</a>
             </div>
           </div>
           <div className="stat">

@@ -13,6 +13,7 @@ export const BACKUP_KEYS = [
   'food.stock',
   'food.inventory',
   'food.waterOnHand',
+  'food.water',
   'food.fuel',
 ]
 

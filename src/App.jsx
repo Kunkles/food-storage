@@ -7,6 +7,8 @@ import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.
 import { addJournalEntry, markRotated, setRotationMonths } from './lib/inflation.js'
 import { daysCovered, importOrder } from './lib/inventory.js'
 import { DEFAULT_FUEL } from './data/fuel.js'
+import { DEFAULT_WATER } from './data/water.js'
+import { containerGallons } from './lib/water.js'
 
 import Dashboard from './views/Dashboard.jsx'
 import Calculator from './views/Calculator.jsx'
@@ -16,13 +18,15 @@ import RotationView from './views/RotationView.jsx'
 import JournalView from './views/JournalView.jsx'
 import InventoryView from './views/InventoryView.jsx'
 import FuelView from './views/FuelView.jsx'
+import WaterView from './views/WaterView.jsx'
 import BackupCard from './components/BackupCard.jsx'
 
-const VIEWS = ['dashboard', 'onhand', 'fuel', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
+const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
 const VIEW_LABELS = {
   dashboard: 'Dashboard',
   onhand: 'On Hand',
+  water: 'Water',
   fuel: 'Fuel',
   calculator: 'Calculator',
   foodlibrary: 'Food Library',
@@ -63,7 +67,11 @@ export default function App() {
   const [stock, setStock] = useLocalStorage('food.stock', () => ({}))
   // What's already stored (as opposed to the plan, which is what to buy).
   const [inventory, setInventory] = useLocalStorage('food.inventory', () => [])
+  // Loose gallons (the original On Hand field), plus the Water tab's containers.
   const [waterOnHand, setWaterOnHand] = useLocalStorage('food.waterOnHand', 0)
+  const [storedWater, setWater] = useLocalStorage('food.water', DEFAULT_WATER)
+  const water = { ...DEFAULT_WATER, ...storedWater }
+  const waterGallons = containerGallons(water.containers) + (Number(waterOnHand) || 0)
   const [storedFuel, setFuel] = useLocalStorage('food.fuel', DEFAULT_FUEL)
   // Fill in settings added after this browser first saved its fuel.
   const fuel = { ...DEFAULT_FUEL, ...storedFuel }
@@ -80,8 +88,9 @@ export default function App() {
     'food.stock': stock,
     'food.inventory': inventory,
     'food.waterOnHand': waterOnHand,
+    'food.water': storedWater,
     'food.fuel': storedFuel,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedFuel])
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -93,10 +102,11 @@ export default function App() {
       'food.stock': setStock,
       'food.inventory': setInventory,
       'food.waterOnHand': setWaterOnHand,
+      'food.water': setWater,
       'food.fuel': setFuel,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setFuel])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel])
   const drive = useDriveSync(snapshot, applyData)
 
   // ---- plan mutation handlers (shared between views) ----
@@ -147,7 +157,7 @@ export default function App() {
             people={people} setPeople={setPeople}
             days={days} setDays={setDays}
             hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
-            plan={plan} inventory={inventory} fuel={fuel}
+            plan={plan} inventory={inventory} fuel={fuel} waterGallons={waterGallons}
             onScale={onScale}
             goTo={(v) => setView(v)}
           />
@@ -159,8 +169,18 @@ export default function App() {
           <InventoryView
             people={people} hygieneWater={hygieneWater}
             inventory={inventory} setInventory={setInventory}
-            waterOnHand={waterOnHand} setWaterOnHand={setWaterOnHand}
+            waterGallons={waterGallons}
             onImportOrder={onImportOrder}
+            goTo={(v) => setView(v)}
+          />
+        )}
+        {view === 'water' && (
+          <WaterView
+            people={people} days={days} foodDays={foodDays}
+            hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
+            water={water} setWater={setWater}
+            looseGallons={waterOnHand} setLooseGallons={setWaterOnHand}
+            inventory={inventory}
           />
         )}
         {view === 'fuel' && (

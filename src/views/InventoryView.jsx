@@ -14,12 +14,12 @@ function fmtDays(d) {
 // Separate from the Plan: the plan is what you intend to buy, this is what you
 // already have.
 export default function InventoryView({
-  people, hygieneWater, inventory, setInventory, waterOnHand, setWaterOnHand, onImportOrder,
+  people, hygieneWater, inventory, setInventory, waterGallons, onImportOrder, goTo,
 }) {
   const [draft, setDraft] = useState({ name: '', unit: '', qty: 1, perUnitKcal: 0 })
 
   const cover = daysCovered(inventory, people)
-  const waterDays = waterDaysCovered(waterOnHand, people, hygieneWater)
+  const waterDays = waterDaysCovered(waterGallons, people, hygieneWater)
   const foods = inventory.filter((it) => it.category !== 'supply')
   const supplies = inventory.filter((it) => it.category === 'supply')
 
@@ -74,11 +74,8 @@ export default function InventoryView({
             <div className="k">Stored water</div>
             <div className="v">{fmtDays(waterDays)}</div>
             <div className="s">
-              gallons on hand:
-              <input
-                type="number" min="0" step="1" value={waterOnHand}
-                onChange={(e) => setWaterOnHand(Math.max(0, Number(e.target.value) || 0))}
-              />
+              {fmtNum(waterGallons)} gallons ·{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); goTo('water') }}>details</a>
             </div>
           </div>
         </div>
