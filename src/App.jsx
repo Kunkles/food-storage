@@ -221,6 +221,10 @@ export default function App() {
           disruption (power, roads, water); use the Rotation + Price Journal to build the
           longer food-inflation hedge.
         </p>
+        <p>
+          <a href={`${import.meta.env.BASE_URL}privacy.html`}>Privacy Policy</a> ·{' '}
+          <a href={`${import.meta.env.BASE_URL}terms.html`}>Terms of Service</a>
+        </p>
       </footer>
     </>
   )
