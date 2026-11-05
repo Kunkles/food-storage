@@ -150,6 +150,26 @@ label.check { flex-direction: row; align-items: center; gap: 8px; margin-top: 12
 ul.tips { margin: 6px 0 0; padding-left: 20px; font-size: 0.88rem; }
 ul.tips li { margin-bottom: 6px; }
 
+/* ---- recipes ---- */
+.pantry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0 12px; }
+.pantry-grid label.check { margin-top: 8px; }
+details.recipe summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; list-style: none; }
+details.recipe summary::-webkit-details-marker { display: none; }
+details.recipe summary::before { content: '▸'; color: var(--muted); }
+details.recipe[open] summary::before { content: '▾'; }
+details.recipe[open] summary { margin-bottom: 8px; }
+.recipe-name { font-weight: 700; }
+.recipe-meta { color: var(--muted); font-size: 0.85rem; flex: 1; }
+.recipe h4 { margin: 14px 0 6px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
+.recipe-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 20px; }
+ul.ingredients { list-style: none; margin: 0; padding: 0; font-size: 0.9rem; }
+ul.ingredients li { display: flex; gap: 8px; margin-bottom: 4px; }
+ul.ingredients .mark { width: 1em; flex: none; }
+ul.ingredients li.have .mark { color: var(--ok); }
+ul.ingredients li.need .mark { color: var(--muted); }
+ol.steps { margin: 0; padding-left: 22px; font-size: 0.9rem; }
+ol.steps li { margin-bottom: 6px; }
+
 /* ---- backup + sync ---- */
 .sync-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .sync-row .hint { margin: 0; }

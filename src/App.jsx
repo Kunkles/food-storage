@@ -19,15 +19,17 @@ import JournalView from './views/JournalView.jsx'
 import InventoryView from './views/InventoryView.jsx'
 import FuelView from './views/FuelView.jsx'
 import WaterView from './views/WaterView.jsx'
+import RecipesView from './views/RecipesView.jsx'
 import BackupCard from './components/BackupCard.jsx'
 
-const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
+const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'recipes', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
 const VIEW_LABELS = {
   dashboard: 'Dashboard',
   onhand: 'On Hand',
   water: 'Water',
   fuel: 'Fuel',
+  recipes: 'Recipes',
   calculator: 'Calculator',
   foodlibrary: 'Food Library',
   shoppinglist: 'Shopping List',
@@ -73,6 +75,8 @@ export default function App() {
   const water = { ...DEFAULT_WATER, ...storedWater }
   const waterGallons = containerGallons(water.containers) + (Number(waterOnHand) || 0)
   const [storedFuel, setFuel] = useLocalStorage('food.fuel', DEFAULT_FUEL)
+  // Pantry extras (salt, oil, spices…) ticked as on hand, for the Recipes tab.
+  const [pantry, setPantry] = useLocalStorage('food.pantry', () => ({}))
   // Fill in settings added after this browser first saved its fuel.
   const fuel = { ...DEFAULT_FUEL, ...storedFuel }
   const foodDays = daysCovered(inventory, people).emergencyDays
@@ -90,7 +94,8 @@ export default function App() {
     'food.waterOnHand': waterOnHand,
     'food.water': storedWater,
     'food.fuel': storedFuel,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel])
+    'food.pantry': pantry,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -104,9 +109,10 @@ export default function App() {
       'food.waterOnHand': setWaterOnHand,
       'food.water': setWater,
       'food.fuel': setFuel,
+      'food.pantry': setPantry,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry])
   const drive = useDriveSync(snapshot, applyData)
 
   // ---- plan mutation handlers (shared between views) ----
@@ -185,6 +191,9 @@ export default function App() {
         )}
         {view === 'fuel' && (
           <FuelView people={people} days={days} foodDays={foodDays} fuel={fuel} setFuel={setFuel} />
+        )}
+        {view === 'recipes' && (
+          <RecipesView inventory={inventory} pantry={pantry} setPantry={setPantry} goTo={(v) => setView(v)} />
         )}
         {view === 'calculator' && (
           <Calculator {...state}
