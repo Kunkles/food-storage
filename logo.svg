@@ -2,12 +2,13 @@
   <!-- Food Storage: a #10 can with a water drop, on the app's green -->
   <rect width="120" height="120" rx="26" fill="#2f6f4f"/>
   <!-- can body -->
+  <clipPath id="can"><path d="M30 36 v50 a22 7 0 0 0 44 0 v-50 z"/></clipPath>
   <path d="M30 36 v50 a22 7 0 0 0 44 0 v-50 z" fill="#ffffff"/>
   <!-- can rims -->
   <ellipse cx="52" cy="36" rx="22" ry="7" fill="#e4e0d6"/>
   <ellipse cx="52" cy="36" rx="17" ry="4.5" fill="#cfc9bb"/>
-  <path d="M30 52 a22 7 0 0 0 44 0" fill="none" stroke="#e4e0d6" stroke-width="3"/>
-  <path d="M30 70 a22 7 0 0 0 44 0" fill="none" stroke="#e4e0d6" stroke-width="3"/>
+  <path d="M30 52 a22 7 0 0 0 44 0" fill="none" stroke="#e4e0d6" stroke-width="3" clip-path="url(#can)"/>
+  <path d="M30 70 a22 7 0 0 0 44 0" fill="none" stroke="#e4e0d6" stroke-width="3" clip-path="url(#can)"/>
   <!-- label band -->
   <path d="M30 56 a22 7 0 0 0 44 0 v10 a22 7 0 0 1 -44 0 z" fill="#d9a441"/>
   <!-- water drop -->
