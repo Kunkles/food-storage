@@ -7,6 +7,8 @@ import {
   rotationStatus,
   rotationCalendar,
   defaultRotationMonths,
+  onHandRotationFoods,
+  ON_HAND_ROTATION_MONTHS,
 } from '../src/lib/rotation.js'
 
 const rice = { id: 'rice', name: 'Rice', category: 'staple', unit: '1 lb bag', perUnitKcal: 3340, price: 1.4, elNinoExposed: true }
@@ -85,5 +87,29 @@ describe('rotationCalendar', () => {
     const byId = Object.fromEntries(cal.map((c) => [c.foodId, c]))
     expect(byId.rice.exposed).toBe(true)
     expect(byId.soup.exposed).toBe(false)
+  })
+})
+
+describe('on-hand foods in the rotation', () => {
+  const inventory = [
+    { id: 'i1', productId: 'cs-white-rice', name: 'White rice', unit: '#10 can', category: 'staple', qty: 6 },
+    { id: 'i2', productId: 'cs-white-rice', name: 'White rice', unit: '#10 can', category: 'staple', qty: 2 },
+    { id: 'i3', productId: 'cs-potato-flakes', name: 'Potato flakes', unit: '#10 can', category: 'noCook', qty: 6 },
+    { id: 'i4', productId: 'cs-foil-pouch', name: 'Foil pouch', unit: 'pouch', category: 'supply', qty: 10 },
+    { id: 'i5', productId: 'cs-sugar', name: 'Sugar', unit: '#10 can', category: 'staple', qty: 0 },
+  ]
+
+  it('lists each stored food once, without supplies or empty items', () => {
+    const foods = onHandRotationFoods(inventory)
+    expect(foods.map((f) => f.id)).toEqual(['onhand:cs-white-rice', 'onhand:cs-potato-flakes'])
+    expect(foods.every((f) => f.onHand)).toBe(true)
+  })
+
+  it('starts them on a yearly cycle that can be changed', () => {
+    const [rice] = onHandRotationFoods(inventory)
+    expect(rotationMonths(rice, undefined)).toBe(ON_HAND_ROTATION_MONTHS)
+    expect(rotationMonths(rice, { rotationMonths: 3 })).toBe(3)
+    const cal = rotationCalendar('2026-11-01', [rice], { [rice.id]: { lastRotation: '2025-12-15' } })
+    expect(cal[0]).toMatchObject({ onHand: true, nextDue: '2026-12-01', status: 'due-soon' })
   })
 })

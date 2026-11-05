@@ -221,7 +221,7 @@ export default function App() {
         )}
         {view === 'rotation' && (
           <RotationView
-            foods={library} stock={stock}
+            foods={library} inventory={inventory} stock={stock}
             onMarkRotated={onMarkRotated} onSetRotation={onSetRotation}
           />
         )}

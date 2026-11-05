@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { rotationCalendar, todayIso } from '../lib/rotation.js'
+import { ON_HAND_ROTATION_MONTHS, onHandRotationFoods, rotationCalendar, todayIso } from '../lib/rotation.js'
 
 // Rotation status → colored pill.
 function StatusBadge({ status }) {
@@ -16,10 +16,13 @@ function StatusBadge({ status }) {
 // The rotation calendar (Milestone 2). Lists every food on a rotation cadence,
 // shows when it was last rotated and when it comes due, and lets you mark it
 // rotated (restarts the cycle) or adjust its cadence.
-export default function RotationView({ foods, stock, onMarkRotated, onSetRotation }) {
+export default function RotationView({ foods, inventory, stock, onMarkRotated, onSetRotation }) {
   const [filter, setFilter] = useState('all')
-  const all = rotationCalendar(todayIso(), foods, stock)
-  const rows = filter === 'all' ? all : all.filter((r) => r.category === filter)
+  const all = rotationCalendar(todayIso(), [...foods, ...onHandRotationFoods(inventory)], stock)
+  const rows =
+    filter === 'all' ? all
+      : filter === 'onhand' ? all.filter((r) => r.onHand)
+        : all.filter((r) => !r.onHand && r.category === filter)
 
   return (
     <>
@@ -31,6 +34,7 @@ export default function RotationView({ foods, stock, onMarkRotated, onSetRotatio
               <option value="all">All foods</option>
               <option value="staple">Staples</option>
               <option value="noCook">No-cook</option>
+              <option value="onhand">On hand</option>
             </select>
           </div>
         </div>
@@ -40,6 +44,13 @@ export default function RotationView({ foods, stock, onMarkRotated, onSetRotatio
           cook in a disruption. <strong>Mark rotated</strong> sets today as the start of the next
           cycle. (Set a cadence of 0 to take a food off the schedule.)
         </p>
+        {filter === 'onhand' && (
+          <p className="hint">
+            These are the long-term cans and pouches from the On Hand tab. They keep for decades,
+            so they start on a {ON_HAND_ROTATION_MONTHS}-month cycle: open one, cook with it, and
+            replace it — practice before you need it. Change the cadence to suit you.
+          </p>
+        )}
         {rows.length === 0 ? (
           <p className="hint">Nothing on the rotation schedule for this filter yet.</p>
         ) : (
@@ -62,7 +73,7 @@ export default function RotationView({ foods, stock, onMarkRotated, onSetRotatio
                     {r.exposed && <span className="exposed" title="El Niño / import price-sensitive">⚠</span>}
                     {r.name}
                   </td>
-                  <td>{r.category === 'noCook' ? 'no-cook' : 'staple'}</td>
+                  <td>{r.onHand && 'on hand · '}{r.category === 'noCook' ? 'no-cook' : 'staple'}</td>
                   <td>{r.lastRotation || <span className="hint">not set</span>}</td>
                   <td>{r.nextDue || '—'}</td>
                   <td><StatusBadge status={r.status} /></td>

@@ -13,6 +13,7 @@
 // Canned / shelf goods are worked through within ~3 months; dry staples last
 // longer, but a 6-month family rotation keeps them fresh.
 export function defaultRotationMonths(food) {
+  if (typeof food?.defaultMonths === 'number') return food.defaultMonths
   if (!food || !food.category) return 3
   return food.category === 'staple' ? 6 : 3
 }
@@ -69,6 +70,30 @@ export function rotationStatus(food, entry, nowIso) {
   return { status, months, lastRotation: last, nextDue, monthsSince: since }
 }
 
+// Long-term storage cans and pouches keep for decades, so the point of
+// rotating them is practice: open one and cook with it about once a year.
+export const ON_HAND_ROTATION_MONTHS = 12
+
+// The On Hand tab's foods as rotation entries. One entry per product, so cans
+// from two orders of the same thing share a schedule. Supplies are left out.
+export function onHandRotationFoods(inventory) {
+  const byKey = new Map()
+  for (const it of inventory) {
+    if (it.category === 'supply' || !(Number(it.qty) > 0)) continue
+    const key = it.productId || it.id
+    if (byKey.has(key)) continue
+    byKey.set(key, {
+      id: `onhand:${key}`,
+      name: it.name,
+      unit: it.unit,
+      category: it.category,
+      onHand: true,
+      defaultMonths: ON_HAND_ROTATION_MONTHS,
+    })
+  }
+  return [...byKey.values()]
+}
+
 // Build the full rotation calendar: every food that has a rotation cadence,
 // classified and sorted by urgency (baseline, then overdue, then due-soon,
 // then ok; ties broken alphabetically). Foods with a 0 cadence are dropped.
@@ -84,6 +109,7 @@ export function rotationCalendar(nowIso, foods, stock = {}) {
         unit: food.unit,
         category: food.category,
         exposed: !!food.elNinoExposed,
+        onHand: !!food.onHand,
         ...r,
       }
     })
