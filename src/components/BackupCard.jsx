@@ -6,6 +6,7 @@ const SYNC_LABELS = {
   reconnect: 'Not connected right now',
   working: 'Saving…',
   synced: 'Saved to Google Drive',
+  offline: 'Offline — will save when back online',
   error: "Couldn't save",
 }
 

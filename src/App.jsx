@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
 import { useDriveSync } from './hooks/useDriveSync.js'
+import { useOffline, useOnline } from './hooks/useOffline.js'
 import { makePerson } from './data/ageTiers.js'
 import { FOOD_DATABASE } from './data/foodDatabase.js'
 import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.js'
@@ -22,6 +23,8 @@ import FuelView from './views/FuelView.jsx'
 import WaterView from './views/WaterView.jsx'
 import RecipesView from './views/RecipesView.jsx'
 import BackupCard from './components/BackupCard.jsx'
+import OfflineCard from './components/OfflineCard.jsx'
+import UpdateBar from './components/UpdateBar.jsx'
 
 const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'recipes', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
 
@@ -120,6 +123,8 @@ export default function App() {
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
   }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping])
   const drive = useDriveSync(snapshot, applyData)
+  const offline = useOffline()
+  const online = useOnline()
 
   // ---- plan mutation handlers (shared between views) ----
   const onItemChange = (id, patch) =>
@@ -177,6 +182,7 @@ export default function App() {
         {view === 'dashboard' && (
           <BackupCard snapshot={snapshot} applyData={applyData} drive={drive} />
         )}
+        {view === 'dashboard' && <OfflineCard offline={offline} />}
         {view === 'onhand' && (
           <InventoryView
             people={people} hygieneWater={hygieneWater}
@@ -243,6 +249,7 @@ export default function App() {
           <a href={`${import.meta.env.BASE_URL}terms.html`}>Terms of Service</a>
         </p>
       </footer>
+      <UpdateBar offline={offline} online={online} />
     </>
   )
 }

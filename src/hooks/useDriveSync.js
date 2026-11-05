@@ -23,7 +23,7 @@ const fmtWhen = (iso) => (iso ? new Date(iso).toLocaleString() : 'an unknown tim
 // Keeps the app's data in sync with the signed-in person's Google Drive.
 //   snapshot  — the current data, keyed by localStorage key (see BACKUP_KEYS)
 //   applyData — replaces the app's data with a loaded copy
-// Status: 'unconfigured' | 'signedOut' | 'reconnect' | 'working' | 'synced' | 'error'
+// Status: 'unconfigured' | 'signedOut' | 'reconnect' | 'working' | 'synced' | 'offline' | 'error'
 export function useDriveSync(snapshot, applyData) {
   const [meta, setMetaState] = useState(readMeta)
   const metaRef = useRef(meta)
@@ -65,6 +65,10 @@ export function useDriveSync(snapshot, applyData) {
   // Saves the current data to Drive. Queued so saves land in order.
   const push = useCallback(() => {
     queue.current = queue.current.then(async () => {
+      if (navigator.onLine === false) {
+        setStatus('offline') // saved on this device; sent when back online
+        return
+      }
       if (!tokenValid()) {
         setStatus('reconnect')
         return
@@ -101,6 +105,17 @@ export function useDriveSync(snapshot, applyData) {
   }, [snapshot]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => clearTimeout(timer.current), [])
+
+  // Send anything saved while offline as soon as the connection is back.
+  useEffect(() => {
+    const onOnline = () => {
+      if (!metaRef.current.connected || !metaRef.current.dirty) return
+      if (tokenValid()) push()
+      else setStatus('reconnect')
+    }
+    window.addEventListener('online', onOnline)
+    return () => window.removeEventListener('online', onOnline)
+  }, [push])
 
   // Sign in (or reconnect), then reconcile this browser's list with Drive's.
   const connect = useCallback(async () => {
