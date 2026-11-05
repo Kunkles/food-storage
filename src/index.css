@@ -170,6 +170,19 @@ ul.ingredients li.need .mark { color: var(--muted); }
 ol.steps { margin: 0; padding-left: 22px; font-size: 0.9rem; }
 ol.steps li { margin-bottom: 6px; }
 
+ul.ingredients li.other .mark { color: var(--line); }
+.recipe-editor label.block { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.recipe-editor textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 0.85rem; cursor: pointer; }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.online-results { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.online-result { border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.online-head { display: flex; gap: 12px; align-items: center; width: 100%; padding: 8px; border: 0; background: none; text-align: left; font: inherit; cursor: pointer; }
+.online-head img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; flex: none; }
+.online-head > span { display: flex; flex-direction: column; gap: 2px; }
+.online-body { padding: 0 12px 12px; }
+
 /* ---- shopping list ---- */
 tr.row-got td { color: var(--muted); }
 tr.row-got td:nth-child(2) { text-decoration: line-through; }

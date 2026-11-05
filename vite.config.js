@@ -30,6 +30,16 @@ export default defineConfig({
         // The policy pages are their own documents, not routes in the app.
         navigateFallbackDenylist: [/privacy\.html$/, /terms\.html$/],
         cleanupOutdatedCaches: true,
+        // Photos of recipes saved from TheMealDB, so they still show offline.
+        runtimeCaching: [{
+          urlPattern: /^https:\/\/www\.themealdb\.com\/images\//,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'recipe-photos',
+            expiration: { maxEntries: 200 },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        }],
       },
     }),
   ],

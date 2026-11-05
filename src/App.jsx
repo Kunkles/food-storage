@@ -11,6 +11,7 @@ import { DEFAULT_FUEL } from './data/fuel.js'
 import { DEFAULT_WATER } from './data/water.js'
 import { containerGallons } from './lib/water.js'
 import { DEFAULT_SHOPPING } from './lib/shopping.js'
+import { DEFAULT_MY_RECIPES, mergeRecipes, removeRecipe, saveRecipe } from './lib/recipes.js'
 
 import Dashboard from './views/Dashboard.jsx'
 import Calculator from './views/Calculator.jsx'
@@ -84,6 +85,11 @@ export default function App() {
   // Shopping list check-offs and your own items beyond the plan.
   const [storedShopping, setShopping] = useLocalStorage('food.shopping', DEFAULT_SHOPPING)
   const shopping = { ...DEFAULT_SHOPPING, ...storedShopping }
+  // Your own recipes, ones saved from online, and your changes to built-in ones.
+  const [storedMyRecipes, setMyRecipes] = useLocalStorage('food.myRecipes', DEFAULT_MY_RECIPES)
+  const recipes = mergeRecipes({ ...DEFAULT_MY_RECIPES, ...storedMyRecipes })
+  const onSaveRecipe = (recipe) => setMyRecipes((m) => saveRecipe({ ...DEFAULT_MY_RECIPES, ...m }, recipe))
+  const onRemoveRecipe = (id) => setMyRecipes((m) => removeRecipe({ ...DEFAULT_MY_RECIPES, ...m }, id))
   // Fill in settings added after this browser first saved its fuel.
   const fuel = { ...DEFAULT_FUEL, ...storedFuel }
   const foodDays = daysCovered(inventory, people).emergencyDays
@@ -103,7 +109,8 @@ export default function App() {
     'food.fuel': storedFuel,
     'food.pantry': pantry,
     'food.shopping': storedShopping,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping])
+    'food.myRecipes': storedMyRecipes,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping, storedMyRecipes])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -119,9 +126,10 @@ export default function App() {
       'food.fuel': setFuel,
       'food.pantry': setPantry,
       'food.shopping': setShopping,
+      'food.myRecipes': setMyRecipes,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping, setMyRecipes])
   const drive = useDriveSync(snapshot, applyData)
   const offline = useOffline()
   const online = useOnline()
@@ -205,7 +213,11 @@ export default function App() {
           <FuelView people={people} days={days} foodDays={foodDays} fuel={fuel} setFuel={setFuel} />
         )}
         {view === 'recipes' && (
-          <RecipesView inventory={inventory} pantry={pantry} setPantry={setPantry} goTo={(v) => setView(v)} />
+          <RecipesView
+            recipes={recipes} inventory={inventory} pantry={pantry} setPantry={setPantry}
+            onSaveRecipe={onSaveRecipe} onRemoveRecipe={onRemoveRecipe}
+            online={online} goTo={(v) => setView(v)}
+          />
         )}
         {view === 'calculator' && (
           <Calculator {...state}
@@ -222,7 +234,7 @@ export default function App() {
           <ShoppingList people={people} days={days} plan={plan}
             hygieneWater={hygieneWater}
             onItemChange={onItemChange} onRemove={onRemove}
-            shopping={shopping} setShopping={setShopping} pantry={pantry}
+            shopping={shopping} setShopping={setShopping} pantry={pantry} recipes={recipes}
           />
         )}
         {view === 'rotation' && (

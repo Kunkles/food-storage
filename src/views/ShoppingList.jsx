@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { planSummary, itemCost } from '../lib/calc.js'
-import { RECIPES } from '../data/recipes.js'
 import { extrasToBuy } from '../lib/recipes.js'
 import { addRecipeExtras, clearChecked, listCost, newExtra } from '../lib/shopping.js'
 import { fmtMoney, fmtGallons } from '../lib/format.js'
@@ -64,7 +63,7 @@ function Group({ title, hint, items, checked, onCheck, onChange, onRemove, editN
 // The shopping list: the plan's foods (edits here change the plan too), plus
 // your own items, with boxes to check off as you shop.
 export default function ShoppingList({
-  people, days, plan, hygieneWater, onItemChange, onRemove, shopping, setShopping, pantry,
+  people, days, plan, hygieneWater, onItemChange, onRemove, shopping, setShopping, pantry, recipes,
 }) {
   const [draft, setDraft] = useState({ name: '', qty: 1, unit: '', price: '' })
   const summary = planSummary(people, days, plan, hygieneWater)
@@ -73,7 +72,7 @@ export default function ShoppingList({
   const { checked, extras } = shopping
   const cost = listCost(plan, extras, checked)
   const gotCount = [...plan, ...extras].filter((it) => checked[it.id]).length
-  const recipeExtras = extrasToBuy(RECIPES, pantry)
+  const recipeExtras = extrasToBuy(recipes, pantry)
 
   const onCheck = (id) => setShopping((s) => ({ ...s, checked: { ...s.checked, [id]: !s.checked[id] } }))
   const onExtraChange = (id, patch) =>
