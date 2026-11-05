@@ -9,6 +9,7 @@ import { daysCovered, importOrder } from './lib/inventory.js'
 import { DEFAULT_FUEL } from './data/fuel.js'
 import { DEFAULT_WATER } from './data/water.js'
 import { containerGallons } from './lib/water.js'
+import { DEFAULT_SHOPPING } from './lib/shopping.js'
 
 import Dashboard from './views/Dashboard.jsx'
 import Calculator from './views/Calculator.jsx'
@@ -77,6 +78,9 @@ export default function App() {
   const [storedFuel, setFuel] = useLocalStorage('food.fuel', DEFAULT_FUEL)
   // Pantry extras (salt, oil, spices…) ticked as on hand, for the Recipes tab.
   const [pantry, setPantry] = useLocalStorage('food.pantry', () => ({}))
+  // Shopping list check-offs and your own items beyond the plan.
+  const [storedShopping, setShopping] = useLocalStorage('food.shopping', DEFAULT_SHOPPING)
+  const shopping = { ...DEFAULT_SHOPPING, ...storedShopping }
   // Fill in settings added after this browser first saved its fuel.
   const fuel = { ...DEFAULT_FUEL, ...storedFuel }
   const foodDays = daysCovered(inventory, people).emergencyDays
@@ -95,7 +99,8 @@ export default function App() {
     'food.water': storedWater,
     'food.fuel': storedFuel,
     'food.pantry': pantry,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry])
+    'food.shopping': storedShopping,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -110,9 +115,10 @@ export default function App() {
       'food.water': setWater,
       'food.fuel': setFuel,
       'food.pantry': setPantry,
+      'food.shopping': setShopping,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping])
   const drive = useDriveSync(snapshot, applyData)
 
   // ---- plan mutation handlers (shared between views) ----
@@ -209,6 +215,8 @@ export default function App() {
         {view === 'shoppinglist' && (
           <ShoppingList people={people} days={days} plan={plan}
             hygieneWater={hygieneWater}
+            onItemChange={onItemChange} onRemove={onRemove}
+            shopping={shopping} setShopping={setShopping} pantry={pantry}
           />
         )}
         {view === 'rotation' && (

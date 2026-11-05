@@ -170,6 +170,10 @@ ul.ingredients li.need .mark { color: var(--muted); }
 ol.steps { margin: 0; padding-left: 22px; font-size: 0.9rem; }
 ol.steps li { margin-bottom: 6px; }
 
+/* ---- shopping list ---- */
+tr.row-got td { color: var(--muted); }
+tr.row-got td:nth-child(2) { text-decoration: line-through; }
+
 /* ---- backup + sync ---- */
 .sync-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .sync-row .hint { margin: 0; }
