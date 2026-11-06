@@ -214,7 +214,7 @@ export default function App() {
         )}
         {view === 'recipes' && (
           <RecipesView
-            recipes={recipes} inventory={inventory} pantry={pantry} setPantry={setPantry}
+            recipes={recipes} people={people} inventory={inventory} pantry={pantry} setPantry={setPantry}
             onSaveRecipe={onSaveRecipe} onRemoveRecipe={onRemoveRecipe}
             online={online} goTo={(v) => setView(v)}
           />

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { CHURCH_STORE_ORDERS } from '../data/churchStore.js'
 import { daysCovered, hasOrder, waterDaysCovered } from '../lib/inventory.js'
 import { fmtKcal, fmtNum } from '../lib/format.js'
+import { dietIssues } from '../lib/diets.js'
+import DietIssues from '../components/DietIssues.jsx'
 
 // Days as a whole number, with months alongside once it runs past ~2 months.
 function fmtDays(d) {
@@ -22,6 +24,8 @@ export default function InventoryView({
   const waterDays = waterDaysCovered(waterGallons, people, hygieneWater)
   const foods = inventory.filter((it) => it.category !== 'supply')
   const supplies = inventory.filter((it) => it.category === 'supply')
+  // Stored foods that don't fit someone's allergies or diet.
+  const issues = dietIssues(foods.filter((it) => it.qty > 0).map((it) => ({ label: it.name, text: it.name })), people)
 
   const setNum = (id, field) => (e) =>
     setInventory((inv) => inv.map((it) => (it.id === id ? { ...it, [field]: Number(e.target.value) || 0 } : it)))
@@ -84,6 +88,17 @@ export default function InventoryView({
           and stored grains and beans are low in fat — pair them with oil, salt and some protein.
         </p>
       </section>
+
+      {issues.length > 0 && (
+        <section className="card">
+          <h3>Allergies and diets</h3>
+          <p className="hint">
+            Stored foods that don't suit someone in your household. Their days covered will be
+            shorter than the totals above — plan some extra food they can eat.
+          </p>
+          <DietIssues issues={issues} />
+        </section>
+      )}
 
       <section className="card no-print">
         <h3>Import an order</h3>

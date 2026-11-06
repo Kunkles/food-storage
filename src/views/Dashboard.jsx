@@ -3,6 +3,7 @@ import { daysCovered, waterDaysCovered } from '../lib/inventory.js'
 import { fuelSummary } from '../lib/fuel.js'
 import { fmtMoney, fmtKcal, fmtGallons } from '../lib/format.js'
 import StatBadge from '../components/StatBadge.jsx'
+import { describePerson } from '../lib/diets.js'
 
 export default function Dashboard({
   people, setPeople, days, setDays,
@@ -101,9 +102,16 @@ export default function Dashboard({
           <div className="stat">
             <div className="k">Dietary flags</div>
             <div className="v" style={{ fontSize: '0.9rem' }}>
-              {people.filter((p) => p.restrictions).map((p) => p.restrictions).join(' · ') || 'none recorded'}
+              {people
+                .map((p) => ({ p, list: [...describePerson(p), p.restrictions].filter(Boolean) }))
+                .filter((x) => x.list.length)
+                .map((x) => `${x.p.name}: ${x.list.join(', ')}`)
+                .join(' · ') || 'none recorded'}
             </div>
-            <div className="s">note allergies &amp; meds of visiting guests</div>
+            <div className="s">
+              set allergies &amp; diets per person ·{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); goTo('calculator') }}>edit</a>
+            </div>
           </div>
         </div>
 

@@ -93,14 +93,16 @@ function uid() {
   return `id-${Date.now()}-${seq++}`
 }
 
-export function makePerson({ name = 'Person', age = 30, restrictions = '', kcalOverride = null, waterOverride = null } = {}) {
+export function makePerson({ name = 'Person', age = 30, restrictions = '', allergies = [], diets = [], kcalOverride = null, waterOverride = null } = {}) {
   const tier = tierForAge(age)
   return {
     id: uid(),
     name,
     age: Number(age),
     tier: tier.id,
-    restrictions,
+    restrictions, // free-text notes (meds, dislikes)
+    allergies, // ids from ALLERGIES in diets.js
+    diets, // ids from DIETS in diets.js
     emergencyKcal: kcalOverride ?? tier.emergencyKcal,
     waterPerDay: waterOverride ?? tier.waterPerDay,
   }

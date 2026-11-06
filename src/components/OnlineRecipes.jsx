@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { SEARCH_FOODS, mealDetails, mealToRecipe, mealsByName, mealsUsingAll } from '../lib/mealdb.js'
 import { recipeStatus } from '../lib/recipes.js'
 import RecipeBody from './RecipeBody.jsx'
+import DietIssues from './DietIssues.jsx'
+import { avoidedBy, dietIssues, recipeItems } from '../lib/diets.js'
 
 const MAX_RESULTS = 20
 
 // Search TheMealDB for recipes that use your stored foods, ranked by how many
 // of them each one uses, and save the ones you like.
-export default function OnlineRecipes({ onHand, pantry, savedIds, onSave, online }) {
+export default function OnlineRecipes({ onHand, pantry, people, savedIds, onSave, online }) {
   const [picked, setPicked] = useState([])
   const [query, setQuery] = useState('')
   const [state, setState] = useState({ status: 'idle', results: [], total: 0, error: null })
@@ -36,7 +38,8 @@ export default function OnlineRecipes({ onHand, pantry, savedIds, onSave, online
       const results = meals.slice(0, MAX_RESULTS).map((meal) => {
         const recipe = mealToRecipe(meal)
         const status = recipeStatus(recipe, onHand, pantry)
-        return { recipe, status, uses: status.storage.length }
+        const issues = dietIssues(recipeItems(status), people)
+        return { recipe, status, issues, avoided: avoidedBy(issues), uses: status.storage.length }
       }).sort((a, b) => b.uses - a.uses || a.status.others.length - b.status.others.length)
       setState({ status: 'done', results, total, error: null })
     } catch (err) {
@@ -86,7 +89,7 @@ export default function OnlineRecipes({ onHand, pantry, savedIds, onSave, online
       )}
 
       <div className="online-results">
-        {state.results.map(({ recipe, status, uses }) => {
+        {state.results.map(({ recipe, status, issues, avoided, uses }) => {
           const open = openId === recipe.id
           const saved = savedIds.has(recipe.id)
           return (
@@ -100,10 +103,12 @@ export default function OnlineRecipes({ onHand, pantry, savedIds, onSave, online
                     {uses > 0 && ` (${status.storage.map((i) => i.name.toLowerCase()).join(', ')})`}
                     {' · '}{status.others.length} other ingredient{status.others.length === 1 ? '' : 's'}
                   </span>
+                  {avoided.length > 0 && <span className="badge badge-danger">Not for {avoided.join(', ')}</span>}
                 </span>
               </button>
               {open && (
                 <div className="online-body">
+                  <DietIssues issues={issues} />
                   <RecipeBody recipe={recipe} status={status} />
                   <div className="toolbar" style={{ marginTop: 10 }}>
                     <button className="btn btn-primary" disabled={saved} onClick={() => onSave(recipe)}>

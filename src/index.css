@@ -176,6 +176,15 @@ ul.ingredients li.other .mark { color: var(--line); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
 .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 0.85rem; cursor: pointer; }
 .chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip.on.warn { background: var(--danger); border-color: var(--danger); }
+.diet-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.diet-row .chips { margin: 4px 0; }
+.diet-row .chip { padding: 3px 10px; font-size: 0.8rem; }
+.diet-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; width: 70px; }
+.diet-issues { list-style: none; margin: 8px 0 0; padding: 10px 12px; border-radius: 8px; background: #fbf3ea; font-size: 0.88rem; }
+.diet-issues li { margin-bottom: 4px; }
+.diet-issues li:last-child { margin-bottom: 0; }
+.diet-issues .avoid { color: var(--danger); font-weight: 600; }
 .online-results { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .online-result { border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .online-head { display: flex; gap: 12px; align-items: center; width: 100%; padding: 8px; border: 0; background: none; text-align: left; font: inherit; cursor: pointer; }

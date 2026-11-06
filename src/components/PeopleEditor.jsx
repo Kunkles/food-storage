@@ -1,4 +1,5 @@
 import { makePerson, tierForAge } from '../data/ageTiers.js'
+import { ALLERGIES, DIETS } from '../data/diets.js'
 
 // Household roster. Each person's calorie + water targets derive from their
 // age tier, but can be overridden by editing the kcal / water fields directly.
@@ -14,6 +15,10 @@ export default function PeopleEditor({ people, onChange }) {
   }
 
   const remove = (id) => onChange(people.filter((p) => p.id !== id))
+  const toggle = (p, field, id) => {
+    const list = p[field] || []
+    update(p.id, { [field]: list.includes(id) ? list.filter((x) => x !== id) : [...list, id] })
+  }
 
   const onAge = (id, age) => {
     const tier = tierForAge(age)
@@ -28,6 +33,7 @@ export default function PeopleEditor({ people, onChange }) {
       </div>
       <p className="hint">
         Age sets a tier (infant → senior) which drives the calorie + water targets.
+        Tap any allergies or diets and the Recipes and On Hand tabs will flag what doesn't fit.
         Guests who might show up? Just add them here.
       </p>
       {people.length === 0 && <p className="hint">No people yet — add your household.</p>}
@@ -81,15 +87,43 @@ export default function PeopleEditor({ people, onChange }) {
                   />
                 </label>
                 <label className="grow">
-                  <span>Diet / notes</span>
+                  <span>Other notes</span>
                   <input
                     type="text"
-                    placeholder="e.g. diabetic, gluten-free, meds"
+                    placeholder="e.g. medications, dislikes"
                     value={p.restrictions}
                     onChange={(e) => update(p.id, { restrictions: e.target.value })}
                   />
                 </label>
                 <button className="btn btn-ghost" onClick={() => remove(p.id)}>Remove</button>
+              </div>
+              <div className="diet-row">
+                <span className="diet-label">Allergies</span>
+                <div className="chips">
+                  {ALLERGIES.map((a) => (
+                    <button
+                      key={a.id} type="button" aria-pressed={(p.allergies || []).includes(a.id)}
+                      className={(p.allergies || []).includes(a.id) ? 'chip on warn' : 'chip'}
+                      onClick={() => toggle(p, 'allergies', a.id)}
+                    >
+                      {a.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="diet-row">
+                <span className="diet-label">Diet</span>
+                <div className="chips">
+                  {DIETS.map((d) => (
+                    <button
+                      key={d.id} type="button" aria-pressed={(p.diets || []).includes(d.id)}
+                      className={(p.diets || []).includes(d.id) ? 'chip on' : 'chip'}
+                      onClick={() => toggle(p, 'diets', d.id)}
+                    >
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )
