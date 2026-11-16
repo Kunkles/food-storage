@@ -5,9 +5,10 @@ import {
   waterBoilBtuPerDay,
   fuelOnHandBtu,
   fuelSummary,
+  stoveFor,
   BTU_PER_GALLON_BOILED,
 } from '../src/lib/fuel.js'
-import { DEFAULT_FUEL, PROPANE_BTU_PER_LB } from '../src/data/fuel.js'
+import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB } from '../src/data/fuel.js'
 import { makePerson } from '../src/data/ageTiers.js'
 
 const household = (n) => Array.from({ length: n }, (_, i) => makePerson({ name: `A${i}`, age: 35 }))
@@ -59,5 +60,32 @@ describe('fuelSummary', () => {
     const plain = fuelSummary(DEFAULT_FUEL, household(2), 14)
     const boiling = fuelSummary({ ...DEFAULT_FUEL, boilWater: true }, household(2), 14)
     expect(boiling.btuPerDay - plain.btuPerDay).toBe(2 * BTU_PER_GALLON_BOILED)
+  })
+})
+
+describe('butane', () => {
+  it('counts butane and isobutane canisters as fuel on hand', () => {
+    const s = fuelSummary({ ...DEFAULT_FUEL, containers: { 'propane-20lb': 1, 'butane-8oz': 4, 'isobutane-230g': 2 } }, household(2), 14)
+    expect(s.propane).toMatchObject({ count: 1 })
+    expect(s.propane.lb).toBeCloseTo(20, 5)
+    expect(s.butane.count).toBe(6)
+    // 4 × 0.5 lb butane + 2 × 230 g isobutane, in propane-equivalent pounds
+    const butaneLb = (4 * 0.5 * BUTANE_BTU_PER_LB + 2 * (230 / 453.6) * ISOBUTANE_BTU_PER_LB) / PROPANE_BTU_PER_LB
+    expect(s.butane.lb).toBeCloseTo(butaneLb, 5)
+    expect(s.onHandLb).toBeCloseTo(20 + butaneLb, 5)
+  })
+  it('says what to buy for the stove you use', () => {
+    const fuel = { ...DEFAULT_FUEL, stove: 'butane', stoveBtu: 9000 }
+    const s = fuelSummary(fuel, household(2), 14)
+    // 90 min × 9,000 BTU × 70% = 9,450 BTU a day; an 8 oz canister holds 0.5 × 21,200
+    expect(s.containersPerDay).toBeCloseTo(9450 / (0.5 * BUTANE_BTU_PER_LB), 5)
+    expect(s.buyLabel).toBe('8 oz butane canister')
+    expect(s.buyCount).toBe(Math.ceil((9450 * 14) / (0.5 * BUTANE_BTU_PER_LB)))
+    expect(stoveFor({ stove: 'backpacking' }).buyLabel).toBe('230 g isobutane canister')
+    expect(stoveFor({}).id).toBe('propane')
+  })
+  it('buys 20 lb tanks for a propane stove', () => {
+    const s = fuelSummary({ ...DEFAULT_FUEL, containers: { 'propane-20lb': 1 } }, household(2), 100)
+    expect(s.buyCount).toBe(s.tanks20ToBuy)
   })
 })

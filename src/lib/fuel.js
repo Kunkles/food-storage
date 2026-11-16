@@ -1,6 +1,8 @@
-// Cooking-fuel math: how fast the household burns propane, how long the fuel
-// on hand lasts, and how much more to buy. Pure functions — no React, no DOM.
-import { COOKING_STYLES, FUEL_CONTAINERS, PROPANE_BTU_PER_LB } from '../data/fuel.js'
+// Cooking-fuel math: how fast the household burns propane or butane, how long
+// the fuel on hand lasts, and how much more to buy. Pure functions — no React,
+// no DOM. Amounts are in pounds of propane-equivalent fuel (the BTU per pound
+// of propane, butane and isobutane are within a few percent of each other).
+import { COOKING_STYLES, FUEL_CONTAINERS, PROPANE_BTU_PER_LB, STOVES } from '../data/fuel.js'
 
 // Bringing a gallon of water from tap temperature to a boil takes about
 // 1,270 BTU; a camp stove gets ~40% of its heat into the pot.
@@ -30,6 +32,23 @@ export function fuelOnHandBtu(containers, types = FUEL_CONTAINERS) {
 
 const toPropaneLb = (btu) => btu / PROPANE_BTU_PER_LB
 
+export function stoveFor(fuel) {
+  return STOVES.find((st) => st.id === fuel.stove) || STOVES[0]
+}
+
+// Pounds of fuel, and how many containers, on hand of one kind ('propane' | 'butane').
+export function onHandByKind(containers, kind, types = FUEL_CONTAINERS) {
+  let lb = 0
+  let count = 0
+  for (const t of types) {
+    if (t.fuel !== kind) continue
+    const n = Number(containers?.[t.id]) || 0
+    lb += (n * t.lb * t.btuPerLb) / PROPANE_BTU_PER_LB
+    count += n
+  }
+  return { lb, count }
+}
+
 // Everything the Fuel tab shows.
 //   days     — the plan's disruption length
 //   foodDays — how long the stored food lasts (from On Hand), or 0
@@ -38,7 +57,18 @@ export function fuelSummary(fuel, people, days, foodDays = 0) {
   const onHandBtu = fuelOnHandBtu(fuel.containers)
   const neededLb = toPropaneLb(btuPerDay * days)
   const shortfallLb = Math.max(0, neededLb - toPropaneLb(onHandBtu))
+  // What to buy, in the containers the chosen stove takes.
+  const stove = stoveFor(fuel)
+  const buyType = FUEL_CONTAINERS.find((t) => t.id === stove.buy)
+  const buyLb = (buyType.lb * buyType.btuPerLb) / PROPANE_BTU_PER_LB
   return {
+    stove,
+    buyLabel: stove.buyLabel,
+    buyCount: Math.max(0, Math.ceil(shortfallLb / buyLb - 1e-9)), // tolerate float dust
+    buyCountForFood: Math.max(0, Math.ceil(toPropaneLb(btuPerDay * foodDays) / buyLb - 1e-9)),
+    containersPerDay: toPropaneLb(btuPerDay) / buyLb,
+    propane: onHandByKind(fuel.containers, 'propane'),
+    butane: onHandByKind(fuel.containers, 'butane'),
     minutesPerDay: cookingMinutes(fuel, people.length),
     btuPerDay,
     lbPerDay: toPropaneLb(btuPerDay),

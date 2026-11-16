@@ -95,7 +95,7 @@ export default function Dashboard({
             <div className="k">Cooking fuel</div>
             <div className="v">{Math.floor(fuelDays)} days</div>
             <div className="s">
-              propane on hand ·{' '}
+              fuel on hand ·{' '}
               <a href="#" onClick={(e) => { e.preventDefault(); goTo('fuel') }}>details</a>
             </div>
           </div>

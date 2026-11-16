@@ -207,6 +207,8 @@ tr.row-got td:nth-child(2) { text-decoration: line-through; }
 .update-bar .btn-ghost { color: #ddd; }
 body:has(.update-bar) footer { padding-bottom: 64px; }
 
+tr.group-row td { font-weight: 700; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; background: var(--bg, #faf8f3); }
+
 /* ---- backup + sync ---- */
 .sync-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .sync-row .hint { margin: 0; }
