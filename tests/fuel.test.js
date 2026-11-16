@@ -6,9 +6,11 @@ import {
   fuelOnHandBtu,
   fuelSummary,
   stoveFor,
+  woodLbPerDay,
+  woodOnHandBtu,
   BTU_PER_GALLON_BOILED,
 } from '../src/lib/fuel.js'
-import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB } from '../src/data/fuel.js'
+import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB, WOOD_BTU_PER_LB } from '../src/data/fuel.js'
 import { makePerson } from '../src/data/ageTiers.js'
 
 const household = (n) => Array.from({ length: n }, (_, i) => makePerson({ name: `A${i}`, age: 35 }))
@@ -87,5 +89,41 @@ describe('butane', () => {
   it('buys 20 lb tanks for a propane stove', () => {
     const s = fuelSummary({ ...DEFAULT_FUEL, containers: { 'propane-20lb': 1 } }, household(2), 100)
     expect(s.buyCount).toBe(s.tanks20ToBuy)
+  })
+})
+
+describe('wood', () => {
+  it('burns several pounds a day, more on less efficient stoves', () => {
+    // 90 min on a 10,000 BTU stove at 70% = 10,500 BTU of gas; 40% of that in the pot
+    const pot = 10500 * 0.4
+    const rocket = woodLbPerDay({ ...DEFAULT_FUEL, woodStove: 'rocket' }, household(2))
+    const indoor = woodLbPerDay({ ...DEFAULT_FUEL, woodStove: 'indoor' }, household(2))
+    expect(rocket).toBeCloseTo(pot / 0.25 / WOOD_BTU_PER_LB, 5) // ≈ 2.6 lb
+    expect(indoor).toBeGreaterThan(rocket)
+    expect(woodLbPerDay(DEFAULT_FUEL, household(2))).toBe(0)
+  })
+  it('does not depend on the gas stove', () => {
+    const a = woodLbPerDay({ ...DEFAULT_FUEL, woodStove: 'rocket', stoveBtu: 5000 }, household(2))
+    const b = woodLbPerDay({ ...DEFAULT_FUEL, woodStove: 'rocket', stoveBtu: 20000 }, household(2))
+    expect(a).toBe(b)
+  })
+  it('adds wood days to gas days, and offers wood for the days short', () => {
+    const fuel = { ...DEFAULT_FUEL, woodStove: 'rocket', containers: { 'propane-20lb': 1 }, wood: { 'wood-bundle': 5 } }
+    const s = fuelSummary(fuel, household(2), 100)
+    const woodDays = 100 / s.wood.lbPerDay
+    expect(s.wood.onHandLb).toBe(100)
+    expect(s.wood.days).toBeCloseTo(woodDays, 5)
+    expect(s.daysCovered).toBeCloseTo(s.gasDays + woodDays, 5)
+    expect(s.shortDays).toBeCloseTo(100 - s.daysCovered, 5)
+    expect(s.wood.neededLb).toBeCloseTo(s.shortDays * s.wood.lbPerDay, 5)
+    expect(s.shortfallLb).toBeCloseTo(s.shortDays * s.lbPerDay, 5)
+  })
+  it('ignores wood without a wood stove', () => {
+    const s = fuelSummary({ ...DEFAULT_FUEL, wood: { 'wood-cord': 1 } }, household(2), 14)
+    expect(s.wood.days).toBe(0)
+    expect(s.daysCovered).toBe(s.gasDays)
+  })
+  it('counts pellets by their higher heat', () => {
+    expect(woodOnHandBtu({ 'pellets-40lb': 1 })).toBe(40 * 8000)
   })
 })
