@@ -1,0 +1,1756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UV-5RM Plus GPS Field Guide</title>
+<style>
+:root{--bg:#f4f1ea;--panel:#fffdf8;--ink:#1d1f1c;--mute:#5e625a;--line:#d9d4c7;--acc:#c8420d;--acc2:#23694a;--code:#ebe6d8;--hl:#ffe08a;--warn:#fff1e6;--note:#eaf3ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#131512;--panel:#1b1e1a;--ink:#e9e7df;--mute:#9aa093;--line:#30352e;--acc:#ff7a33;--acc2:#6fcf97;--code:#262a24;--hl:#6b5200;--warn:#33221a;--note:#1b2a22}}
+:root[data-theme=dark]{--bg:#131512;--panel:#1b1e1a;--ink:#e9e7df;--mute:#9aa093;--line:#30352e;--acc:#ff7a33;--acc2:#6fcf97;--code:#262a24;--hl:#6b5200;--warn:#33221a;--note:#1b2a22}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em;text-wrap:balance}
+h2{font-size:1.7rem;letter-spacing:-.01em;padding-top:.4em}
+h3{font-size:1.12rem;margin-top:0}
+p{margin:.5em 0}
+a{color:var(--acc)}
+kbd{font:600 .78em ui-monospace,Menlo,Consolas,monospace;background:var(--code);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.1em .45em;white-space:nowrap}
+code{font:.88em ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:.1em .35em;border-radius:4px}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:30;display:flex;gap:10px;align-items:center;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .brand{font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.top .brand span{color:var(--acc)}
+.sbox{position:relative;flex:1;max-width:560px;margin-left:auto}
+.sbox input{width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.sbox input:focus{outline:2px solid var(--acc);outline-offset:1px}
+#res{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.25);max-height:70vh;overflow:auto;display:none}
+#res.on{display:block}
+#res a{display:block;padding:9px 12px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line)}
+#res a:last-child{border:0}
+#res a.cur,#res a:hover{background:var(--code)}
+#res small{display:block;color:var(--mute);font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#res .kind{float:right;font:600 .68rem ui-monospace,monospace;color:var(--acc2);text-transform:uppercase;margin-left:8px}
+#res mark,mark{background:var(--hl);color:inherit;border-radius:2px}
+.ib{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:7px 11px}
+#navb{display:none}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1240px;margin:0 auto}
+nav{position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);overflow:auto;padding:18px 10px 30px 16px;font-size:.93rem}
+nav a{display:block;padding:5px 10px;border-radius:7px;color:var(--mute);text-decoration:none;border-left:3px solid transparent}
+nav a:hover{color:var(--ink)}
+nav a.on{color:var(--ink);background:var(--code);border-left-color:var(--acc);font-weight:600}
+nav .grp{font:700 .68rem ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:14px 10px 4px}
+main{padding:20px 20px 120px;min-width:0}
+section{margin:0 0 54px}
+.blk{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.blk.flash,.flash{animation:fl 1.8s ease-out}
+@keyframes fl{0%,40%{box-shadow:0 0 0 3px var(--acc)}100%{box-shadow:0 0 0 3px transparent}}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.g2 .blk{margin:0}
+.warn,.note{border-radius:10px;padding:10px 14px;margin:12px 0;border:1px solid var(--line)}
+.warn{background:var(--warn);border-left:4px solid var(--acc)}
+.note{background:var(--note);border-left:4px solid var(--acc2)}
+.hero{padding:26px 0 8px}
+.hero h1{font-size:clamp(1.9rem,4.5vw,2.9rem);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero p{color:var(--mute);max-width:62ch}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .7rem ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+td.n{font:600 .9rem ui-monospace,monospace;color:var(--acc);white-space:nowrap}
+.tag{display:inline-block;font:600 .68rem ui-monospace,monospace;text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--mute)}
+ul.t{padding-left:1.15em;margin:.4em 0}
+ul.t li{margin:.25em 0}
+/* radio */
+.radio{position:relative;width:236px;margin:64px auto 6px 34px;user-select:none;flex:none}
+.radio .ant{position:absolute;left:22px;top:-60px;width:16px;height:64px;border-radius:7px 7px 2px 2px;background:linear-gradient(90deg,#1b1d20,#3a3e43,#1b1d20)}
+.radio .knob{position:absolute;right:26px;top:-22px;width:40px;height:26px;border-radius:6px 6px 2px 2px;border:0;background:repeating-linear-gradient(90deg,#2a2d31 0 3px,#44484e 3px 6px);padding:0}
+.rbody{background:linear-gradient(160deg,#2d3035,#1c1e21);border-radius:20px 20px 26px 26px;padding:14px 14px 18px;border:2px solid #0e0f10;box-shadow:0 14px 30px rgba(0,0,0,.35),inset 0 1px 0 #50555c}
+.rtop{display:flex;justify-content:space-between;align-items:center;font:700 9px ui-monospace,monospace;letter-spacing:.14em;color:#c8ccd2;margin:0 2px 8px}
+.led{width:9px;height:9px;border-radius:50%;background:#3a3d42;box-shadow:inset 0 0 2px #000;transition:.2s}
+.led.red{background:#ff3b30;box-shadow:0 0 10px #ff3b30}.led.green{background:#34d058;box-shadow:0 0 10px #34d058}.led.yellow{background:#ffd60a;box-shadow:0 0 10px #ffd60a}
+.lcd{height:132px;border-radius:6px;background:#05080a;border:3px solid #0b0c0d;color:#e8f1f5;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;overflow:hidden;position:relative}
+.lcd>div{position:absolute;inset:0;padding:4px 6px;animation:scr .25s ease-out}
+@keyframes scr{from{opacity:0;transform:translateY(4px)}}
+.lcd .sb{display:flex;justify-content:space-between;font-size:9px;color:#8fd3ff;height:13px}
+.lcd .sb span span{margin-right:5px}
+.lcd .vr{display:flex;align-items:baseline;gap:5px;padding:3px 4px;border-radius:4px;margin-top:3px;color:#6f7b82}
+.lcd .vr.on{color:#fff;background:#0f2a3a}
+.lcd .vr em{font-style:normal;font-size:9px;color:#ffb347}
+.lcd .vr b{font-size:21px;letter-spacing:.5px;line-height:1.1}
+.lcd .vr small{font-size:8.5px;margin-left:auto;text-align:right;color:#9ad17a}
+.lcd .ft{position:absolute;left:6px;right:6px;bottom:3px;font-size:9px;color:#9aa5ab;display:flex;justify-content:space-between}
+.lcd .ti{background:#ff7a33;color:#111;font-weight:700;margin:-4px -6px 4px;padding:2px 6px;font-size:10px}
+.lcd .it{padding:1.5px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lcd .it.sel{background:#1f6feb;color:#fff}
+.lcd .it i{font-style:normal;color:#8b979e;display:inline-block;width:20px}
+.lcd .it.sel i{color:#dbe9ff}
+.lcd .tx{text-align:center;padding-top:4px}
+.lcd .tx .big{font-size:19px;color:#7ee787;margin:6px 0 4px;letter-spacing:.5px}
+.lcd .tx div{margin:1px 0}
+.lcd .off{background:#020303}
+.frow{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0 7px}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.key{position:relative;height:30px;border-radius:7px;border:1px solid #0c0d0e;background:linear-gradient(#3d4248,#2b2f34);color:#eef1f4;font:700 11px ui-monospace,Menlo,monospace;padding:0;box-shadow:inset 0 1px 0 #5a6068}
+.key small{display:block;font-size:6.5px;font-weight:600;color:#ffb347;letter-spacing:.05em;line-height:1}
+.key.fn{background:linear-gradient(#4a4f56,#33373c);font-size:9px}
+.key.grn{background:linear-gradient(#3fa56a,#23694a)}
+.key.or{background:linear-gradient(#ff8a47,#c8420d);color:#111}.key.or small{color:#111}
+.side{position:absolute;left:-13px;top:46px;display:flex;flex-direction:column;gap:6px}
+.side .key{width:14px;border-radius:5px 0 0 5px;font-size:0;height:22px}
+.side .key.ptt{height:62px;background:linear-gradient(90deg,#55595f,#2b2f34)}
+.side .key::after{content:attr(data-l);position:absolute;right:20px;top:50%;transform:translateY(-50%);font:700 9px ui-monospace,monospace;color:var(--mute)}
+.spk{height:26px;margin-top:12px;border-radius:5px;background:repeating-linear-gradient(0deg,#16181a 0 3px,#2c2f33 3px 6px);opacity:.8}
+.key.hit,.knob.hit{outline:3px solid #ffd60a;outline-offset:2px;z-index:2;animation:hit .9s ease-in-out infinite}
+.key.hit.hold,.knob.hit.hold{animation:holdk 1.6s ease-in-out infinite}
+.key.hit.hold::before,.knob.hit.hold::before{content:"HOLD";position:absolute;left:50%;top:-17px;transform:translateX(-50%);background:#ffd60a;color:#111;font:800 8px ui-monospace,monospace;padding:1px 4px;border-radius:3px;white-space:nowrap}
+.side .key.hit.hold::before{left:-4px}
+@keyframes hit{0%,100%{box-shadow:0 0 0 0 rgba(255,214,10,.7);transform:scale(1)}50%{box-shadow:0 0 0 9px rgba(255,214,10,0);transform:scale(.92)}}
+@keyframes holdk{0%{box-shadow:0 0 0 0 rgba(255,214,10,.8);transform:scale(1)}20%,80%{transform:scale(.9);box-shadow:0 0 0 7px rgba(255,214,10,.35)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,214,10,0)}}
+.key.pick{outline:3px solid var(--acc);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.key.hit,.knob.hit,.lcd>div,.blk.flash{animation:none}}
+/* player */
+.wtl{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px}
+.wtl button{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 12px;font-size:.88rem}
+.wtl button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.wtl button.done::before{content:"✓ ";color:var(--acc2);font-weight:800}
+.wtl button.on.done::before{color:#fff}
+.wtl .cat{flex-basis:100%;font:700 .68rem ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin-top:6px}
+.player{display:flex;gap:26px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;align-items:flex-start}
+#wtRadio,#tourRadio{position:sticky;top:66px}
+@media (max-width:900px){#wtRadio,#tourRadio{position:static}}
+.pside{flex:1;min-width:0}
+.pside h3{font-size:1.3rem;margin-bottom:.15em}
+.pside .sum{color:var(--mute);margin:0 0 10px}
+.ctl{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.ctl .go{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700;min-width:92px}
+.ctl select{font:inherit;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.bar{height:5px;background:var(--code);border-radius:9px;overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding:8px 10px 8px 42px;border-radius:9px;cursor:pointer;border:1px solid transparent}
+ol.steps li::before{content:counter(s);position:absolute;left:9px;top:8px;width:23px;height:23px;border-radius:50%;background:var(--code);font:700 .75rem/23px ui-monospace,monospace;text-align:center}
+ol.steps li.on{background:var(--code);border-color:var(--line)}
+ol.steps li.on::before{background:var(--acc);color:#fff}
+ol.steps li.past{color:var(--mute)}
+.after{margin-top:10px}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--mute);font-size:.92rem}
+.tour{display:flex;gap:26px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+#kinfo{flex:1;min-width:0}
+#kinfo dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:.4em 0}
+#kinfo dt{font:700 .72rem ui-monospace,monospace;text-transform:uppercase;color:var(--acc2);padding-top:.25em}
+#kinfo dd{margin:0}
+.filter{width:100%;max-width:420px;padding:8px 11px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;margin:6px 0 10px}
+.codes{columns:6 70px;font:.82rem ui-monospace,monospace;margin:0;padding:0;list-style:none}
+dl.gl dt{font-weight:700;margin-top:.6em}
+dl.gl dd{margin:0;color:var(--mute)}
+footer{color:var(--mute);font-size:.85rem;border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:900px){
+ #as{display:none}
+ .wrap{grid-template-columns:1fr}
+ #navb{display:block}
+ nav{position:fixed;left:0;top:57px;bottom:0;width:250px;height:auto;background:var(--panel);border-right:1px solid var(--line);transform:translateX(-102%);transition:transform .2s;z-index:25}
+ nav.open{transform:none}
+ .top .brand{display:none}
+ .player,.tour{flex-direction:column;align-items:stretch}
+ .radio{margin:64px auto 6px}
+ main{padding:14px 16px 100px}
+}
+@media print{.top,nav,.ctl,.wtl,.radio{display:none}.wrap{display:block}.blk{break-inside:avoid}}
+h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);margin:.9em 0 .3em}
+table.plan input,table.plan select,.num{font:inherit;font-size:.9rem;width:100%;min-width:0;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+table.plan td{padding:3px 4px;vertical-align:middle}
+table.plan{min-width:940px}
+table.plan .w1{width:66px}table.plan .w2{width:98px}table.plan .w3{width:112px}table.plan .w4{min-width:130px}
+table.plan .x{border:0;background:none;color:var(--mute);font-size:1.1rem;padding:0 6px}
+.num{width:80px}
+.tag.tx{color:var(--acc2);border-color:var(--acc2)}.tag.bad{color:var(--acc);border-color:var(--acc)}
+#ckl label{display:flex;gap:9px;align-items:flex-start;padding:4px 0}
+#ckl input{margin-top:.35em}
+#ckl label.dn{color:var(--mute);text-decoration:line-through}
+.chg{display:grid;grid-template-columns:1fr 1fr;gap:6px 26px}
+.cheat table td{padding:3px 6px;font-size:.9rem}
+.cheat p{margin:.2em 0;font-size:.92rem}
+table.fill td{border:1px solid var(--line);height:2.1em}
+table.fill td:nth-child(odd){width:22%;color:var(--mute);font-size:.82rem}
+@media (max-width:700px){.chg{grid-template-columns:1fr}}
+@media print{
+ body.pr .hero,body.pr main>section:not(.pr-on),body.pr .nop,body.pr footer{display:none}
+ body.pr section.pr-on>h2{font-size:15pt;margin:0 0 4pt}
+ body.pr{font-size:9.5pt;line-height:1.3;background:#fff;color:#000}
+ body.pr main{padding:0}
+ body.pr .blk{border:0;padding:0;margin:0;background:none}
+ body.pr #labels>h2,body.pr #labels>p{display:none}
+ body.pr .blk.prk{margin:0 0 6pt;break-inside:avoid}
+ body.pr .blk.prk h3{font-size:11pt;margin:0 0 2pt}
+ body.pr .blk:not(#plan-box):not(#cheat-box):not(#log-box):not(#lab-out):not(.prk),body.pr #plan>p,body.pr #plMsg,body.pr .x{display:none}
+ body.pr table.plan input,body.pr table.plan select{border:0;padding:0;background:none;appearance:none;-webkit-appearance:none;color:#000}
+ body.pr kbd{background:none;border:1px solid #888}
+ body.pr h4{color:#000;margin:.6em 0 .2em}
+ @page{margin:10mm}
+}
+
+.lbf{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 14px}
+.lbf label{font-size:.82rem;color:var(--mute);display:block}
+.lbf input{display:block;width:100%;margin-top:2px;font:inherit;font-size:.92rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+#lab-out{display:flex;flex-wrap:wrap;gap:0}
+.lab{border:1px dashed #888;padding:1.6mm 2mm;font:6.6pt/1.22 system-ui,sans-serif;background:#fff;color:#000;overflow:hidden;break-inside:avoid}
+.lab b.nm{font-size:10pt;display:block;line-height:1.1}
+.lab .id{font-size:6.2pt;color:#333;margin-bottom:.8mm;border-bottom:.2mm solid #000;padding-bottom:.6mm}
+.lab div{overflow-wrap:anywhere}
+.lab i{font-style:normal;font-weight:700;display:inline-block;min-width:3.2mm}
+#lgS td,#lgS th{padding:4px 8px}
+#sv,#as{white-space:nowrap}#sv.un,#as.un{border-color:var(--acc);color:var(--acc);font-weight:700}
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:10px;max-width:min(560px,92vw);z-index:60;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media print{#toast{display:none}}
+.rptd{display:block;width:100%;min-width:540px;max-width:640px;height:auto;margin:10px auto;font:12.5px system-ui,sans-serif;fill:var(--ink)}
+.rptd .hill{fill:var(--code);stroke:var(--line);stroke-width:1.5}
+.rptd .twr{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.rptd .dot{fill:var(--acc)}
+.rptd .rad{fill:var(--ink)}
+.rptd .up,.rptd .dn{stroke-width:2.5;stroke-dasharray:7 7;stroke-linecap:round;animation:flow 1s linear infinite}
+.rptd .up{stroke:var(--acc)}.rptd .dn{stroke:var(--acc2)}
+.rptd .blk0{stroke:var(--mute);stroke-width:2;stroke-dasharray:3 6}
+.rptd .x{fill:var(--acc);font-weight:800;font-size:15px}
+.rptd .b{font-weight:700}.rptd .m{fill:var(--mute);font-size:11.5px}
+@keyframes flow{to{stroke-dashoffset:-14}}
+@media (prefers-reduced-motion:reduce){.rptd .up,.rptd .dn{animation:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="ib" id="navb" aria-label="Sections">☰</button>
+  <div class="brand">UV-5RM Plus <span>GPS</span> · Field Guide</div>
+  <div class="sbox">
+    <input id="q" type="search" placeholder="Search everything — try “repeater”, “squelch”, “share position”   ( / )" autocomplete="off" aria-label="Search the guide">
+    <div id="res" role="listbox"></div>
+  </div>
+  <button class="ib" id="as">Autosave: off</button>
+  <button class="ib" id="sv">Save to file</button>
+  <button class="ib" id="thm" title="Light / dark">◐</button>
+</header>
+<div class="wrap">
+<nav id="nav"></nav>
+<main>
+
+<div class="hero">
+  <h1>Baofeng UV-5RM Plus <em>GPS</em><br>the complete walkthrough</h1>
+  <p>Everything from unboxing to sharing GPS positions between your radios. This is one file: it works with no internet, and the search box at the top looks through every section, every animated walkthrough and every menu setting.</p>
+</div>
+
+<section id="start" data-nav="Start here">
+<h2>Start here</h2>
+<div class="blk" id="start-how" data-t="How to use this guide">
+<h3>How to use this guide</h3>
+<ul class="t">
+<li><b>Emergency, and you've never used a radio?</b> Go straight to the <a href="#quick">emergency quick start</a>.</li>
+<li><b>New to the radio?</b> Read <a href="#setup">Out of the box</a>, play with the <a href="#tour">clickable radio</a>, then run the first few <a href="#walk">animated walkthroughs</a> with the radio in your hand.</li>
+<li><b>Filling in the channel plan or log?</b> See <a href="#start-data">your data and autosave</a> for how it's kept.</li>
+<li><b>Looking for one thing?</b> Type it in the search box (or press <kbd>/</kbd>). Results jump straight to the step, setting or definition.</li>
+<li><b>Changing a setting?</b> The <a href="#menu">menu reference</a> lists every item with what it does and what to set it to.</li>
+</ul>
+</div>
+<div class="blk" id="start-data" data-t="Your data: autosave to a folder, Save to file, and which browsers support it">
+<h3>Your data and autosave</h3>
+<p>Your channel plan, test log, labels and ticked boxes always save in this browser as you type. To keep them as a real file on your computer as well, there are two options:</p>
+<ul class="t">
+<li><b>Autosave to a folder.</b> Choose a folder once and the guide keeps a data file there (<code>uv5rm-guide-data.json</code>) up to date on its own. Next time you open the guide it reconnects and loads that file. Put the folder in iCloud Drive or Dropbox and the data follows you between computers.</li>
+<li><b>Save to file</b> (top of the page). Writes the data into a copy of the guide itself. Works in every browser, but only when you press it.</li>
+</ul>
+<p id="asStat" style="font-weight:600"></p>
+<p><button class="ib" id="asPick">Choose save folder</button> <button class="ib" id="asStop" hidden>Stop using this folder</button></p>
+<div class="note"><b>Browser note:</b> folder autosave works in <b>Chrome, Edge, Brave, Opera and Arc on a computer</b>. It is <b>not available in Safari or Firefox, or on phones and tablets</b>, because those browsers don't let a web page write to a folder you choose. There the guide still saves in the browser itself; use <b>Save to file</b> or the export buttons for a backup. After restarting the browser, Chrome asks you to confirm access to the folder again: click <b>Reconnect folder</b>, and choose “Allow on every visit” if offered.</div>
+<p style="color:var(--mute);font-size:.9rem">Your data never leaves your computer. The guide has no server; the folder is read and written by your browser only. If the file was changed somewhere else in the meantime, the guide loads the newer version, and keeps the other as a “conflict” copy in the same folder instead of overwriting it.</p>
+</div>
+<div class="warn blk" id="start-legal" data-t="Licence and legal: who can transmit">
+<h3>Before you press PTT: licence and legal</h3>
+<p>Listening is fine anywhere in the radio's range. <b>Transmitting</b> on its ham bands (144–148 MHz and 420–450 MHz on the US version) requires an amateur radio licence in the US (Technician class or higher) and a similar licence in most countries. The radio's own manual states it is <b>not legal for FRS, GMRS, MURS or PMR446</b> channels, even though it can be tuned there. Weather (NOAA), airband and FM broadcast are receive-only.</p>
+</div>
+<div class="blk" id="start-gps" data-t="GPS version versus the standard UV-5RM Plus">
+<h3>Your GPS version is not the same as the standard UV-5RM Plus</h3>
+<p>Most videos and guides online cover the non-GPS model. The GPS version runs different firmware, so follow this guide (built from Baofeng's GPS-version manual, print V1.0) when they disagree.</p>
+<div class="tw"><table>
+<tr><th></th><th>GPS version (yours)</th><th>Standard version</th></tr>
+<tr><td>Memory</td><td>10 zones × 64 channels = 640</td><td>One flat list, 999 channels</td></tr>
+<tr><td>Menu</td><td>7 grouped menus (Zone, Scan, Radio Setting, Program Channel, Radio Info, GNSS, NOAA Weather)</td><td>One long numbered list</td></tr>
+<tr><td>Extras</td><td>GPS position, share/request position, time from satellites, DTMF/2-Tone/5-Tone signalling</td><td>—</td></tr>
+<tr><td>Computer programming</td><td>Baofeng's Windows CPS for the GPS model; CHIRP is experimental (see <a href="#pc">Programming on a Mac</a>)</td><td>CHIRP, model “5RM”</td></tr>
+</table></div>
+<p class="note">Baofeng's manual contradicts itself in places (menu numbers, which key is which). Throughout this guide, <b>trust the name shown on your screen over the number</b>, and check the symbols printed on your keys. Where the manual was unclear, this guide says so.</p>
+</div>
+</section>
+
+<section id="quick" data-nav="Emergency quick start">
+<h2>Emergency quick start</h2>
+<p class="nop">For someone who has never used a radio and needs help now. <button class="ib" id="qkPrint">Print this page</button> and keep a copy with each radio.</p>
+<div class="warn blk prk" id="quick-when" data-t="Emergency: when someone without a licence may use the radio">
+<h3>When this applies</h3>
+<p><b>If a phone works, call or text 911 first.</b> It is faster and they can find you.</p>
+<p>Normally you need a licence to transmit on this radio. US rules make an exception when <b>life or property is in immediate danger and no other way of communicating is available</b>: then anyone may use whatever radio they have to call for help. That is the situation this page is for. It is not a loophole for everyday use, and anyone can <b>listen</b> at any time without a licence.</p>
+</div>
+<div class="blk prk" id="quick-how" data-t="How a two-way radio works, in one minute">
+<h3>How a radio like this works</h3>
+<ul class="t">
+<li><b>One person talks at a time.</b> While you hold the talk button you cannot hear anyone. Say your piece, let go, listen.</li>
+<li><b>Everyone on the channel hears you.</b> There is no dialling a person and no privacy. You call out and whoever is listening answers.</li>
+<li><b>It reaches a few miles, less in buildings and valleys.</b> Radio waves travel in nearly straight lines. Getting outside and getting higher helps more than anything else.</li>
+<li><b>A channel is a frequency.</b> Both radios must be on the same one. The big number on the screen is the frequency, or the channel's name.</li>
+<li><b>Nobody may be listening.</b> Unlike a phone, there is no guarantee of an answer. Keep trying, on more than one channel.</li>
+</ul>
+</div>
+<div class="blk prk" id="quick-call" data-t="Emergency: call for help step by step">
+<h3>Calling for help, step by step</h3>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Turn it on.</b> Twist the knob on top clockwise until it clicks. Keep turning to about halfway for volume. Check the antenna is screwed on.</li>
+<li><b>Pick the channel.</b>
+ <ul class="t"><li>If there is a label or card with the radio, use the channel it names: press <kbd>▲</kbd> or <kbd>▼</kbd> until that number or name shows.</li>
+ <li>If there is no plan: press <kbd>VFO/MR</kbd> until the screen shows <code>VFO</code>, then type <kbd>1</kbd><kbd>4</kbd><kbd>6</kbd><kbd>5</kbd><kbd>2</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd>. The screen should read <b>146.520</b>, the frequency most radio operators listen to.</li></ul></li>
+<li><b>Listen for ten seconds.</b> If people are talking, wait for a gap.</li>
+<li><b>Hold the big button on the side (PTT).</b> The light turns red. Wait one second. Hold the radio upright, about two inches from your mouth, and speak slowly in a normal voice:
+<p style="font-size:1.1rem;margin:.5em 0"><i>“<b>Emergency, emergency.</b> This is <u>&nbsp;your name&nbsp;</u>. I need help. Can anyone hear me? Over.”</i></p></li>
+<li><b>Let go of the button and listen</b> for thirty seconds. A green light means a signal is coming in.</li>
+<li><b>No answer?</b> Repeat it. Try three times, then move to the next thing in “If nobody answers”.</li>
+</ol>
+</div>
+<div class="blk prk" id="quick-say" data-t="Emergency: what to say when someone answers">
+<h3>When someone answers</h3>
+<p>Speak in plain words. You don't need radio language. Give this, in this order, and say “over” each time you finish:</p>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Where you are.</b> Address, cross streets, trail name, landmarks. For coordinates, hold <kbd>EXIT</kbd> for two seconds and read the numbers off the screen (press <kbd>EXIT</kbd> again before talking).</li>
+<li><b>What happened.</b> “A man has fallen and can't move his leg.”</li>
+<li><b>How many people</b> and whether anyone is hurt.</li>
+<li><b>What you need.</b> Ambulance, rescue, someone to phone 911 for you.</li>
+<li><b>Your name</b>, and that you'll stay on this channel.</li>
+</ol>
+<p>Then <b>stay on that channel</b> and answer their questions. If you didn't catch something, say “say again”. Don't change channel unless they ask you to. The person answering is probably a volunteer who will phone emergency services for you, so give them time.</p>
+</div>
+<div class="blk prk" id="quick-none" data-t="Emergency: if nobody answers">
+<h3>If nobody answers</h3>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Get outside and higher.</b> A hilltop, an upper floor, the roof of a car. Hold the radio up with the antenna pointing at the sky.</li>
+<li><b>Try 446.000</b> the same way: <kbd>4</kbd><kbd>4</kbd><kbd>6</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd>.</li>
+<li><b>Try the saved channels.</b> Press <kbd>VFO/MR</kbd> until a channel number shows, then step through with <kbd>▲</kbd>. Channels marked as repeaters reach much further. Call on each one.</li>
+<li><b>Find where people are talking.</b> Hold <kbd>#</kbd> for two seconds to scan. When it stops on voices, hold <kbd>#</kbd> again to stay there, wait for a pause, and make your call.</li>
+<li><b>Try again every few minutes,</b> and in the first five minutes of each hour: by a common convention, that is when operators in remote areas listen on 146.520.</li>
+<li><b>Save the battery.</b> Switch off between attempts if help may be hours away.</li>
+</ol>
+</div>
+<div class="blk prk" id="quick-rpt" data-t="Emergency: using a repeater channel to reach further">
+<h3>If the radio has a repeater channel</h3>
+<p>A repeater is a relay station on a hill or tower that carries your voice ten times further. If the label or channel list names one, it is often your best chance of reaching someone.</p>
+<ol class="t" style="padding-left:1.3em">
+<li>Select that channel with <kbd>▲</kbd> <kbd>▼</kbd>. It is already set up; you don't need to change anything.</li>
+<li>Hold PTT, <b>wait a full second</b>, then make your emergency call. Let go.</li>
+<li><b>Listen for a short hiss or a beep right after you let go.</b> That means the repeater heard you and sent your call out. Silence means it didn't: move higher and try again, or try another channel.</li>
+<li>If people are already talking, wait for a gap and say <b>“Break, break, emergency.”</b> They will stop and answer you.</li>
+<li>Keep each transmission under a minute, then release and listen.</li>
+</ol>
+</div>
+<div class="blk prk" id="quick-stuck" data-t="Emergency: the radio isn't working (quick checks)">
+<h3>If the radio doesn't seem to work</h3>
+<div class="tw"><table>
+<tr><th>What you see</th><th>Do this</th></tr>
+<tr><td>Silence, no hiss, nothing</td><td>Turn the volume up. Hold the small button below the big one (SK2): hiss means the radio is working and the channel is just quiet.</td></tr>
+<tr><td>Buttons do nothing</td><td>The keypad is locked. Hold <kbd>✱</kbd> for two seconds.</td></tr>
+<tr><td>No red light when you press PTT</td><td>The radio isn't transmitting: that frequency is probably outside what it is allowed to send on. Go to 146.520.</td></tr>
+<tr><td>Strange menu on the screen</td><td>Press <kbd>EXIT</kbd> a few times, or press PTT once, to get back.</td></tr>
+<tr><td>Screen is dark</td><td>Battery flat or radio off. Plug a phone charger (USB-C) into the battery; even a few minutes helps.</td></tr>
+<tr><td>You hear them, they don't hear you</td><td>Hold PTT a full second before speaking. Move higher. Check the upper line of the screen is the highlighted one (press <kbd>A/B</kbd>).</td></tr>
+</table></div>
+</div>
+<div class="blk prk" id="quick-info" data-t="Emergency: get news and weather on the radio">
+<h3>Getting information</h3>
+<p><b>Weather and official alerts:</b> hold <kbd>0</kbd> for two seconds, then press <kbd>▲</kbd> until you hear a voice forecast. <b>News:</b> press the top side button (SK1) for ordinary FM radio, then <kbd>MENU</kbd> to search for stations. Press <kbd>EXIT</kbd> to go back to two-way radio. Listening uses very little battery.</p>
+</div>
+<div class="blk nop" id="quick-after" data-t="After the emergency: learn the radio and get licensed">
+<h3>Before you ever need this</h3>
+<p>A radio nobody has practised with is not much help. Anyone can practise the listening parts today: turning it on, changing channels, weather, scanning. To practise transmitting, get a licence; it is one multiple-choice exam (see <a href="#onair-licence">getting licensed</a>). The first <a href="#walk" data-wt="first">animated walkthrough</a> shows these same steps on the drawn radio.</p>
+</div>
+</section>
+
+<section id="setup" data-nav="Out of the box">
+<h2>Out of the box</h2>
+<div class="g2">
+<div class="blk" id="setup-box" data-t="What is in the box">
+<h3>What's in the box</h3>
+<p>Radio body, lithium-ion battery pack, antenna, belt clip, wrist strap, charger and manual. Bundles vary: some add an earpiece, a longer antenna, a speaker-mic or a programming cable.</p>
+</div>
+<div class="blk" id="setup-antenna" data-t="Attach the antenna">
+<h3>1 · Antenna</h3>
+<p>Hold the antenna at its base and screw it clockwise onto the top connector until snug. <b>Never transmit without an antenna</b> attached; it can damage the transmitter.</p>
+</div>
+<div class="blk" id="setup-battery" data-t="Fit and remove the battery">
+<h3>2 · Battery</h3>
+<p>With the radio off, lay the battery on the back about 1–2 cm below the top edge, lined up with the rails, and slide it up until it clicks. To remove, press the release latch above the battery and slide it down.</p>
+</div>
+<div class="blk" id="setup-clip" data-t="Belt clip and earpiece">
+<h3>3 · Belt clip and earpiece</h3>
+<p>The clip fixes with the two screws above the battery. The earpiece or speaker-mic plugs into the two-pin (Kenwood-style) jack under the rubber flap on the side; push it fully home or the radio may think PTT is pressed.</p>
+</div>
+</div>
+<div class="blk" id="setup-charge" data-t="Charging the battery: USB-C and desk charger">
+<h3>4 · Charging</h3>
+<ul class="t">
+<li><b>USB-C:</b> the port is on the battery itself. Turn the radio off, plug in, and the indicator shows charging. An empty battery takes about 4 hours.</li>
+<li><b>Desk charger (if included):</b> light blinks orange when ready, red while charging, green when full. Takes roughly 2–5 hours. If the radio is switched on in the cradle the light may never turn green.</li>
+<li>Charge fully before first use. A new battery reaches full capacity after two or three full charge cycles.</li>
+<li>Charge between 5 °C and 40 °C. Don't charge a wet, swollen or damaged battery, and don't leave it on the charger for days.</li>
+<li>For storage, leave the battery partly charged and somewhere cool and dry.</li>
+</ul>
+</div>
+<div class="blk" id="setup-first" data-t="First power-on checklist and recommended settings">
+<h3>5 · First power-on checklist</h3>
+<p>Do these once on each radio. Each one links to the setting.</p>
+<div class="tw"><table>
+<tr><th>Setting</th><th>Set to</th><th>Why</th></tr>
+<tr><td>Radio Setting › Language / Voice</td><td>English</td><td>English menus and spoken prompts</td></tr>
+<tr><td>Radio Setting › Squelch</td><td>Level 3</td><td>Quiet when idle, still hears weak signals</td></tr>
+<tr><td>Radio Setting › ROGER</td><td>OFF</td><td>The end-of-transmission beep annoys other operators</td></tr>
+<tr><td>Radio Setting › TOT</td><td>60–180 s</td><td>Stops a stuck PTT from draining the battery and jamming the channel</td></tr>
+<tr><td>Radio Setting › PTT-ID, SideTone, TAIL</td><td>OFF</td><td>Baofeng's own recommendation for ham use, best repeater compatibility</td></tr>
+<tr><td>GNSS › GNSS On/Off, Time Zones</td><td>ON, your zone</td><td>Position and correct clock</td></tr>
+<tr><td>Program Channel › Bandwidth</td><td>Wide</td><td>Standard for ham FM in the US</td></tr>
+</table></div>
+</div>
+</section>
+
+<section id="tour" data-nav="Buttons &amp; screen">
+<h2>Buttons &amp; screen</h2>
+<p>Click any key on the radio to see what it does.</p>
+<div class="tour">
+  <div id="tourRadio"></div>
+  <div id="kinfo"><h3>Pick a key</h3><p>Short press and long press often do different things. The drawing is a schematic, so exact key positions on your radio can differ slightly; match by the label printed on the key.</p></div>
+</div>
+<div class="blk" id="tour-led" data-t="Status LED colours">
+<h3>Status light</h3>
+<p><b>Red</b> = transmitting. <b>Green</b> = receiving a signal. <b>Yellow</b> = one-touch frequency search is running.</p>
+</div>
+<div class="blk" id="tour-icons" data-t="Screen icons and what they mean">
+<h3>What's on the screen</h3>
+<p>The screen shows two lines: <b>A</b> (upper) and <b>B</b> (lower). The <b>highlighted</b> line is the main band, the one you transmit on. The greyed line is the sub band that is only watched.</p>
+<div class="tw"><table>
+<tr><th>Shows</th><th>Meaning</th></tr>
+<tr><td><code>VFO</code></td><td>Frequency mode: you type or step through raw frequencies</td></tr>
+<tr><td>Channel number / name</td><td>Channel (MR) mode: you are on a saved memory</td></tr>
+<tr><td><code>+</code> / <code>−</code></td><td>Repeater offset: transmit is shifted above / below receive</td></tr>
+<tr><td><code>R</code></td><td>Reverse is on (listening on the repeater's input)</td></tr>
+<tr><td><code>T</code></td><td>Talkaround: transmit equals receive, bypassing the repeater</td></tr>
+<tr><td><code>CT</code> / <code>DCS</code></td><td>A CTCSS tone or DCS code is set on this channel</td></tr>
+<tr><td><code>N</code></td><td>Narrowband (12.5 kHz)</td></tr>
+<tr><td>GPS / satellite icon</td><td>GNSS is switched on</td></tr>
+<tr><td>Weather icon</td><td>A NOAA channel or Weather Alert is active</td></tr>
+<tr><td>DTMF / 2T / 5T</td><td>Signalling is enabled for this channel</td></tr>
+<tr><td>Zone name (bottom)</td><td>The zone (channel group) you are in</td></tr>
+</table></div>
+</div>
+<div class="blk" id="tour-modes" data-t="VFO mode versus Channel (MR) mode">
+<h3>The two modes you must know</h3>
+<p><b>Frequency (VFO) mode</b> is a tuning dial: type any frequency and go. Good for experimenting and for setting up a channel before saving it.</p>
+<p><b>Channel (MR) mode</b> is a list of saved memories with all their settings. This is what you use day to day. Channels live inside <b>zones</b>: up to 10 zones of 64 channels each.</p>
+<p>Switch with <kbd>VFO/MR</kbd>. Hold <kbd>VFO/MR</kbd> to change how channels are displayed: number, frequency or name.</p>
+</div>
+</section>
+
+<section id="walk" data-nav="Animated walkthroughs">
+<h2>Animated walkthroughs</h2>
+<p>Pick a task and press <b>Play</b>. The radio shows which key to press (a yellow <b>HOLD</b> tag means press and hold about two seconds) and what the screen should look like. Click any step to jump to it.</p>
+<div class="wtl" id="wtl"></div>
+<div class="player" id="player">
+  <div id="wtRadio"></div>
+  <div class="pside">
+    <h3 id="wtT"></h3><p class="sum" id="wtS"></p>
+    <div class="ctl">
+      <button class="ib go" id="bPlay">▶ Play</button>
+      <button class="ib" id="bPrev">◀ Back</button>
+      <button class="ib" id="bNext">Next ▶</button>
+      <select id="spd" aria-label="Speed"><option value="1.5">Slow</option><option value="1" selected>Normal</option><option value="0.6">Fast</option></select>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+    <ol class="steps" id="steps"></ol>
+    <div class="after" id="wtA"></div>
+    <label class="chk"><input type="checkbox" id="wtDone"> I've done this on my radio</label>
+  </div>
+</div>
+</section>
+
+<section id="menu" data-nav="Menu reference">
+<h2>Menu reference</h2>
+<p>Press <kbd>MENU</kbd>, then use <kbd>▲</kbd><kbd>▼</kbd> and <kbd>MENU</kbd> to go deeper, or type the item's number. <kbd>MENU</kbd> saves, <kbd>EXIT</kbd> backs out, <kbd>PTT</kbd> leaves the menu entirely.</p>
+<input class="filter" id="mf" type="search" placeholder="Filter settings…" aria-label="Filter menu settings">
+<div class="tw"><table id="mt"><thead><tr><th>Menu</th><th>#</th><th>Name on screen</th><th>Options</th><th>What it does</th></tr></thead><tbody></tbody></table></div>
+<p class="note">Numbers follow the table in Baofeng's manual. The manual does not list a Program Channel item 16, and its worked examples use different numbers for some items, so your firmware may number things slightly differently.</p>
+</section>
+
+<section id="rpt" data-nav="How repeaters work">
+<h2>How repeaters work</h2>
+<div class="blk" id="rpt-idea" data-t="What a repeater is and why it extends your range">
+<h3>The idea</h3>
+<p>A handheld reaches a few miles because hills and buildings get in the way. A <b>repeater</b> is a radio station on a tower, tall building or mountain that listens on one frequency and instantly re-sends whatever it hears on another. Both of you only need to reach the repeater, not each other, so two handhelds on opposite sides of a hill can talk across a whole county.</p>
+<div class="tw"><svg class="rptd" viewBox="0 0 640 244" role="img" aria-label="Diagram: two handheld radios separated by a hill talk through a repeater on the hilltop. You transmit on the input frequency; the repeater re-sends on the output frequency.">
+<path d="M0,200 L190,200 Q320,56 450,200 L640,200 L640,244 L0,244 Z" class="hill"/>
+<line x1="320" y1="128" x2="320" y2="70" class="twr"/><path d="M308,128 L320,96 L332,128" class="twr" fill="none"/><circle cx="320" cy="68" r="5" class="dot"/>
+<rect x="62" y="172" width="14" height="28" rx="3" class="rad"/><line x1="66" y1="172" x2="66" y2="156" class="twr"/>
+<rect x="564" y="172" width="14" height="28" rx="3" class="rad"/><line x1="574" y1="172" x2="574" y2="156" class="twr"/>
+<line x1="72" y1="152" x2="312" y2="72" class="up"/><line x1="328" y1="72" x2="568" y2="152" class="dn"/>
+<line x1="84" y1="190" x2="216" y2="190" class="blk0"/><text x="226" y="195" class="x">✕</text>
+<text x="320" y="50" text-anchor="middle" class="b">Repeater</text>
+<text x="24" y="60" class="b">1 · You transmit on its input</text><text x="24" y="77">146.340 MHz, with tone 100.0</text>
+<text x="616" y="60" text-anchor="end" class="b">2 · It re-sends you on its output</text><text x="616" y="77" text-anchor="end">146.940 MHz</text>
+<text x="69" y="222" text-anchor="middle">You</text><text x="571" y="222" text-anchor="middle">Them</text>
+<text x="320" y="226" text-anchor="middle" class="m">the hill blocks the direct path</text>
+</svg></div>
+<p>Everyone <b>listens on the output</b> and <b>transmits on the input</b>. Your radio switches between the two automatically each time you press and release PTT; that is all a “repeater channel” is.</p>
+</div>
+<div class="blk" id="rpt-three" data-t="The three things a repeater channel needs: frequency, offset, tone">
+<h3>The three settings</h3>
+<div class="tw"><table>
+<tr><th>Setting</th><th>What it is</th><th>On this radio</th></tr>
+<tr><td><b>Frequency</b></td><td>The repeater's <b>output</b>: what you listen on. This is the number repeaters are known by.</td><td>The channel's receive frequency</td></tr>
+<tr><td><b>Offset (shift)</b></td><td>How far, and in which direction, your transmit frequency sits from the output. Usually 0.6 MHz on 2 m and 5 MHz on 70 cm. The direction (+ or −) depends on the repeater and the region.</td><td>Program Channel › TX Frequency (output plus or minus the offset)</td></tr>
+<tr><td><b>Tone</b></td><td>A low hum sent under your voice, too low to hear. The repeater ignores any signal without it, which stops interference from keying it up. It is a key, not privacy.</td><td>Program Channel › TX CTCSS</td></tr>
+</table></div>
+<p>Get any one of the three wrong and the repeater simply doesn't respond. A few repeaters use a DCS code instead of a tone (Program Channel › TX DCS), and some in Europe want a short 1750 Hz burst.</p>
+</div>
+<div class="blk" id="rpt-read" data-t="How to read a repeater listing such as 146.940 minus 100.0">
+<h3>Reading a listing</h3>
+<p>Directories and club pages write repeaters in a compact form:</p>
+<p style="font:600 1.05rem ui-monospace,Menlo,monospace">146.940&nbsp;&nbsp;−&nbsp;&nbsp;100.0&nbsp;&nbsp;W1ABC&nbsp;&nbsp;Mt Example&nbsp;&nbsp;OPEN</p>
+<ul class="t">
+<li><b>146.940</b>: listen here.</li>
+<li><b>−</b>: transmit <i>below</i> it by the standard offset, so 146.940 − 0.600 = <b>146.340</b>. A <b>+</b> means above.</li>
+<li><b>100.0</b>: the tone to send, in Hz. Also written “PL 100.0” or “CTCSS 100.0”.</li>
+<li><b>OPEN</b>: any licensed operator may use it. <b>CLOSED</b> or <b>PRIVATE</b> means members only; stay off those except in a real emergency.</li>
+</ul>
+<p>To put it in the radio, follow the <a href="#walk" data-wt="repeater">Program a repeater</a> walkthrough. To pull in the ones near you, use <a href="#emerg-rpt">Find repeaters near you</a>.</p>
+</div>
+<div class="blk" id="rpt-in" data-t="How to tell if you are getting into the repeater: tail, courtesy beep, silence">
+<h3>How to tell you're getting in</h3>
+<p>Press PTT, say your call sign and “testing”, and release. Then listen:</p>
+<div class="tw"><table>
+<tr><th>What you hear after releasing</th><th>What it means</th></tr>
+<tr><td>A second or two of quiet carrier, often ending in a beep or a short “pssht”</td><td><b>You got in.</b> That is the repeater's “tail”: it stays on the air briefly after you stop. The beep is the courtesy tone, telling the next person it's their turn.</td></tr>
+<tr><td>A voice or Morse code announcing a call sign</td><td>The repeater identifying itself, which it does every ten minutes or so while in use. Also proof you're in.</td></tr>
+<tr><td>Nothing at all</td><td>It didn't hear you: wrong tone, wrong offset or direction, too far away, or the repeater is off the air.</td></tr>
+</table></div>
+<ul class="t">
+<li><b>You can usually hear a repeater from further away than you can reach it.</b> It has more power and a far better antenna than your handheld. Hearing it clearly doesn't mean it hears you; move higher or outside.</li>
+<li><b>Pause before you speak.</b> Hold PTT for a full second first; the repeater takes a moment to wake up, and your first word is lost otherwise.</li>
+<li><b>If others say you're “scratchy” or “dropping out”</b>, your signal into the repeater is weak. Stand still, hold the radio upright and higher, switch to high power.</li>
+<li><b>Checking whether you need the repeater:</b> a short press of <kbd>✱</kbd> turns on reverse (R), so you listen on the input. If you can hear the other person there, you're in direct range and could move to a simplex channel.</li>
+</ul>
+</div>
+<div class="blk" id="rpt-linked" data-t="Linked repeater systems and nets">
+<h3>Linked systems and nets</h3>
+<ul class="t">
+<li><b>Linked repeaters:</b> many repeaters are joined to others by radio links or the internet (you'll see names like IRLP, EchoLink or AllStar in listings). What you say may come out on dozens of repeaters across a state or further. Leave a longer pause, two or three seconds, between transmissions so the links can keep up, and keep in mind how far your words travel.</li>
+<li><b>Nets:</b> scheduled on-air meetings run by a “net control” operator who calls on stations in turn. If you tune in during one, listen; when net control asks for check-ins or visitors, give your call sign. Don't start a separate conversation on top of a net.</li>
+<li><b>Emergency nets:</b> during a disaster a repeater may be handling emergency traffic. Listen and follow net control's instructions. Transmit only if you have an emergency yourself or are asked to. If you do: “Break, emergency”, then wait to be acknowledged.</li>
+<li><b>Time-out timers:</b> most repeaters cut off any single transmission after about three minutes. Keep each one short and let the repeater drop between them.</li>
+</ul>
+</div>
+<div class="blk" id="rpt-when" data-t="Repeater or simplex: when to use which">
+<h3>Repeater or simplex?</h3>
+<div class="tw"><table>
+<tr><th>Use simplex when</th><th>Use a repeater when</th></tr>
+<tr><td>You're within direct range of each other</td><td>Terrain or distance is in the way</td></tr>
+<tr><td>You want a quieter channel for a long chat</td><td>You want to reach anyone who's listening, not one person</td></tr>
+<tr><td>Repeaters are down, overloaded or reserved for emergency traffic</td><td>You need help and nobody answers on simplex</td></tr>
+</table></div>
+<p>Repeaters depend on power, a working site and a volunteer owner. They are the best tool for distance and the first thing to fail or fill up in a regional disaster, so a family plan should work on simplex first and treat the repeater as the extension. Etiquette for day-to-day use is under <a href="#onair-rpt">On-air basics</a>.</p>
+</div>
+</section>
+
+<section id="onair" data-nav="On-air basics">
+<h2>On-air basics</h2>
+<div class="g2">
+<div class="blk" id="onair-call" data-t="How to make a call on simplex">
+<h3>Making a call (radio to radio)</h3>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Listen first</b> for 10–20 seconds. If the frequency is busy, wait.</li>
+<li>Hold PTT, pause half a second, then: <i>“<b>W1ABC</b>, this is <b>K2XYZ</b>.”</i> Their call sign first, yours second.</li>
+<li>Release and listen. No answer after two or three tries: <i>“K2XYZ clear.”</i></li>
+<li>To call anyone at all: <i>“K2XYZ, monitoring”</i> or <i>“CQ, CQ, this is K2XYZ.”</i></li>
+<li>Keep each transmission short and leave a second of silence before replying so others can break in.</li>
+</ol>
+</div>
+<div class="blk" id="onair-rpt" data-t="Repeater etiquette">
+<h3>Using a repeater</h3>
+<p>New to repeaters? Start with <a href="#rpt">How repeaters work</a>.</p>
+<ul class="t">
+<li>Listen for a while before your first transmission to learn how that repeater's users talk.</li>
+<li>To announce yourself: <i>“K2XYZ, listening.”</i> Don't call CQ on a repeater.</li>
+<li>After the other station stops, <b>wait for the courtesy beep</b> (or a second) before keying. That resets the repeater's timer and leaves room for emergencies.</li>
+<li>Most repeaters cut you off after about 3 minutes of continuous talking.</li>
+<li>To join a conversation, say your call sign between transmissions. Say “break” only for something urgent.</li>
+<li>If you can hear each other directly, move to a simplex frequency and free the repeater.</li>
+</ul>
+</div>
+</div>
+<div class="blk" id="onair-id" data-t="Call sign rules: when to identify">
+<h3>Identifying (US rules)</h3>
+<p>Give your call sign <b>at least every 10 minutes</b> during a contact and <b>at the end</b> of it. English letters and numbers, or the phonetic alphabet. You don't need to say the other person's call sign each time, and you don't need to identify when only listening. No music, no business use, no codes meant to hide meaning, and no transmitting without identifying.</p>
+</div>
+<div class="blk" id="onair-phon" data-t="Phonetic alphabet (Alpha Bravo Charlie)">
+<h3>Phonetic alphabet</h3>
+<ul class="codes" style="columns:4 120px;font-size:.9rem">
+<li><b>A</b> Alpha</li><li><b>B</b> Bravo</li><li><b>C</b> Charlie</li><li><b>D</b> Delta</li><li><b>E</b> Echo</li><li><b>F</b> Foxtrot</li><li><b>G</b> Golf</li><li><b>H</b> Hotel</li><li><b>I</b> India</li><li><b>J</b> Juliett</li><li><b>K</b> Kilo</li><li><b>L</b> Lima</li><li><b>M</b> Mike</li><li><b>N</b> November</li><li><b>O</b> Oscar</li><li><b>P</b> Papa</li><li><b>Q</b> Quebec</li><li><b>R</b> Romeo</li><li><b>S</b> Sierra</li><li><b>T</b> Tango</li><li><b>U</b> Uniform</li><li><b>V</b> Victor</li><li><b>W</b> Whiskey</li><li><b>X</b> X-ray</li><li><b>Y</b> Yankee</li><li><b>Z</b> Zulu</li>
+</ul>
+<p>Numbers are said digit by digit: 146.520 is “one four six point five two zero”. Nine is often said “niner”.</p>
+</div>
+<div class="blk" id="onair-words" data-t="Common words on the air: copy, clear, break, 73">
+<h3>Words you'll hear</h3>
+<div class="tw"><table>
+<tr><td><b>Copy / Roger</b></td><td>I heard and understood</td><td><b>Say again</b></td><td>Please repeat</td></tr>
+<tr><td><b>Go ahead</b></td><td>I'm listening, transmit</td><td><b>Stand by</b></td><td>Wait a moment</td></tr>
+<tr><td><b>Clear</b></td><td>I'm finished with this contact</td><td><b>Monitoring</b></td><td>I'm here and listening</td></tr>
+<tr><td><b>Break</b></td><td>I need to interrupt</td><td><b>Simplex</b></td><td>Direct, not through a repeater</td></tr>
+<tr><td><b>Full quieting</b></td><td>Your signal is strong, no hiss</td><td><b>Scratchy</b></td><td>Weak and noisy</td></tr>
+<tr><td><b>QSY</b></td><td>Change frequency</td><td><b>QTH</b></td><td>Location</td></tr>
+<tr><td><b>73</b></td><td>Best regards (a sign-off)</td><td><b>Radio check</b></td><td>How well do you hear me?</td></tr>
+</table></div>
+</div>
+<div class="blk" id="onair-emerg" data-t="Calling for help in an emergency">
+<h3>If you need help</h3>
+<p>On a repeater or 146.520: <i>“<b>Break, break, emergency</b>, this is K2XYZ.”</i> Then give <b>where</b> you are (read the coordinates from GPS mode), <b>what</b> happened, and <b>what</b> you need. Stay on that frequency. If a phone works, call 911 first. US rules allow any station to use whatever radio means it has to call for help when life or property is in immediate danger and normal communication isn't available; that is the one situation where transmitting without a licence is permitted.</p>
+</div>
+<div class="blk" id="onair-licence" data-t="Getting a ham licence (Technician exam) and GMRS">
+<h3>Getting licensed</h3>
+<ul class="t">
+<li><b>Technician licence (US):</b> one 35-question multiple-choice exam, 26 correct to pass, no Morse code. Every question comes from a published pool, so practice tests show you the real questions.</li>
+<li><b>Cost:</b> a small exam-session fee (about $15 with most groups, some free) plus the FCC's $35 application fee. The licence lasts 10 years.</li>
+<li><b>How:</b> study with a free app or site (HamStudy is the common one), then sit the exam in person with a local club or online by video. Most people need 10–20 hours of study.</li>
+<li>Each person who transmits needs their own licence. A licensed operator can let someone else talk while they stay in control at the radio.</li>
+<li><b>GMRS</b> is the no-exam alternative ($35, covers your family, 10 years), but it requires a GMRS-certified radio, which this one is not.</li>
+</ul>
+</div>
+</section>
+
+<section id="group" data-nav="Set up your set of radios">
+<h2>Set up your set of radios</h2>
+<div class="blk" id="group-match" data-t="Make several radios talk to each other">
+<h3>Make them all talk to each other</h3>
+<p>Two radios hear each other only when these match on both:</p>
+<ul class="t">
+<li><b>Frequency</b> (and offset, if using a repeater).</li>
+<li><b>Tone:</b> if one radio has RX CTCSS/DCS set, the other must transmit that same tone. Simplest: leave tones OFF on all of them, or set the same TX and RX tone on all.</li>
+<li><b>Bandwidth:</b> Wide on all, or Narrow on all.</li>
+</ul>
+<p>Save the shared frequency to the <b>same channel number in the same zone</b> on every radio and give it the same name, so “go to channel 2” means the same thing for everyone.</p>
+</div>
+<div class="blk" id="group-gps" data-t="GPS position sharing needs unique radio IDs">
+<h3>For GPS sharing, each radio needs its own identity</h3>
+<p>Position sharing rides on DTMF signalling. Each radio needs a unique <b>Radio ID</b> (Radio Info › My Radio › Radio ID, or in the PC software) and the others listed as contacts/members. All radios must be on the same channel, with that channel on the <b>main</b> (highlighted) line, GNSS on, and Share Position / Request Position switched on. See the <a href="#walk" data-wt="gps-share">GPS sharing walkthrough</a>.</p>
+</div>
+<div class="blk" id="group-clone" data-t="Copy one radio's setup to the others (clone)">
+<h3>Fastest way: set up one, copy to the rest</h3>
+<p>Program one radio fully, read it into the programming software (see <a href="#pc">Programming on a Mac</a>), save the file, then write that file to each of the other radios. Afterwards change each radio's ID and name so they are unique. Without a cable, the <a href="#walk" data-wt="copy">one-touch search</a> copies one frequency and tone at a time over the air.</p>
+</div>
+</section>
+
+<section id="plan" data-nav="My channel plan">
+<h2>My channel plan</h2>
+<p>Lay out the channels for your set of radios here. It saves in this browser as you type. Print it, or export a file to load into the programming software so every radio gets the same list.</p>
+<div class="blk" id="plan-box" data-t="Channel plan table: your group channels and repeaters">
+<div class="ctl">
+<button class="ib" id="plAdd">+ Add channel</button>
+<button class="ib" id="plPrint">Print</button>
+<button class="ib" id="plCsv">Export CSV (CHIRP)</button>
+<button class="ib" id="plSave">Save plan file</button>
+<label class="ib" style="cursor:pointer">Load plan file<input type="file" id="plLoad" accept=".json" hidden></label>
+<button class="ib" id="plReset">Reset</button>
+</div>
+<div class="tw"><table id="plT" class="plan"><thead><tr><th>Zone</th><th>Ch</th><th>Name</th><th>Receive MHz</th><th>Shift</th><th>Offset MHz</th><th>Tone</th><th>Power</th><th>Width</th><th>Notes</th><th></th><th></th></tr></thead><tbody></tbody></table></div>
+<p id="plMsg" style="color:var(--mute);font-size:.9rem"></p>
+</div>
+<div class="blk" id="plan-how" data-t="How to fill in the channel plan and use the export">
+<h3>Filling it in</h3>
+<ul class="t">
+<li><b>Zone / Ch:</b> where the channel lives on the radio (zones 1–10, channels 1–64).</li>
+<li><b>Name:</b> six characters or fewer.</li>
+<li><b>Shift / Offset:</b> leave blank for simplex. For a repeater pick + or − and the offset (0.600 on 2 m, 5.000 on 70 cm).</li>
+<li><b>Tone:</b> the CTCSS tone you transmit. Leave OFF for your own simplex channels unless you all set the same one.</li>
+<li>Rows outside 144–148 / 420–450 MHz are marked <span class="tag">listen</span>; the export sets them receive-only.</li>
+<li><b>Export CSV</b> uses CHIRP's column layout. Row numbers follow the zones: Zone 1 is rows 1–64, Zone 2 is 65–128, and so on. You can also open the CSV in Numbers.</li>
+<li><b>Save to file</b> (top of the page) writes the plan, test log, labels and ticked boxes into the guide file itself, so they travel with it. <b>Save plan file</b> makes a separate backup of just the plan.</li>
+</ul>
+</div>
+</section>
+
+<section id="range" data-nav="Range &amp; accessories">
+<h2>Range &amp; accessories</h2>
+<div class="blk" id="range-real" data-t="Realistic range by terrain">
+<h3>What range to expect</h3>
+<p>VHF and UHF travel in nearly straight lines. <b>Height and a clear path matter far more than watts.</b> The “10 W long range” on the box changes little: going from 5 W to 10 W adds a barely noticeable amount of signal.</p>
+<div class="tw"><table>
+<tr><th>Situation (handheld to handheld)</th><th>Typical</th></tr>
+<tr><td>Inside buildings, dense city</td><td>a few blocks to 1 mile (0.3–1.5 km)</td></tr>
+<tr><td>Suburbs, woods, rolling ground</td><td>1–3 miles (1.5–5 km)</td></tr>
+<tr><td>Open flat country or over water</td><td>3–6 miles (5–10 km)</td></tr>
+<tr><td>Hilltop to valley, clear view</td><td>10–30 miles (15–50 km)</td></tr>
+<tr><td>Through a repeater on a tower or mountain</td><td>20–60 miles (30–100 km)</td></tr>
+<tr><td>From inside a car, stock antenna</td><td>roughly half of the above</td></tr>
+</table></div>
+<p>These are rough working figures; your terrain decides. <b>VHF (2 m)</b> carries a little further outdoors and over hills. <b>UHF (70 cm)</b> gets in and out of buildings and vehicles better.</p>
+</div>
+<div class="blk" id="range-calc" data-t="Line-of-sight radio horizon calculator">
+<h3>Line-of-sight calculator</h3>
+<p>How far two antennas can “see” each other over flat ground or water.</p>
+<p><label>Your antenna height <input class="num" id="h1" type="number" min="0" value="6"> ft</label> &nbsp; <label>Their antenna height <input class="num" id="h2" type="number" min="0" value="6"> ft</label></p>
+<p id="hOut" style="font-weight:700"></p>
+<p style="color:var(--mute);font-size:.9rem">Two people standing on flat ground get about 7 miles at best. Put one of them on a 500 ft hill and it becomes about 35. Hills, buildings and trees in between reduce it.</p>
+</div>
+<div class="blk" id="range-tips" data-t="Free ways to get more range">
+<h3>More range for free</h3>
+<ul class="t">
+<li>Get higher: an upstairs window, a rise in the ground, the roof of the car.</li>
+<li>Hold the radio upright with the antenna vertical and clear of your body; don't talk with it on your belt.</li>
+<li>Step outside, or at least to a window facing the other station.</li>
+<li>Take a few steps: at UHF, moving one metre can turn noise into a clear signal.</li>
+<li>Use a repeater when direct contact fails.</li>
+</ul>
+</div>
+<div class="blk" id="range-gear" data-t="Accessories worth buying and ones to skip">
+<h3>Accessories</h3>
+<div class="tw"><table>
+<tr><th>Item</th><th>Verdict</th><th>Notes</th></tr>
+<tr><td>Longer whip antenna (about 15 in, 144/430 MHz)</td><td><b>Best upgrade</b></td><td>The radio needs an antenna with an <b>SMA-female</b> connector. The Nagoya NA-771 style is the usual pick; buy from a reputable seller because fakes are common. Some bundles already include a long antenna.</td></tr>
+<tr><td>Speaker-microphone (K-plug)</td><td><b>Worth it</b></td><td>Lets the radio stay high on a pack strap with the antenna clear while you talk at your shoulder.</td></tr>
+<tr><td>Spare battery or a USB-C power bank</td><td><b>Worth it</b></td><td>The battery charges over USB-C, so any power bank works in the field.</td></tr>
+<tr><td>CH340 or FTDI programming cable</td><td><b>Worth it</b></td><td>See <a href="#pc">Programming on a Mac</a>.</td></tr>
+<tr><td>Magnetic-mount car antenna + SMA adapter cable</td><td>Worth it for vehicle use</td><td>An antenna on the roof transforms range from inside a car. Use a short flexible adapter lead so the coax doesn't strain the radio's connector.</td></tr>
+<tr><td>Earpiece</td><td>Situational</td><td>Quiet listening; the included ones are basic but work.</td></tr>
+<tr><td>Foldable “tactical” antennas</td><td>Skip</td><td>Mostly for looks; many perform worse than the stock antenna.</td></tr>
+<tr><td>Handheld power amplifiers</td><td>Skip</td><td>Costly, power-hungry, and they don't help you hear the other station.</td></tr>
+</table></div>
+</div>
+</section>
+
+<section id="field" data-nav="Field readiness">
+<h2>Field readiness</h2>
+<div class="blk" id="field-batt" data-t="Battery life planning and voltage readings">
+<h3>Battery planning</h3>
+<p>Baofeng quotes about 15 hours at 5% transmit, 5% receive, 90% standby. Treat that as a best case and <b>plan on one full day of light use per charge</b>, less with GPS on. I don't have measured figures for the GPS drain, so test yours once before relying on it.</p>
+<div class="g2">
+<div><b>What drains it fastest</b>
+<ul class="t"><li>Transmitting on high power (by far the biggest)</li><li>GNSS left on</li><li>Screen always lit, high brightness</li><li>Scanning and dual watch (receiver never sleeps)</li><li>Cold: capacity drops noticeably below freezing</li></ul></div>
+<div><b>How to stretch it</b>
+<ul class="t"><li>Program Channel › Trans Power › Low for nearby contacts</li><li>Radio Setting › Power Save › 1:2</li><li>BackLight 5 s, Brightness 2</li><li>GNSS off until you need a position</li><li>Agree check-in times and switch off between them</li><li>Carry it inside your jacket in the cold</li></ul></div>
+</div>
+<p><b>Reading the voltage</b> (put <b>Voltage</b> on a side key, or set Power on Display to VOLTAGE). For a 7.4 V lithium-ion pack: about <b>8.4 V</b> is full, <b>7.4 V</b> is roughly half, and below about <b>6.8 V</b> it is nearly empty. Readings sag while transmitting.</p>
+</div>
+<div class="blk" id="field-check" data-t="Pre-trip checklist">
+<h3>Pre-trip checklist</h3>
+<div id="ckl"></div>
+<p><button class="ib" id="ckReset">Clear ticks</button></p>
+</div>
+<div class="blk" id="field-plan" data-t="Group communications plan: primary and backup channel, check-in times">
+<h3>Agree a simple plan before you split up</h3>
+<ul class="t">
+<li><b>Primary channel</b> and a <b>backup channel</b> on the other band (one on 2 m, one on 70 cm).</li>
+<li><b>Check-in times:</b> for example the first five minutes of every hour. Radios can stay off in between.</li>
+<li><b>If you miss two check-ins:</b> what happens next (go to a named spot, head back to the vehicle).</li>
+<li><b>A name for each radio</b> so calls are clear: “Radio 2, this is Radio 1.” Licensed operators add their call signs.</li>
+<li>Write it on the <a href="#cheat">pocket cheat sheet</a> so everyone carries the same plan.</li>
+</ul>
+</div>
+<div class="blk" id="field-lost" data-t="What to do when radios cannot reach each other">
+<h3>When you can't reach each other</h3>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Check your own radio first:</b> volume up, right zone and channel, the correct line highlighted (A/B), keypad not locked into the wrong channel, battery not flat.</li>
+<li><b>Hold SK2 (monitor)</b> while they should be transmitting. If you hear them through the hiss, it's a tone or squelch mismatch, not range.</li>
+<li><b>Move:</b> a few steps first, then to higher or more open ground. Hold the radio high and upright.</li>
+<li>Switch to <b>high power</b> for the call.</li>
+<li>At the next agreed time, try the <b>backup channel</b>.</li>
+<li>Try a <b>repeater</b> you both have programmed.</li>
+<li>If you had GPS sharing working earlier, your radio still shows their <b>last received position</b> in the member list.</li>
+<li>Follow the missed-check-in plan. Don't wander out of the area you agreed on.</li>
+</ol>
+</div>
+</section>
+
+<section id="emerg" data-nav="Emergency family channels">
+<h2>Emergency family channels</h2>
+<p>Choose them by listening and testing from the places your family will actually be. A frequency that looks good on a list can be busy or unreachable where you live.</p>
+<div class="warn blk" id="emerg-legal" data-t="Emergency channels: who is allowed to transmit">
+<h3>First decide who will be transmitting</h3>
+<p>On these radios, everyone who transmits needs a ham licence, including for practice drills. The only exception is a genuine emergency where life or property is in immediate danger and no other means is available. If some family members won't get licensed, give them FRS radios: your Baofengs can <b>listen</b> to FRS channels but can't legally talk on them. A plan you aren't allowed to practise is a plan that fails, so sort this out first. See <a href="#onair-licence">getting licensed</a>.</p>
+</div>
+<div class="blk" id="emerg-method" data-t="Method for picking emergency family channels">
+<h3>The method</h3>
+<ol class="t" style="padding-left:1.3em">
+<li><b>Start from the simplex parts of the band, using your region's band plan.</b> Nationally, 2 m FM simplex sits around 146.40–146.58 and 147.42–147.57 MHz, and 70 cm simplex around 445–447 MHz, but regional coordinators change the details. Don't make the calling frequencies (146.520, 446.000) your home channel, since everyone uses those.</li>
+<li><b>Load candidates and listen for a week.</b> Use the button below, write them to the radio, and <a href="#walk" data-wt="scan">scan them</a> at different times of day. Cross off any with regular traffic.</li>
+<li><b>Keep three channels:</b>
+ <ul class="t"><li><b>Primary on 2 m</b>: carries further outdoors and over hills.</li><li><b>Backup on 70 cm</b>: better in and out of buildings and cars.</li><li><b>A local repeater</b>, ideally one with backup power that the local emergency group uses, for when you are too far apart for direct contact.</li></ul></li>
+<li><b>Test from the real locations:</b> home, work, school, the usual routes. Mark where it fails; those spots need the repeater or an agreed meeting point.</li>
+<li><b>Set a transmit tone on every radio and leave receive tone off.</b> You hear everything on the channel, and you can switch receive tone on later if chatter becomes a problem. A tone is not privacy: anyone can listen.</li>
+<li><b>Same slots on every radio:</b> Zone 1, channels 1–3, same names, plus your strongest NOAA channel.</li>
+<li><b>Agree check-in windows</b>, such as the first five minutes of every hour, so radios stay off in between and batteries last days.</li>
+<li><b>Practise monthly.</b> Five minutes, everyone on the air from a different place.</li>
+</ol>
+</div>
+<div class="blk" id="emerg-cand" data-t="Candidate simplex frequencies for a family channel">
+<h3>Candidate frequencies to audition</h3>
+<div class="tw"><table>
+<tr><th>Band</th><th>Candidates (MHz)</th><th>Why these</th></tr>
+<tr><td>2 m</td><td>146.460 · 147.480 · 147.540</td><td>Inside the national simplex segments and valid under both the 15 kHz and 20 kHz channel spacings used in different regions</td></tr>
+<tr><td>70 cm</td><td>445.950 · 446.050 · 446.150</td><td>Near, but not on, the 446.000 calling frequency</td></tr>
+</table></div>
+<p><button class="ib go" id="emAdd" style="background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700">Add these to my channel plan</button> <span id="emMsg" style="color:var(--mute);font-size:.9rem"></span></p>
+<div class="warn"><b>Check your regional band plan before using these.</b> They come from the national plan, and some regions differ sharply. Southern California is the clearest example: there, almost all of 445–450 MHz is repeater outputs (FM simplex is limited to spots such as 446.000, 446.500 and 446.520), 70 cm repeaters shift −5 MHz, and several 2 m frequencies inside the simplex segments are used by long-established repeaters. Search for your state or region's “2 meter band plan” and “440 band plan”, published by the local frequency coordinator, then let your week of listening make the final call.</div>
+</div>
+<div class="blk" id="emerg-rpt" data-t="Find local repeaters near you: search, import, tick and add to the channel plan">
+<h3>Find repeaters near you</h3>
+<p>The guide doesn't ship with anyone's local repeaters. This tool pulls yours in. It needs internet for the search step only.</p>
+<div class="note">Why it isn't one button: the repeater databases don't allow a web page to query them directly (RepeaterBook requires a registered key, and the open alternative blocks requests from pages). So the search opens on RepeaterBook's own site, and you paste the results back here.</div>
+<h4>1 · Search</h4>
+<div class="lbf">
+<label>City and state, or ZIP code <input id="rsLoc" placeholder="Denver, CO"></label>
+<label>Within (miles) <input id="rsMi" type="number" min="5" max="100" value="25"></label>
+</div>
+<p><button class="ib" id="rsGo">Open RepeaterBook search ↗</button> <span style="color:var(--mute);font-size:.9rem">Opens a new tab. The location you type is sent to repeaterbook.com.</span></p>
+<h4>2 · Bring the results back</h4>
+<p>On the results page, drag to select the rows of the table, copy, and paste here. Or load a CSV in CHIRP format (RepeaterBook's export, or a file saved from CHIRP).</p>
+<textarea id="rsTxt" rows="5" placeholder="Paste the copied results rows here…" style="width:100%;font:.85rem ui-monospace,Menlo,monospace;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"></textarea>
+<p><button class="ib" id="rsParse">Read pasted results</button> <label class="ib" style="cursor:pointer">Load CSV file<input type="file" id="rsCsv" accept=".csv,text/csv" hidden></label> <span id="rsMsg" style="color:var(--mute);font-size:.9rem"></span></p>
+<h4>3 · Tick the ones you want</h4>
+<div class="tw"><table id="rsT"></table></div>
+<p id="rsAct" hidden><label>Put them in zone <input class="num" id="rsZone" type="number" min="1" max="10" value="3" style="width:64px"></label> <button class="ib go" id="rsAdd" style="background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700">Add ticked to my channel plan</button> <span id="rsAddMsg" style="color:var(--mute);font-size:.9rem"></span></p>
+<h4>Before you rely on one</h4>
+<ul class="t">
+<li>Rows this radio can't use (other bands, digital-only modes) are shown greyed out and can't be ticked. A repeater that needs a DCS code instead of a tone is imported without one; set it by hand.</li>
+<li>Test each: key up for a second, say your call sign, release. A beep or a short burst of carrier means you got in.</li>
+<li>For an emergency plan, find out which repeaters have <b>backup power</b> and an emergency role: ask on the air or check the owning club's website.</li>
+<li>Repeaters are run by volunteers and clubs. In a regional disaster they may be reserved for emergency traffic, overloaded or off the air, which is why your simplex channels stay the primary plan.</li>
+<li>Listings change. Repeat the search once or twice a year.</li>
+</ul>
+</div>
+<div class="blk" id="emerg-top" data-t="How to order your channel list: what goes in which slot and why">
+<h3>Ordering your list, and why</h3>
+<p>Once you have simplex candidates and local repeaters, arrange Zone 1 so the most important channels are the easiest to reach:</p>
+<div class="tw"><table>
+<tr><th>Slots</th><th>What</th><th>Why</th></tr>
+<tr><td class="n">1–2</td><td>Family primary (2 m) and backup (70 cm) simplex</td><td>The channels you'll use most, and where the radio lands after a reset. 2 m carries further outdoors; 70 cm gets in and out of buildings and cars better.</td></tr>
+<tr><td class="n">3–6</td><td>Spare simplex candidates</td><td>Alternates while you audition. Delete the ones that turn out busy.</td></tr>
+<tr><td class="n">7–8</td><td>146.520 and 446.000 calling frequencies</td><td>The most-monitored simplex channels: the best place to reach a stranger for help. Make contact, then move off.</td></tr>
+<tr><td class="n">9–10</td><td>The closest repeater on each band</td><td>Strongest signal from home, and the easiest to open with a handheld.</td></tr>
+<tr><td class="n">11–13</td><td>Wide-area repeaters on high sites, in different directions</td><td>For reaching family across town. Two directions means terrain or a failure at one site doesn't cut you off.</td></tr>
+<tr><td class="n">14–18</td><td>Repeaters covering the places family spends time</td><td>Work, school, the other side of a ridge.</td></tr>
+<tr><td class="n">19–20</td><td>Repeaters along the routes out of your area</td><td>For travel and evacuation corridors.</td></tr>
+</table></div>
+<p class="note">Rank by distance, site height and what your test log shows, not by what a list online says. NOAA weather doesn't need a slot; the radio has it built in (hold <kbd>0</kbd>).</p>
+</div>
+<div class="blk" id="emerg-card" data-t="What to write on the family emergency card">
+<h3>What goes on everyone's card</h3>
+<ul class="t">
+<li>Primary, backup and repeater channel: number and name as shown on the radio.</li>
+<li>Check-in windows, and how long to keep trying.</li>
+<li>Where to meet if there is no contact after two windows.</li>
+<li>An out-of-area phone contact everyone reports to when phones work.</li>
+<li>How to read your position from GPS mode (hold <kbd>EXIT</kbd>).</li>
+</ul>
+<p>The <a href="#cheat">pocket cheat sheet</a> has blanks for most of this.</p>
+</div>
+</section>
+
+<section id="log" data-nav="Test log">
+<h2>Test log</h2>
+<p>Record the listening week and your range tests here. It saves in this browser as you type, and the summary underneath shows which channels stayed quiet and which locations worked.</p>
+<div class="blk" id="log-box" data-t="Test log: listening week and range test results">
+<div class="ctl">
+<button class="ib" id="lgAdd">+ Add entry</button>
+<button class="ib" id="lgPrint">Print</button>
+<button class="ib" id="lgCsv">Export CSV</button>
+<button class="ib" id="lgClear">Clear log</button>
+</div>
+<div class="tw"><table id="lgT" class="plan"><thead><tr><th>Date</th><th>Time</th><th>Kind</th><th>Channel</th><th>Where you were</th><th>Other radio was at</th><th>Result</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table></div>
+<datalist id="chNames"></datalist>
+<p id="lgMsg" style="color:var(--mute);font-size:.9rem"></p>
+</div>
+<div class="blk" id="log-sum" data-t="Test log summary by channel">
+<h3>Summary by channel</h3>
+<div class="tw"><table id="lgS"></table></div>
+</div>
+<div class="blk" id="log-how" data-t="How to run the listening week and a range test">
+<h3>How to use it</h3>
+<ul class="t">
+<li><b>Listening:</b> a few times a day (morning, evening commute, late evening), sit on each candidate for a minute or scan them. Log <b>Quiet</b> or <b>Busy</b>. A channel that is quiet in ten or more checks across the week is a good pick.</li>
+<li><b>Range test:</b> one radio stays at home, the other goes to each place that matters (work, school, the shops, the far side of the hill). At each stop call on the channel and log <b>Clear</b>, <b>Weak</b> or <b>Nothing</b>, on both simplex and the repeater.</li>
+<li>Test at the power you'd actually use, with the antenna you'd actually carry, and try from inside the car as well as outside.</li>
+<li>Range tests are transmissions, so the people doing them need licences.</li>
+</ul>
+</div>
+</section>
+
+<section id="pc" data-nav="Programming on a Mac">
+<h2>Programming on a Mac</h2>
+<p>Status checked November 2026. Software support for the GPS version is still moving, so this section says plainly what works, what is experimental and what needs Windows.</p>
+<div class="blk" id="pc-cable" data-t="Mac: programming cable and drivers (CH340, FTDI, PL2303)">
+<h3>1 · The cable</h3>
+<ul class="t">
+<li>You need a <b>K-plug programming cable</b> (two-pin Kenwood-style plug into the earpiece jack). The USB-C port on the battery only charges; it carries no data.</li>
+<li><b>Buy a cable with a CH340 or FTDI chip.</b> macOS has had drivers for both built in since 10.14 Mojave. Do <b>not</b> install any driver for them; old third-party CH340 drivers cause trouble on current macOS.</li>
+<li><b>Avoid “PL2303” cables.</b> Most cheap ones use counterfeit Prolific chips that the official Mac driver deliberately refuses. If yours is one, replacing the cable is quicker than fighting it.</li>
+<li>On a Mac with only USB-C ports, use a plain USB-A to USB-C adapter or a hub that passes data.</li>
+</ul>
+</div>
+<div class="blk" id="pc-port" data-t="Mac: check the cable is detected in Terminal (/dev/cu.usbserial)">
+<h3>2 · Check the Mac sees it</h3>
+<p>Plug the cable into the Mac (radio not needed yet), open Terminal and run:</p>
+<p><code>ls /dev/cu.*</code></p>
+<p>A working cable adds an entry such as <code>/dev/cu.usbserial-1420</code> or <code>/dev/cu.wchusbserial1420</code>. Unplug and run it again: the entry should disappear. If nothing new appears, the cable (or adapter) is the problem, not the software. Always choose the <code>cu.</code> port in programming software, not <code>tty.</code></p>
+</div>
+<div class="blk" id="pc-options" data-t="Mac: three ways to program the GPS version (CHIRP, Windows CPS in a VM, keypad)">
+<h3>3 · Pick your route</h3>
+<div class="tw"><table>
+<tr><th>Route</th><th>Runs on Mac</th><th>State for the GPS version</th><th>Best for</th></tr>
+<tr><td><b>A · Keypad + one-touch copy</b></td><td>No computer</td><td>Fully works</td><td>A handful of channels; field changes</td></tr>
+<tr><td><b>B · Baofeng CPS in a Windows VM</b></td><td>Via UTM, Parallels or VMware Fusion</td><td>Official tool; does everything including IDs, contacts and GPS options</td><td>Full setup and cloning a set of radios</td></tr>
+<tr><td><b>C · CHIRP for macOS</b></td><td>Native</td><td>Experimental: needs an unofficial driver module, uploads fail on some units</td><td>People comfortable testing beta software</td></tr>
+</table></div>
+</div>
+<div class="blk" id="pc-vm" data-t="Mac: run Baofeng CPS in a Windows virtual machine">
+<h3>Route B · Baofeng's CPS in a Windows virtual machine</h3>
+<ol class="t" style="padding-left:1.3em">
+<li>Install a virtual machine app (UTM is free; Parallels and VMware Fusion also work) and set up Windows 11. On Apple Silicon Macs this is Windows 11 for ARM, which runs ordinary Windows programs through its built-in emulation.</li>
+<li>Download the <b>UV-5RM Plus GPS</b> CPS from <code>baofengradio.com/pages/download</code> inside the VM. Get the GPS one; the standard UV-5RM Plus CPS is a different program.</li>
+<li>Plug in the cable and <b>pass the USB device through to the VM</b> (in UTM: the USB icon in the window toolbar; in Parallels: Devices › USB). It then disappears from macOS and shows up in Windows as a COM port.</li>
+<li>Windows needs its own driver for the cable chip. On Apple Silicon it must be an ARM64 driver; WCH (CH340) and FTDI both publish one. Check Device Manager › Ports for the COM number.</li>
+<li>In the CPS: choose that COM port, <b>Read</b> from the radio, save the file as your backup, edit, then <b>Write</b>.</li>
+</ol>
+<p class="note">A side benefit of the VM: CHIRP community members report that some copies of Baofeng's CPS and firmware updater are flagged by virus scanners. Keeping them inside a VM that has no access to your Mac's files is the cautious way to run them.</p>
+</div>
+<div class="blk" id="pc-chirp" data-t="Mac: CHIRP status for the UV-5RM Plus GPS (experimental driver module)">
+<h3>Route C · CHIRP on macOS</h3>
+<p><b>Where it stands:</b> CHIRP's built-in “Baofeng UV-5RM Plus” entry is for the older, non-GPS firmware and does not match your radio. Support for the GPS / zone firmware (the same platform as the BF-5RH Pro) is being developed in CHIRP issue #11669 and GitHub pull request #1625. As of November 2026 neither is in an official build, and the CHIRP maintainer reported uploads failing on his own unit.</p>
+<p><b>If you want to try it anyway:</b></p>
+<ol class="t" style="padding-left:1.3em">
+<li>Install <b>CHIRP-next</b> for macOS from <code>chirpmyradio.com</code> (pick the Apple Silicon or Intel build). First launch: right-click the app › Open, or allow it under System Settings › Privacy &amp; Security.</li>
+<li>Check your firmware on the radio: <kbd>MENU</kbd> › Radio Info › Versions. The experimental driver was tested on software v2_0_09 / hardware v1_0_4.</li>
+<li>Download the latest driver module (.py file) attached to CHIRP issue #11669.</li>
+<li>In CHIRP: Help › tick <b>Developer Mode</b>, restart CHIRP, then File › <b>Load Module</b> and choose the .py file. It has to be reloaded each time CHIRP starts.</li>
+<li>Radio › Download from radio. Port: your <code>/dev/cu.usbserial…</code>. Vendor Baofeng, model <b>BF-5RH-Pro</b> (the name the module registers).</li>
+<li><b>Save that first download untouched</b> as a backup before changing anything.</li>
+<li>Edit and upload. Rows 1–64 are Zone 1, 65–128 Zone 2, and so on.</li>
+</ol>
+<div class="warn"><b>Known problems with the experimental driver:</b> uploads that fail or loop on some radios; one report of zones being wiped after a bad write (fixed by restoring the backup); the per-channel speaker-mute option isn't represented; DTMF, contacts and GPS settings are unverified or absent. Keep the Windows CPS route available as your recovery path.</div>
+</div>
+<div class="blk" id="pc-steps" data-t="Programming tips: read first, back up, master file, cloning a set">
+<h3>Programming tips that save grief</h3>
+<ul class="t">
+<li><b>Always read from the radio first</b> and build on that file. Baofeng warns that writing a file that didn't start as a read can cause errors.</li>
+<li><b>One backup per radio</b>, named with its ID and the date, kept somewhere safe. It is your undo button.</li>
+<li>Seat the plug <b>hard</b>; a half-seated K-plug is the most common cause of “radio did not respond”. Radio on, fully charged, on a quiet channel, nothing transmitting nearby.</li>
+<li>Don't touch the radio or cable during a write. If a write fails, power-cycle the radio and write again before panicking.</li>
+<li><b>Plan zones on paper first:</b> for example Zone 1 your group's simplex channels, Zone 2 local repeaters, Zone 3 listen-only (marine, rail). 64 channels each.</li>
+<li>Put your most-used channel at position 1 of Zone 1; that is what the radio lands on after a reset.</li>
+<li><b>Cloning a set:</b> finish one radio, read it, write that same file to the others, then change each one's Radio ID and name so GPS sharing can tell them apart.</li>
+<li>Keep names to six characters or fewer so they display in full.</li>
+<li>In CHIRP you can export to CSV and edit the channel list in Numbers, then import it back.</li>
+<li>Leave firmware alone unless something is actually broken. Reports describe newer firmware built for a different circuit board revision causing keypad and backlight faults.</li>
+</ul>
+</div>
+<div class="blk" id="pc-only" data-t="Things only the PC software can set">
+<h3>Things only the PC software can set</h3>
+<p>2-Tone and 5-Tone sequences, the contact list, the power-on picture (a 160×128 .bmp), and the full button assignments. The power-on password can also be read and cleared there.</p>
+</div>
+</section>
+
+<section id="unlock" data-nav="Unlock guides">
+<h2>Unlock guides</h2>
+<div class="blk" id="unlock-keys" data-t="Unlock the keypad">
+<h3>Unlock the keypad</h3>
+<p>Hold <kbd>✱</kbd> (padlock key) for about two seconds. If AutoLock is on, press <kbd>MENU</kbd> then <kbd>✱</kbd>. To stop it re-locking: <kbd>MENU</kbd> › Radio Setting › AutoLock › OFF. PTT and the side keys work even when locked.</p>
+</div>
+<div class="blk" id="unlock-pass" data-t="Unlock a forgotten power-on password">
+<h3>Remove or recover the power-on password</h3>
+<p><b>You know it:</b> <kbd>MENU</kbd> › Radio Setting › Password, delete every digit with <kbd>EXIT</kbd>, then <kbd>MENU</kbd> to save.</p>
+<p><b>You forgot it:</b> connect the programming cable, read the radio with the CPS and clear the password field there, then write it back. Programming mode works without entering the password on the radio.</p>
+</div>
+<div class="blk" id="unlock-lang" data-t="Unlock from Chinese menus back to English">
+<h3>Get out of Chinese menus</h3>
+<p><kbd>MENU</kbd>, <kbd>3</kbd> (third entry, Radio Setting), <kbd>MENU</kbd>, <kbd>8</kbd>, <kbd>MENU</kbd>, choose English, <kbd>MENU</kbd>. Then the same with <kbd>7</kbd> for the voice.</p>
+</div>
+<div class="blk" id="unlock-tx" data-t="Unlock transmit frequency range (band limits, FCC lock)">
+<h3>Transmit frequency range (“band unlock”)</h3>
+<p>The US version receives 108–520 MHz in pieces but only transmits on 144–148 and 420–450 MHz. That limit is set in firmware.</p>
+<p><b>What I could and couldn't confirm for the GPS version:</b></p>
+<ul class="t">
+<li><b>No confirmed unlock exists for the UV-5RM Plus GPS.</b> In the main community thread tracking this radio family, nobody has reported a successful GPS-model unlock, and the old UV-5R trick (holding keys at power-on until “Factory” appears) is not reported to work on it.</li>
+<li><b>Check your radio's region:</b> on related 5RM/5RH radios, holding <kbd>8</kbd> while switching on shows the lock state: “FCC” means US-limited, “BF” means open. Unverified on the GPS model, harmless to try.</li>
+<li><b>Vendor “special” CPS:</b> Baofeng and Radioddity have handed out modified CPS builds with a frequency-limit editor (one is named 5RM_CPS_special_ver_v1.2.0) to customers who ask support. Users report it working on non-GPS siblings and failing to connect on others. One user described the change as a one-way trip.</li>
+<li><b>Firmware swaps</b> that open up sibling models are reported as irreversible, because the original firmware isn't available to go back to, and wrong-board firmware has caused keypad and backlight faults.</li>
+</ul>
+<div class="warn"><b>Before going further:</b> an unlock doesn't change what you may legally transmit on. A ham licence covers the ham bands the radio already transmits on; GMRS, FRS, MURS, marine and business channels each require a radio certified for that service, which this one isn't. Airband transmit is not possible on this hardware at all. Given the brick risk and nothing gained legally, my recommendation is to leave the transmit limits alone and, if you need GMRS, buy a GMRS-certified handheld.</div>
+</div>
+<div class="blk" id="unlock-scan" data-t="Receive more: scan limits and listening ranges">
+<h3>Getting more to listen to (no unlock needed)</h3>
+<p>Reception is already open across 108–136, 136–174, 220–260, 350–390 and 400–520 MHz. Type the frequency in VFO mode, or set a sweep with <kbd>MENU</kbd> › Scan › Freq Ranger. Saved listen-only channels work too: just don't press PTT on them, or set TX Admit so the radio blocks it on a busy channel.</p>
+</div>
+</section>
+
+<section id="cheat" data-nav="Pocket cheat sheet">
+<h2>Pocket cheat sheet</h2>
+<p class="nop">One page to print and fold into the case. The channel list at the bottom fills itself from <a href="#plan">your channel plan</a>. <button class="ib" id="chPrint">Print cheat sheet</button></p>
+<div class="blk cheat" id="cheat-box" data-t="Pocket cheat sheet: key shortcuts and the tasks you use most">
+<div class="chg">
+<div><h4>Keys</h4>
+<table>
+<tr><td><kbd>VFO/MR</kbd></td><td>frequency ⇄ channel · <i>hold:</i> number / freq / name</td></tr>
+<tr><td><kbd>A/B</kbd></td><td>pick line · <i>hold:</i> dual watch</td></tr>
+<tr><td><kbd>✱</kbd></td><td>reverse · <i>hold:</i> lock keys</td></tr>
+<tr><td><kbd>#</kbd></td><td><i>hold:</i> scan on/off</td></tr>
+<tr><td><kbd>0</kbd></td><td><i>hold:</i> NOAA weather</td></tr>
+<tr><td><kbd>EXIT</kbd></td><td>back · <i>hold:</i> GPS mode</td></tr>
+<tr><td><kbd>SEARCH</kbd></td><td>copy a nearby radio's frequency</td></tr>
+<tr><td><kbd>SK1</kbd></td><td>FM radio · <i>hold:</i> alarm</td></tr>
+<tr><td><kbd>SK2</kbd></td><td>monitor (open squelch)</td></tr>
+</table>
+<h4>Menu</h4>
+<p><kbd>MENU</kbd> then: <b>1</b> Zone · <b>2</b> Scan · <b>3</b> Radio Setting · <b>4</b> Program Channel · <b>5</b> Radio Info · <b>6</b> GNSS · <b>7</b> NOAA. <kbd>MENU</kbd> saves, <kbd>EXIT</kbd> backs out, <kbd>PTT</kbd> quits.</p>
+</div>
+<div><h4>Save a channel</h4>
+<p>VFO mode → type frequency → <kbd>MENU</kbd> <b>4</b> → set tone/power if needed → <b>CH_Memory</b> (17) → pick slot → <kbd>MENU</kbd>.</p>
+<h4>Repeater</h4>
+<p>Type the frequency you <i>listen</i> on. <kbd>MENU</kbd> <b>4</b> → <b>TX Frequency</b> = listen ± offset → <b>TX CTCSS</b> = tone → save with CH_Memory.</p>
+<h4>GPS position</h4>
+<p>Same channel on the highlighted line. Hold <kbd>EXIT</kbd>. On <b>Host</b>: brief <kbd>PTT</kbd> sends mine. On a <b>member</b>: brief <kbd>PTT</kbd> asks for theirs. <kbd>EXIT</kbd> before talking.</p>
+<h4>Can't hear each other?</h4>
+<p>Volume · zone + channel · highlighted line · keys locked? · hold <kbd>SK2</kbd> · move higher · high power · backup channel.</p>
+<h4>On the air</h4>
+<p>Listen first. “<i>Their call</i>, this is <i>my call</i>.” Identify every 10 minutes and when finished. Emergency: “Break, break, emergency” + where, what, what you need.</p>
+</div>
+</div>
+<h4>Our plan</h4>
+<table class="fill"><tr><td>Call sign / radio name</td><td></td><td>Check-in times</td><td></td></tr><tr><td>Primary channel</td><td></td><td>Backup channel</td><td></td></tr><tr><td>If we lose contact</td><td colspan="3"></td></tr></table>
+<h4>Channels</h4>
+<table id="chCh"></table>
+</div>
+</section>
+
+<section id="labels" data-nav="Radio labels">
+<h2>Radio labels</h2>
+<p>A small label for each radio with its name, ID and the family channels. Print, cut along the dashed lines and tape one inside each battery cover or on the back of the radio.</p>
+<div class="blk" id="lab-form" data-t="Radio labels: names, IDs and family channels to print">
+<h3>Radios</h3>
+<div class="tw"><table id="lbR" class="plan" style="min-width:520px"><thead><tr><th>Radio name</th><th>Radio ID</th><th>Who carries it / call sign</th><th></th></tr></thead><tbody></tbody></table></div>
+<p><button class="ib" id="lbAdd">+ Add radio</button></p>
+<h3>On every label</h3>
+<div class="lbf">
+<label>Primary channel <input data-k="c1" list="chNames" placeholder="EM2-A"></label>
+<label>Backup channel <input data-k="c2" list="chNames" placeholder="EM7-A"></label>
+<label>Repeater <input data-k="c3" list="chNames" placeholder="HWD 2A"></label>
+<label>Check-in times <input data-k="ck" placeholder="first 5 min of every hour"></label>
+<label>If no contact <input data-k="lost" placeholder="meet at home"></label>
+<label>Phone contact <input data-k="ph" placeholder="out-of-area relative"></label>
+<label>Label width (mm) <input data-k="w" type="number" min="30" max="100"></label>
+<label>Label height (mm) <input data-k="h" type="number" min="20" max="100"></label>
+</div>
+<p style="color:var(--mute);font-size:.9rem">Type a channel name from your channel plan and the label fills in its frequency, shift and tone. Measure the space inside your battery cover before printing; 45 × 34 mm is a starting guess, not a measured size.</p>
+<p><button class="ib" id="lbPrint">Print labels</button></p>
+</div>
+<div class="blk" id="lab-out" data-t="Radio labels preview"></div>
+</section>
+
+<section id="ref" data-nav="Reference tables">
+<h2>Reference tables</h2>
+<div class="blk" id="ref-specs" data-t="Specifications: frequency ranges, power, battery">
+<h3>Specifications</h3>
+<div class="tw"><table>
+<tr><td>Transmit (US version)</td><td>144–148 MHz and 420–450 MHz</td></tr>
+<tr><td>Transmit (Canada / EU)</td><td>144–148 + 430–450 MHz / 144–146 + 430–440 MHz</td></tr>
+<tr><td>Receive</td><td>108–136 (airband), 136–174, 220–260, 350–390, 400–520 MHz</td></tr>
+<tr><td>FM broadcast</td><td>65–75 and 76–108 MHz</td></tr>
+<tr><td>Output power</td><td>Manual: 7 W max. Store listing: 10 W. Expect real output somewhere below the advertised figure.</td></tr>
+<tr><td>Memory</td><td>640 channels (10 zones × 64)</td></tr>
+<tr><td>Channel spacing</td><td>25 kHz wide / 12.5 kHz narrow</td></tr>
+<tr><td>Tuning steps</td><td>2.5, 5, 6.25, 10, 12.5, 20, 25, 50 kHz</td></tr>
+<tr><td>Tones</td><td>50 CTCSS, 105 DCS (normal and inverted)</td></tr>
+<tr><td>Battery</td><td>7.4 V lithium-ion, USB-C charging on the pack (listing: 2500 mAh)</td></tr>
+<tr><td>Screen</td><td>1.77-inch colour TFT</td></tr>
+<tr><td>Antenna</td><td>SMA-female on the antenna, 50 Ω</td></tr>
+<tr><td>Size / weight</td><td>135 × 63 × 39 mm, about 290 g with battery</td></tr>
+<tr><td>Operating temperature</td><td>−10 °C to 60 °C</td></tr>
+</table></div>
+</div>
+<div class="blk" id="ref-noaa" data-t="NOAA weather channel frequencies">
+<h3>NOAA weather channels</h3>
+<div class="tw"><table>
+<tr><th>Ch</th><th>MHz</th><th>Ch</th><th>MHz</th></tr>
+<tr><td>WX1</td><td>162.550</td><td>WX2</td><td>162.400</td></tr>
+<tr><td>WX3</td><td>162.475</td><td>WX4</td><td>162.425</td></tr>
+<tr><td>WX5</td><td>162.450</td><td>WX6</td><td>162.500</td></tr>
+<tr><td>WX7</td><td>162.525</td><td>WX8</td><td>161.650</td></tr>
+<tr><td>WX9</td><td>161.775</td><td>WX10</td><td>163.275</td></tr>
+</table></div>
+<p>WX1–WX7 are the US NOAA Weather Radio frequencies. Try each until you find the strongest one for your area. Receive only.</p>
+</div>
+<div class="blk" id="ref-freq" data-t="Useful US frequencies and standard repeater offsets">
+<h3>Useful US frequencies</h3>
+<div class="tw"><table>
+<tr><th>What</th><th>Frequency</th><th>Note</th></tr>
+<tr><td>2 m FM calling</td><td>146.520 MHz</td><td>National simplex calling frequency (licence required)</td></tr>
+<tr><td>70 cm FM calling</td><td>446.000 MHz</td><td>National simplex calling frequency (licence required)</td></tr>
+<tr><td>2 m repeater offset</td><td>± 0.600 MHz</td><td>Direction depends on the repeater; check its listing</td></tr>
+<tr><td>70 cm repeater offset</td><td>± 5.000 MHz</td><td>+5 in most of the US; <b>−5 in Southern California</b></td></tr>
+<tr><td>Aircraft emergency</td><td>121.500 MHz</td><td>AM, listen only</td></tr>
+<tr><td>Marine channel 16</td><td>156.800 MHz</td><td>Listen only on this radio</td></tr>
+</table></div>
+</div>
+<div class="blk" id="ref-ctcss" data-t="CTCSS tone table (Hz)">
+<h3>CTCSS tones (Hz)</h3>
+<ol class="codes" id="ctc" style="list-style:decimal inside"></ol>
+</div>
+<div class="blk" id="ref-dcs" data-t="DCS code list">
+<h3>DCS codes</h3>
+<p>Each code exists as normal (N) and inverted (I), for example D023N and D023I.</p>
+<ul class="codes" id="dcs"></ul>
+</div>
+<div class="blk" id="ref-dtmf" data-t="DTMF keys A B C D">
+<h3>DTMF</h3>
+<p>Hold <kbd>PTT</kbd> and press number keys to send DTMF tones. The letter codes are on the left column: <kbd>MENU</kbd> = A, <kbd>▲</kbd> = B, <kbd>▼</kbd> = C, <kbd>EXIT</kbd> = D.</p>
+</div>
+<div class="blk" id="ref-tz" data-t="Time zone offsets (UTC) for the GPS clock">
+<h3>Time zone offsets for the GPS clock</h3>
+<div class="tw"><table>
+<tr><th>US zone</th><th>Standard</th><th>Daylight saving</th></tr>
+<tr><td>Eastern</td><td>UTC−5</td><td>UTC−4</td></tr><tr><td>Central</td><td>UTC−6</td><td>UTC−5</td></tr>
+<tr><td>Mountain</td><td>UTC−7</td><td>UTC−6</td></tr><tr><td>Pacific</td><td>UTC−8</td><td>UTC−7</td></tr>
+<tr><td>Alaska</td><td>UTC−9</td><td>UTC−8</td></tr><tr><td>Hawaii</td><td>UTC−10</td><td>—</td></tr>
+</table></div>
+<p>The radio offers UTC−12 to UTC+13. The manual doesn't mention automatic daylight saving, so plan to change the offset by hand twice a year.</p>
+</div>
+</section>
+
+<section id="fix" data-nav="Troubleshooting">
+<h2>Troubleshooting</h2>
+<div class="tw"><table id="fixt">
+<tr><th>Problem</th><th>Likely cause</th><th>Fix</th></tr>
+</table></div>
+</section>
+
+<section id="gloss" data-nav="Glossary">
+<h2>Glossary</h2>
+<dl class="gl blk" id="gl"></dl>
+<footer>
+<p>Built from Baofeng's “UV-5RM Plus GPS User Manual” (print V1.0), Baofeng's product listing, the CHIRP project's macOS notes and issue tracker, and community reports (checked November 2026). Firmware differs between production runs; if your radio shows something different, the radio is right. Not affiliated with Baofeng / Pofung.</p>
+</footer>
+</section>
+
+</main>
+</div>
+
+<script id="uvData" type="application/json">null</script>
+<script>
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const mem={},DK=['uvPlan','uvLog','uvLab','uvCk','uvDone'];
+const raw={get(k){if(k in mem)return mem[k];try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const store={get:raw.get,set(k,v){raw.set(k,v);if(DK.includes(k)){raw.set('uvTs',Date.now());dirty();try{asQueue()}catch(e){}}}};
+/* data saved inside this file: used when it is newer than what this browser holds */
+let EMB=null;try{EMB=JSON.parse($('#uvData').textContent)}catch(e){}
+if(EMB&&EMB.ts>(raw.get('uvTs')||0)){DK.forEach(k=>{if(EMB.d&&k in EMB.d&&EMB.d[k]!=null)raw.set(k,EMB.d[k])});raw.set('uvTs',EMB.ts)}
+function dirty(){const b=$('#sv');if(!b)return;const un=(raw.get('uvTs')||0)>(EMB?EMB.ts:0);b.textContent=un?'Save to file •':'Save to file';b.classList.toggle('un',un);
+  b.title=(EMB?'Last saved into this file: '+new Date(EMB.ts).toLocaleString()+'. ':'Nothing saved into this file yet. ')+(un?'You have changes that are only in this browser.':'')}
+function toast(t){let e=$('#toast');if(!e){e=document.createElement('div');e.id='toast';document.body.appendChild(e)}e.textContent=t;e.className='on';clearTimeout(toast.t);toast.t=setTimeout(()=>e.className='',9000)}
+function buildFile(ts){const d={};DK.forEach(k=>d[k]=raw.get(k));const c=document.documentElement.cloneNode(true);
+  c.querySelector('#uvData').textContent=JSON.stringify({ts,d}).replace(/</g,'\\u003c');
+  const b=c.querySelector('body');b.classList.remove('pr');const t=c.querySelector('#toast');if(t)t.remove();c.querySelectorAll('.pr-on,.flash').forEach(e=>e.classList.remove('pr-on','flash'));
+  return{d,html:'<!doctype html>\n'+c.outerHTML+'\n'}}
+async function saveFile(){const ts=Date.now(),o=buildFile(ts),name=decodeURIComponent(location.pathname.split('/').pop())||'uv5rm-plus-gps-guide.html';let how;
+  if(window.showSaveFilePicker){try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'Web page',accept:{'text/html':['.html']}}]});const w=await h.createWritable();await w.write(o.html);await w.close();how='Saved. If you picked the guide file itself, it now contains your data.'}catch(e){if(e&&e.name==='AbortError')return;how=null}}
+  if(!how){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([o.html],{type:'text/html'}));a.download=name;document.body.appendChild(a);a.click();a.remove();how='A copy of the guide with your data is in your Downloads folder. Move it over the old file to replace it.'}
+  EMB={ts,d:o.d};raw.set('uvTs',ts);dirty();toast(how)}
+
+$('#sv').onclick=saveFile;dirty();
+/* ---------- theme ---------- */
+const savedT=store.get('uvT'); if(savedT) document.documentElement.dataset.theme=savedT;
+$('#thm').onclick=()=>{const d=document.documentElement,cur=d.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');d.dataset.theme=cur==='dark'?'light':'dark';store.set('uvT',d.dataset.theme)};
+
+/* ---------- radio component ---------- */
+const PAD=[['menu','MENU','A','fn or'],['1','1'],['2','2','ABC'],['3','3','DEF'],['up','▲','B','fn'],['4','4','GHI'],['5','5','JKL'],['6','6','MNO'],['down','▼','C','fn'],['7','7','PQRS'],['8','8','TUV'],['9','9','WXYZ'],['exit','EXIT','D · GPS','fn'],['star','✱','LOCK'],['0','0','WX'],['hash','#','SCAN']];
+function Radio(host){
+  const key=([id,l,s,c])=>`<button class="key ${c||''}" data-k="${id}">${l}${s?`<small>${s}</small>`:''}</button>`;
+  host.innerHTML=`<div class="radio"><div class="ant"></div><button class="knob" data-k="knob" aria-label="Power / volume knob"></button>
+  <div class="rbody"><div class="side"><button class="key" data-k="sk1" data-l="SK1"></button><button class="key ptt" data-k="ptt" data-l="PTT"></button><button class="key" data-k="sk2" data-l="SK2"></button></div>
+  <div class="rtop"><span>UV-5RM PLUS · GPS</span><span class="led"></span></div><div class="lcd"></div>
+  <div class="frow">${[['vfo','VFO/MR','','fn'],['ab','A/B','','fn'],['srch','SEARCH','','fn grn']].map(key).join('')}</div>
+  <div class="pad">${PAD.map(key).join('')}</div><div class="spk"></div></div></div>`;
+  const lcd=$('.lcd',host),led=$('.led',host);let tm=null;
+  const K=id=>$(`[data-k="${id}"]`,host);
+  function clear(){clearInterval(tm);$$('.hit',host).forEach(e=>e.classList.remove('hit','hold'))}
+  return{host,K,
+    show(s){lcd.innerHTML=scr(s)},
+    led(c){led.className='led '+(c||'')},
+    press(keys,hold){clear();if(!keys||!keys.length)return;
+      if(keys.length===1){K(keys[0]).classList.add('hit');if(hold)K(keys[0]).classList.add('hold');return}
+      let i=0;const tick=()=>{$$('.hit',host).forEach(e=>e.classList.remove('hit'));if(i<keys.length)K(keys[i]).classList.add('hit');i=(i+1)%(keys.length+2)};tick();tm=setInterval(tick,430)},
+    clear};
+}
+function scr(s){
+  if(!s||s.t==='off')return'<div class="off"></div>';
+  if(s.t==='std'){const m=s.main||'A',row=(n,v)=>`<div class="vr ${m===n?'on':''}"><em>${n}</em><b>${v.f}</b><small>${v.tag||''}${v.n?'<br>'+v.n:''}</small></div>`;
+    return`<div><div class="sb"><span>${(s.ic||[]).map(i=>`<span>${i}</span>`).join('')}</span><span>▮▮▮</span></div>${row('A',s.a)}${row('B',s.b)}<div class="ft"><span>${s.ft||'Zone 1'}</span><span>${s.fr||''}</span></div></div>`}
+  if(s.t==='list'){const n=s.items.length,st=Math.max(0,Math.min(s.sel-2,n-5));
+    return`<div><div class="ti">${s.title}</div>${s.items.slice(st,st+5).map((x,i)=>`<div class="it ${st+i===s.sel?'sel':''}">${s.nonum?'':`<i>${st+i+1}</i>`}${x}</div>`).join('')}</div>`}
+  return`<div><div class="ti">${s.title}</div><div class="tx">${s.big?`<div class="big">${s.big}</div>`:''}${(s.lines||[]).map(l=>`<div>${l}</div>`).join('')}</div></div>`;
+}
+
+/* ---------- screens ---------- */
+const MM=['Zone','Scan','Radio Setting','Program Channel','Radio Info','GNSS','NOAA Weather'];
+const RS=['Squelch','Power Save','VOX Level','VOX Delay','TOT','TOA','Voice','Language','Beep','ROGER','BackLight','Brightness','Power on Display','Power on MSG','LCD DIR','MDF-A','MDF-B','Dual Watch','AutoLock','Alarm Mode','ID Verification','SideTone','PTT-ID','PTT-DLY','ALERT','TAIL','Press SK1','LongPress SK1','Press SK2','LongPress SK2','FM Radio','APO','Password','Reset'];
+const PC=['CH.NAME','RX Frequency','TX Frequency','Trans Power','Bandwidth','RX CTCSS','RX DCS','TX CTCSS','TX DCS','Signaling','SP-Mute','Scan Add','Scan Priority','TX Admit','Skip Frequency','—','CH_Memory','CH_Delete'];
+const SC=['Freq Ranger','Chan Ranger','Scan Mode','Scan SubCode','Scan Memory'],GN=['GNSS On/Off','GPS Info','Time Zones'],WXM=['Weather On/Off','Weather Alert'];
+const L=(title,items,sel,nonum)=>({t:'list',title,items,sel,nonum});
+const T=(title,big,lines)=>({t:'text',title,big,lines});
+const mm=i=>L('MENU',MM,i-1),rs=i=>L('Radio Setting',RS,i-1),pc=i=>L('Program Channel',PC,i-1),sc=i=>L('Scan',SC,i-1),gn=i=>L('GNSS',GN,i-1);
+const opt=(title,items,sel)=>L(title,items,sel,true);
+const V=(f,tag,n)=>({f,tag,n});
+const S=(a,b,o)=>Object.assign({t:'std',a,b},o||{});
+const HOME=S(V('146.520','VFO'),V('446.000','VFO'));
+const CH1=S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002','CALL 70'));
+const D=s=>s.split('');
+
+/* ---------- walkthroughs: [keys, screen, text, {hold,led}] ---------- */
+const WT=[
+{id:'first',cat:'Basics',t:'Power on and tune a frequency',s:'The first five minutes: switch on, pick a line, type a frequency, listen and talk.',steps:[
+ ['knob',T('BAOFENG','WELCOME',['Frequency mode']),'Turn the top knob clockwise past the click. The radio beeps, shows its start-up screen and announces the mode. Keep turning for volume.'],
+ ['ab',HOME,'Press <kbd>A/B</kbd> to choose the upper (A) or lower (B) line. The highlighted line is the one you listen and transmit on.'],
+ ['vfo',HOME,'Press <kbd>VFO/MR</kbd> until you see <code>VFO</code>. That is frequency mode. (If a short press does nothing on your unit, hold it.)'],
+ [D('14652000'),HOME,'Type the frequency as digits with no decimal point: <kbd>1</kbd><kbd>4</kbd><kbd>6</kbd><kbd>5</kbd><kbd>2</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd> gives 146.520 MHz. You can also step with <kbd>▲</kbd><kbd>▼</kbd>.'],
+ ['sk2',S(V('146.520','VFO'),V('446.000','VFO'),{fr:'MONI'}),'Hold <kbd>SK2</kbd> (monitor) to open the squelch. Hearing static means the receiver works and tells you how loud the volume is.',{hold:1,led:'green'}],
+ ['ptt',S(V('146.520','VFO'),V('446.000','VFO'),{fr:'TX'}),'To talk: hold <kbd>PTT</kbd>, wait half a second, speak across the mic from 3–5 cm away, then release to listen. Red light = transmitting, green = receiving.',{hold:1,led:'red'}]],
+ after:'Only transmit where you are licensed. See <a href="#start-legal">licence and legal</a>.'},
+{id:'channel',cat:'Basics',t:'Select channels and zones',s:'Day-to-day operating from saved memories.',steps:[
+ ['vfo',CH1,'Press <kbd>VFO/MR</kbd> until a channel number appears. That is channel (MR) mode.'],
+ ['up',S(V('446.000','CH 002','CALL 70'),V('446.000','CH 002','CALL 70')),'Step through channels with <kbd>▲</kbd> <kbd>▼</kbd>.'],
+ [D('12'),S(V('147.180','CH 012','RPT W'),V('446.000','CH 002','CALL 70')),'Or type the channel number directly, for example <kbd>1</kbd><kbd>2</kbd> for channel 12.'],
+ ['vfo',S(V('RPT W','CH 012','147.180'),V('CALL 70','CH 002')),'Hold <kbd>VFO/MR</kbd> to cycle the display between channel number, frequency and name.',{hold:1}],
+ ['menu',mm(1),'To change zone: press <kbd>MENU</kbd>, choose <b>Zone</b>, press <kbd>MENU</kbd>.'],
+ ['down',opt('Zone',['Zone 1','Zone 2','+Add Zone'],1),'Pick a zone with <kbd>▲</kbd><kbd>▼</kbd> and press <kbd>MENU</kbd>. The zone name shows at the bottom of the screen.'],
+ ['menu',S(V('462.000','CH 001'),V('446.000','CH 002'),{ft:'Zone 2'}),'You are now on that zone\'s own set of up to 64 channels.']]},
+{id:'save',cat:'Programming',t:'Save a simplex channel',s:'Store a frequency (radio-to-radio, no repeater) as a memory channel.',steps:[
+ ['vfo',HOME,'Go to frequency mode: press <kbd>VFO/MR</kbd> until <code>VFO</code> shows, on the A line.'],
+ [D('14652000'),HOME,'Type the frequency, e.g. 146.520.'],
+ ['menu',mm(4),'Press <kbd>MENU</kbd> and go to <b>Program Channel</b> (<kbd>4</kbd>), then <kbd>MENU</kbd>.'],
+ ['menu',pc(4),'Optional: set <b>Trans Power</b>, <b>Bandwidth</b> (Wide) and tones here first. Each one: select, <kbd>MENU</kbd>, choose, <kbd>MENU</kbd> to save.'],
+ [D('17'),pc(17),'Go to <b>CH_Memory</b> (type <kbd>1</kbd><kbd>7</kbd> or scroll) and press <kbd>MENU</kbd>.'],
+ ['up',opt('CH_Memory',['CH01','CH02','CH03','CH04','CH05'],2),'Choose the channel slot to store into with <kbd>▲</kbd><kbd>▼</kbd>.'],
+ ['menu',T('CH_Memory','Saved',['CH03 · 146.520']),'Press <kbd>MENU</kbd> to save. Storing into a used slot overwrites it.'],
+ ['vfo',S(V('146.520','CH 003'),V('446.000','CH 002','CALL 70')),'Press <kbd>EXIT</kbd>, then <kbd>VFO/MR</kbd> to return to channel mode. Your new channel is there.']],
+ after:'The channel is saved into the <b>current zone</b>. Next: <a href="#walk" data-wt="name">give it a name</a>.'},
+{id:'repeater',cat:'Programming',t:'Program a repeater',s:'Example: repeater output 146.940 MHz, −0.600 MHz offset (you transmit on 146.340), 100.0 Hz tone.',steps:[
+ ['vfo',HOME,'Frequency mode: press <kbd>VFO/MR</kbd> until <code>VFO</code> shows.'],
+ [D('14694000'),S(V('146.940','VFO'),V('446.000','VFO')),'Type the repeater\'s <b>output</b> frequency (the one you listen on): 146.940.'],
+ ['menu',mm(4),'<kbd>MENU</kbd> › <b>Program Channel</b> › <kbd>MENU</kbd>.'],
+ ['down',pc(3),'Select <b>TX Frequency</b> and press <kbd>MENU</kbd>.'],
+ [D('14634000'),T('TX Frequency','146.34000',['MENU = save','EXIT = delete digit']),'Type the repeater\'s <b>input</b> (output plus or minus the offset): 146.340. Press <kbd>MENU</kbd> to save.'],
+ ['down',pc(8),'Select <b>TX CTCSS</b> and press <kbd>MENU</kbd>.'],
+ ['up',opt('TX CTCSS',['94.8','97.4','100.0','103.5','107.2'],2),'Scroll to the repeater\'s tone (here 100.0 Hz) and press <kbd>MENU</kbd>. Leave RX CTCSS off unless you have a reason; it can hide signals from you.'],
+ [D('17'),pc(17),'Go to <b>CH_Memory</b>, press <kbd>MENU</kbd>, pick a slot, <kbd>MENU</kbd> to save.'],
+ ['vfo',S(V('146.940','CH 004'),V('446.000','CH 002'),{ic:['−','CT']}),'<kbd>EXIT</kbd>, then <kbd>VFO/MR</kbd> back to channel mode. Key up briefly and give your call sign; you should hear the repeater\'s tail when you release.',{}],
+ ['star',S(V('146.340','CH 004'),V('446.000','CH 002'),{ic:['−','CT','R']}),'Tip: a short press of <kbd>✱</kbd> flips to <b>reverse</b> (R) so you listen on the repeater\'s input, handy for checking whether you can hear someone directly.']],
+ after:'Baofeng\'s manual also describes separate <b>Offset frequency</b> and <b>Offset direction</b> items in the VFO-mode menu. If your radio shows those, you can enter 0.600 and “−” there instead of typing the TX frequency. Some European repeaters need a 1750 Hz burst: assign <b>1750Hz</b> to a side key.'},
+{id:'name',cat:'Programming',t:'Name a channel',s:'Give a saved channel a readable name and show names on screen.',steps:[
+ ['vfo',CH1,'In channel mode, select the channel you want to name.'],
+ ['menu',mm(4),'<kbd>MENU</kbd> › <b>Program Channel</b> › <kbd>MENU</kbd>.'],
+ ['menu',pc(1),'Select <b>CH.NAME</b> and press <kbd>MENU</kbd>.'],
+ ['hash',T('CH.NAME','CAMP_',['# = input mode','0 = space  1 = symbols']),'Type with the keypad like an old phone: <kbd>2</kbd>–<kbd>9</kbd> for letters, <kbd>0</kbd> for space, <kbd>1</kbd> for symbols. <kbd>#</kbd> switches between numbers and letters. <kbd>EXIT</kbd> deletes.'],
+ ['menu',T('CH.NAME','CAMP',['Saved']),'Press <kbd>MENU</kbd> to save.'],
+ ['vfo',S(V('CAMP','CH 001','146.520'),V('CALL 70','CH 002')),'Back on the main screen, hold <kbd>VFO/MR</kbd> until names are displayed (or set Radio Setting › MDF-A / MDF-B to NAME).',{hold:1}]]},
+{id:'tune',cat:'Programming',t:'Power, bandwidth and squelch',s:'The three settings that most affect range, battery and noise.',steps:[
+ ['menu',mm(4),'<kbd>MENU</kbd> › <b>Program Channel</b>.'],
+ ['down',pc(4),'<b>Trans Power</b>: Low, Middle or High. Use the lowest power that gets through; it saves battery and heat.'],
+ ['down',pc(5),'<b>Bandwidth</b>: Wide (25 kHz) for ham FM, Narrow (12.5 kHz) where required. Mismatched radios sound too quiet or distorted.'],
+ ['exit',mm(3),'<kbd>EXIT</kbd> back, then <b>Radio Setting</b>.'],
+ ['menu',rs(1),'<b>Squelch</b>: level 1–9. Higher needs a stronger signal to open the speaker. 3 is a good start; raise it if you hear bursts of noise.'],
+ ['menu',opt('Squelch',['OFF','Level 1','Level 2','Level 3','Level 4'],3),'Choose and press <kbd>MENU</kbd> to save.']]},
+{id:'delete',cat:'Programming',t:'Delete a channel',s:'Clear a memory slot.',steps:[
+ ['menu',mm(4),'<kbd>MENU</kbd> › <b>Program Channel</b>.'],
+ [D('18'),pc(18),'Go to <b>CH_Delete</b> and press <kbd>MENU</kbd>.'],
+ ['up',opt('CH_Delete',['CH01','CH02','CH03','CH04','CH05'],2),'Choose the channel to remove.'],
+ ['menu',T('CH_Delete','Deleted',['CH03']),'Press <kbd>MENU</kbd> to confirm. There is no undo, so double-check the number.']]},
+{id:'scan',cat:'Scanning',t:'Scan your channels',s:'Sweep through saved channels and stop on activity.',steps:[
+ ['vfo',CH1,'Be in channel mode.'],
+ ['hash',S(V('147.180','CH 012','RPT W'),V('446.000','CH 002'),{fr:'SCAN'}),'Hold <kbd>#</kbd> (the key marked SCAN) for about two seconds. The radio starts stepping through channels.',{hold:1}],
+ ['up',S(V('146.940','CH 004'),V('446.000','CH 002'),{fr:'SCAN'}),'<kbd>▲</kbd> <kbd>▼</kbd> change the scan direction, and nudge it off a busy channel.',{led:'green'}],
+ ['hash',CH1,'Hold <kbd>#</kbd> again to stop.',{hold:1}],
+ ['menu',pc(12),'To leave a channel out of scanning: select it, then <kbd>MENU</kbd> › Program Channel › <b>Scan Add</b> › OFF.'],
+ ['menu',opt('Scan Mode',['TO','CO','SE'],1),'<kbd>MENU</kbd> › Scan › <b>Scan Mode</b> sets what happens on a signal. <b>TO</b>: pause a few seconds then move on. <b>CO</b>: stay until the signal ends. <b>SE</b>: stop and stay.']],
+ after:'Scan › <b>Chan Ranger</b> chooses between all channels in the zone and only those with Scan Add on. If the keys seem swapped on your unit, use the key printed with SCAN.'},
+{id:'scanvfo',cat:'Scanning',t:'Scan a frequency range',s:'Sweep a band in frequency mode between two limits you choose.',steps:[
+ ['vfo',HOME,'Go to frequency mode (<code>VFO</code>).'],
+ ['menu',mm(2),'<kbd>MENU</kbd> › <b>Scan</b>.'],
+ ['menu',sc(1),'Select <b>Freq Ranger</b> and press <kbd>MENU</kbd>.'],
+ [D('144148'),T('Freq Ranger','144 – 148',['MHz limits']),'Type the lower and upper limits in whole MHz as one number: <kbd>1</kbd><kbd>4</kbd><kbd>4</kbd><kbd>1</kbd><kbd>4</kbd><kbd>8</kbd> scans 144.000–148.000. Press <kbd>MENU</kbd>.'],
+ ['hash',S(V('145.230','VFO'),V('446.000','VFO'),{fr:'SCAN'}),'Back on the main screen, hold <kbd>#</kbd> (SCAN) to start. It moves in steps of your tuning step size.',{hold:1}]]},
+{id:'copy',cat:'Scanning',t:'Copy a frequency from another radio',s:'One-touch search reads the frequency and tone of a nearby transmitting radio.',steps:[
+ ['srch',T('Search','Seeking…',[]),'Press the green <kbd>SEARCH</kbd> key. The screen shows “Seeking” and the light turns yellow.',{led:'yellow'}],
+ ['srch',T('Search','Seeking…',['hold the other radio','close and key it']),'Hold the other radio a short distance away and press its PTT for a few seconds.',{led:'yellow'}],
+ ['srch',T('Search','462.5625',['CTCSS 67.0']),'When it locks, the frequency and any CTCSS/DCS tone appear and the speaker opens.',{led:'green'}],
+ ['menu',opt('CH_Memory',['CH01','CH02','CH03','CH04','CH05'],4),'Press <kbd>MENU</kbd> to save what it found into a channel.'],
+ ['ptt',T('Search','462.5625',['CTCSS 67.0']),'Or hold <kbd>PTT</kbd> to call straight back on it (only if you are allowed to transmit there).',{hold:1,led:'red'}]],
+ after:'Works best with the radios 1–3 m apart; touching antennas can overload the receiver. This is also the cable-free way to match your own radios to each other.'},
+{id:'tone',cat:'Scanning',t:'Find an unknown tone',s:'You know the frequency but not the CTCSS/DCS tone a repeater or group uses.',steps:[
+ ['vfo',S(V('146.940','VFO'),V('446.000','VFO')),'In frequency mode, tune to the known frequency.'],
+ ['menu',mm(2),'<kbd>MENU</kbd> › <b>Scan</b>.'],
+ [D('4'),sc(4),'Select <b>Scan SubCode</b> and press <kbd>MENU</kbd>.'],
+ ['menu',opt('Scan SubCode',['CTCSS','DCS'],0),'Choose <b>CTCSS</b> (most common) or DCS and press <kbd>MENU</kbd>. The radio cycles through tones while someone is transmitting.'],
+ ['menu',T('Scan SubCode','100.0 Hz',['tone found']),'When it stops on a tone and the speaker opens, press <kbd>MENU</kbd> to store it.',{led:'green'}]],
+ after:'It can only detect a tone while a signal is present, so wait for activity. Scan › <b>Scan Memory</b> decides whether the found tone is stored for transmit (ENCODER), receive (DECODER) or both (ALL).'},
+{id:'gps',cat:'GPS',t:'Turn on GPS and see your position',s:'Get a satellite fix, read coordinates, set the clock.',steps:[
+ ['menu',mm(6),'Press <kbd>MENU</kbd> and go to <b>GNSS</b> (<kbd>6</kbd>), then <kbd>MENU</kbd>.'],
+ ['menu',gn(1),'Select <b>GNSS On/Off</b> and press <kbd>MENU</kbd>.'],
+ ['down',opt('GNSS On/Off',['OFF','ON'],1),'Choose <b>ON</b> and press <kbd>MENU</kbd>. A satellite icon appears on the main screen.'],
+ [D('3'),gn(3),'Now <b>Time Zones</b>: press <kbd>MENU</kbd>.'],
+ ['up',opt('Time Zones',['UTC-07:00','UTC-06:00','UTC-05:00','UTC-04:00','UTC-03:00'],2),'Pick your offset from UTC (US Eastern is −5, or −4 in summer) and press <kbd>MENU</kbd>. The clock sets itself from the satellites.'],
+ ['exit',T('My Position','Positioning…',['go outside','clear view of sky']),'Back on the main screen, <b>hold</b> <kbd>EXIT</kbd> to jump to GPS mode. Outdoors, the first fix can take a few minutes; the indicator blinks until it locks.',{hold:1}],
+ ['menu',T('My Position','N 39°57.12′',['W 075°09.90′','Sats 9 · Alt 12 m']),'Once locked, press <kbd>MENU</kbd> and use <kbd>▲</kbd><kbd>▼</kbd> to page through latitude, longitude, altitude, speed, satellites, time and date.'],
+ ['exit',S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002'),{ic:['GPS']}),'Press <kbd>EXIT</kbd> to leave. <b>You cannot talk while in GPS mode</b>, so always exit first.']],
+ after:'GPS uses extra battery. Switch GNSS off when you don\'t need it, or put <b>GNSS System</b> on a side key for a one-press toggle.'},
+{id:'gps-share',cat:'GPS',t:'Share and request positions',s:'Send your location to another UV-5RM Plus GPS, or ask for theirs.',steps:[
+ ['menu',gn(2),'On <b>every</b> radio: <kbd>MENU</kbd> › GNSS › <b>GPS Info</b>.'],
+ ['down',opt('GPS Info',['My Position','Share Position','Request Position'],1),'Open <b>Share Position</b> and set it ON. Then open <b>Request Position</b> and set it ON. These are permission switches.'],
+ ['ab',S(V('446.000','CH 002','GROUP'),V('146.520','CH 001'),{ic:['GPS']}),'Put all radios on the <b>same channel</b>, and make sure that channel is on the highlighted (main) line.'],
+ ['exit',opt('GPS Members',['Host (me)','Member 1','Member 2'],0),'Hold <kbd>EXIT</kbd> to open GPS mode. You see the member list, starting on your own radio (Host).',{hold:1}],
+ ['ptt',T('Host','Sending…',['my position']),'<b>To share:</b> while on your own (Host) screen, hold <kbd>PTT</kbd> briefly. The red light flashes as your position is sent.',{hold:1,led:'red'}],
+ ['down',opt('GPS Members',['Host (me)','Member 1','Member 2'],1),'<b>To request:</b> press <kbd>EXIT</kbd> back to the list and choose a member (not Host) with <kbd>▲</kbd><kbd>▼</kbd>.'],
+ ['ptt',T('Member 1','N 39°58.40′',['W 075°10.22′','↗ bearing pointer']),'Hold <kbd>PTT</kbd> briefly to send the request. When their radio answers, their position and a direction pointer appear.',{hold:1,led:'red'}],
+ ['exit',S(V('446.000','CH 002','GROUP'),V('146.520','CH 001'),{ic:['GPS']}),'Press <kbd>EXIT</kbd> to return to normal voice operation.']],
+ after:'If nothing arrives: confirm both radios have a GPS fix, are on the same channel on the main line, and each has a <b>unique Radio ID</b> with the others set up as contacts (see <a href="#group-gps">set up your set of radios</a>). The manual gives little detail on the ID setup; the PC software is the easiest place to do it.'},
+{id:'noaa',cat:'Listening',t:'NOAA weather and weather alert',s:'Listen to the forecast and let the radio warn you of severe weather.',steps:[
+ ['0',opt('Weather On/Off',['OFF','WX1 162.550','WX2 162.400','WX3 162.475','WX4 162.425'],1),'From the main screen, hold <kbd>0</kbd> to open the weather menu.',{hold:1}],
+ ['down',opt('Weather On/Off',['OFF','WX1 162.550','WX2 162.400','WX3 162.475','WX4 162.425'],3),'Step through WX1–WX10 with <kbd>▲</kbd><kbd>▼</kbd> until you hear a clear broadcast. Usually one or two are strong in any area.',{led:'green'}],
+ ['menu',opt('Weather Alert',['OFF','ON'],1),'Press <kbd>MENU</kbd> for <b>Weather Alert</b> and choose ON to have the radio watch that channel in the background.'],
+ ['exit',S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002'),{ic:['WX']}),'Press <kbd>EXIT</kbd>. With alert on, the radio keeps working normally and switches to the weather broadcast with a loud beep when NOAA sends its 1050 Hz warning tone.']],
+ after:'To turn weather off, hold <kbd>0</kbd> and choose OFF. The same settings are under <kbd>MENU</kbd> › NOAA Weather. Weather channels are receive-only.'},
+{id:'fm',cat:'Listening',t:'FM broadcast radio',s:'Listen to normal FM stations.',steps:[
+ ['sk1',T('FM Radio','96.9 MHz',[]),'Press <kbd>SK1</kbd> (the side key above PTT). If nothing happens: <kbd>MENU</kbd> › Radio Setting › FM Radio › Radio On/Off.'],
+ ['menu',T('FM Radio','Seeking…',[]),'Press <kbd>MENU</kbd> to search. Found stations are saved as FM presets automatically.'],
+ ['up',T('FM Radio','101.1 MHz',['preset 3']),'<kbd>▲</kbd> <kbd>▼</kbd> move between presets.'],
+ [D('969'),T('FM Radio','96.9 MHz',[]),'Or type a station directly: <kbd>9</kbd><kbd>6</kbd><kbd>9</kbd> for 96.9.'],
+ ['exit',CH1,'Press <kbd>EXIT</kbd> or <kbd>SK1</kbd> to leave FM.']],
+ after:'<b>Radio Interrupt</b> ON (under FM Radio) lets incoming calls on your channel break through while you listen to music.'},
+{id:'air',cat:'Listening',t:'Listen to aircraft',s:'The receiver covers the 108–136 MHz airband (AM). Receive only.',steps:[
+ ['vfo',HOME,'Go to frequency mode (<code>VFO</code>).'],
+ [D('12150000'),S(V('121.500','VFO'),V('446.000','VFO')),'Type an airband frequency, for example your local tower, or 121.500 (the emergency channel).'],
+ ['sk2',S(V('121.500','VFO'),V('446.000','VFO'),{fr:'MONI'}),'Aircraft transmissions are short. Hold <kbd>SK2</kbd> (monitor) to hear weak ones, or set up a <a href="#walk" data-wt="scanvfo">range scan</a> of 118–136.',{hold:1,led:'green'}]],
+ after:'Baofeng\'s listing says airband reception is frequency-mode only. Expect modest performance with the stock antenna; a view of the airport helps a lot.'},
+{id:'dual',cat:'Handy features',t:'Watch two channels at once',s:'Dual watch flips between line A and line B so you don\'t miss a call on either.',steps:[
+ ['ab',S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002','CALL 70'),{fr:'DW'}),'Hold <kbd>A/B</kbd>. Each hold steps through <b>Double Wait</b> (watch both), <b>Signal Wait</b> (main line only) and <b>Off</b> (one line shown).',{hold:1}],
+ ['ab',S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002','CALL 70'),{main:'B',fr:'DW'}),'A short press of <kbd>A/B</kbd> picks which line you transmit on.'],
+ ['menu',rs(18),'The same setting is at <kbd>MENU</kbd> › Radio Setting › <b>Dual Watch</b>.']],
+ after:'The radio has one receiver, so while it is listening to one line it cannot hear the other. When a signal arrives the display jumps to that line; check which line is highlighted before you reply.'},
+{id:'lock',cat:'Handy features',t:'Lock the keypad',s:'Stop pocket presses from changing your channel.',steps:[
+ ['star',S(V('146.520','CH 001','CALL 2M'),V('446.000','CH 002'),{ic:['🔒']}),'Hold <kbd>✱</kbd> (the key marked with the padlock) for two seconds. The side keys and PTT still work.',{hold:1}],
+ ['star',CH1,'Hold it again to unlock.',{hold:1}],
+ ['menu',rs(19),'For automatic locking after a short idle time: <kbd>MENU</kbd> › Radio Setting › <b>AutoLock</b> › ON. With AutoLock on, unlock with <kbd>MENU</kbd> then <kbd>✱</kbd>.']]},
+{id:'sidekeys',cat:'Handy features',t:'Customise the side keys',s:'SK1 and SK2 each take a short-press and a long-press function.',steps:[
+ ['menu',mm(3),'<kbd>MENU</kbd> › <b>Radio Setting</b>.'],
+ [D('27'),rs(27),'Items 27–30 are <b>Press SK1</b>, <b>LongPress SK1</b>, <b>Press SK2</b>, <b>LongPress SK2</b>. Pick one and press <kbd>MENU</kbd>.'],
+ ['down',opt('Press SK1',['None','Scan','Monitor','FM Radio','SOS','GNSS System','One Touch Search','Zone'],5),'Choose a function and press <kbd>MENU</kbd>.']],
+ after:'Options: None, Scan, Monitor, Touch (the flashlight; “torch” mistranslated), FM Radio, SOS, GNSS System, One Touch Search, 1750Hz, Man Down, One Touch Call, Zone, Voltage (battery reading), TX Power, VOX, Work Alone. A useful set: SK1 short = GNSS System, SK1 long = Voltage, SK2 short = Monitor, SK2 long = TX Power.'},
+{id:'vox',cat:'Handy features',t:'Hands-free (VOX)',s:'Transmit by voice with a headset, without pressing PTT.',steps:[
+ ['menu',mm(3),'<kbd>MENU</kbd> › <b>Radio Setting</b>.'],
+ [D('3'),rs(3),'Select <b>VOX Level</b> and press <kbd>MENU</kbd>.'],
+ ['up',opt('VOX Level',['OFF','Level 1','Level 2','Level 3','Level 4'],3),'Pick a sensitivity and press <kbd>MENU</kbd>. Adjust until normal speech triggers it but background noise doesn\'t.'],
+ ['down',rs(4),'<b>VOX Delay</b> (1–10 s) keeps the transmitter on through short pauses so your words aren\'t chopped.']],
+ after:'If the radio transmits by itself, VOX is the first thing to switch off.'},
+{id:'zone',cat:'Handy features',t:'Add a zone',s:'Zones are folders of up to 64 channels: one per activity or area.',steps:[
+ ['vfo',CH1,'Be in channel mode.'],
+ ['menu',mm(1),'<kbd>MENU</kbd> › <b>Zone</b>.'],
+ ['down',opt('Zone',['Zone 1','Zone 2','+Add Zone'],2),'Choose <b>+Add Zone</b> and press <kbd>MENU</kbd>.'],
+ ['hash',T('Zone name','HIKING',['# = input mode']),'Type a name and press <kbd>MENU</kbd> to save.'],
+ ['menu',S(V('430.125','CH 001'),V('446.000','CH 002'),{ft:'HIKING'}),'The new zone starts with one placeholder channel (430.125 MHz). Edit it with Program Channel and add more with CH_Memory.']],
+ after:'Maximum 10 zones. When all 10 exist the Add Zone entry disappears.'},
+{id:'sos',cat:'Safety & reset',t:'Emergency alarm',s:'A loud siren, and optionally a transmitted alert, from one key.',steps:[
+ ['menu',rs(20),'First decide what it does: <kbd>MENU</kbd> › Radio Setting › <b>Alarm Mode</b>.'],
+ ['menu',opt('Alarm Mode',['On Site','Code+Sound','Code+Sound(No)','Code+Tone'],0),'<b>On Site</b> sounds the siren on your radio only and transmits nothing. The other modes transmit an alarm code on the current channel.'],
+ ['sk1',T('ALARM','SOS',['siren sounding']),'Hold the side key assigned to <b>SOS</b> (by default the long press of <kbd>SK1</kbd>) to start the alarm.',{hold:1,led:'red'}],
+ ['sk1',CH1,'Press the same key again to stop.']],
+ after:'Keep it on <b>On Site</b> unless you have a real plan for the transmitting modes: a false alarm sent over the air on a ham band is a rule violation and alarms everyone listening.'},
+{id:'reset',cat:'Safety & reset',t:'Factory reset',s:'When settings are tangled beyond repair.',steps:[
+ ['menu',mm(3),'<kbd>MENU</kbd> › <b>Radio Setting</b>.'],
+ [D('34'),rs(34),'Go to <b>Reset</b> (last item) and press <kbd>MENU</kbd>.'],
+ ['down',opt('Reset',['VFO','ALL'],0),'<b>VFO</b> resets only frequency-mode settings. <b>ALL</b> resets the menus and VFO to factory defaults.'],
+ ['menu',T('Reset','Please wait',[]),'Press <kbd>MENU</kbd> to confirm. The radio restarts.']],
+ after:'Back up with the PC software first if you can. After a reset the voice and menus may come back in Chinese: go to <kbd>MENU</kbd> › third entry › item 8 (Language) and item 7 (Voice) and choose English.'}
+];
+
+/* ---------- player ---------- */
+const R=Radio($('#wtRadio'));let cur=null,si=0,playing=false,pt=null;
+const doneSet=new Set(store.get('uvDone')||[]);
+function norm(st){const[k,s,d,o]=st;return{keys:Array.isArray(k)?k:(k?[k]:[]),s,d,o:o||{}}}
+function drawList(){let h='',c='';WT.forEach(w=>{if(w.cat!==c){c=w.cat;h+=`<span class="cat">${c}</span>`}h+=`<button data-id="${w.id}" class="${cur&&cur.id===w.id?'on':''} ${doneSet.has(w.id)?'done':''}">${w.t}</button>`});$('#wtl').innerHTML=h}
+function openWT(id,step,keep){cur=WT.find(w=>w.id===id)||WT[0];stop();
+  $('#wtT').textContent=cur.t;$('#wtS').textContent=cur.s;
+  $('#steps').innerHTML=cur.steps.map((s,i)=>`<li data-i="${i}">${norm(s).d}</li>`).join('');
+  $('#wtA').innerHTML=cur.after?`<div class="note">${cur.after}</div>`:'';
+  $('#wtDone').checked=doneSet.has(cur.id);drawList();go(step||0);
+  if(!keep)store.set('uvWT',cur.id)}
+function go(i){si=Math.max(0,Math.min(i,cur.steps.length-1));const st=norm(cur.steps[si]);
+  R.show(st.s);R.press(st.keys,st.o.hold);R.led(st.o.led);
+  $$('#steps li').forEach((li,j)=>{li.className=j===si?'on':j<si?'past':''});
+  $('#pbar').style.width=((si+1)/cur.steps.length*100)+'%';
+  if(playing){const li=$('#steps li.on'),r=li.getBoundingClientRect();if(r.bottom>innerHeight||r.top<70)li.scrollIntoView({block:'nearest'})}}
+function sched(){clearTimeout(pt);if(!playing)return;const st=norm(cur.steps[si]);
+  const ms=(2600+st.keys.length*430+st.d.length*28)*parseFloat($('#spd').value);
+  pt=setTimeout(()=>{if(si>=cur.steps.length-1){stop();return}go(si+1);sched()},ms)}
+function play(){if(si>=cur.steps.length-1)go(0);playing=true;$('#bPlay').textContent='❚❚ Pause';sched()}
+function stop(){playing=false;clearTimeout(pt);$('#bPlay').textContent='▶ Play'}
+$('#bPlay').onclick=()=>playing?stop():play();
+$('#bPrev').onclick=()=>{stop();go(si-1)};$('#bNext').onclick=()=>{stop();go(si+1)};
+$('#spd').onchange=()=>{if(playing)sched()};
+$('#steps').onclick=e=>{const li=e.target.closest('li');if(li&&!e.target.closest('a')){stop();go(+li.dataset.i)}};
+$('#wtl').onclick=e=>{const b=e.target.closest('button');if(b)openWT(b.dataset.id)};
+$('#wtDone').onchange=e=>{e.target.checked?doneSet.add(cur.id):doneSet.delete(cur.id);store.set('uvDone',[...doneSet]);drawList()};
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-wt]');if(a){e.preventDefault();openWT(a.dataset.wt);$('#player').scrollIntoView({block:'center'})}});
+
+/* ---------- key tour ---------- */
+const KEYS={
+knob:['Power / volume knob','Turn clockwise past the click to switch on; keep turning for volume. All the way back until it clicks is off.',''],
+sk1:['SK1 — top side key','Programmable. Default: FM broadcast radio.','Programmable. Default: emergency alarm. Change both in Radio Setting 27–28.'],
+ptt:['PTT — push to talk','Hold to transmit, release to listen. In any menu, PTT exits. While holding PTT, number keys send DTMF tones.','In GPS mode a brief hold sends your position, or requests a member\'s position.'],
+sk2:['SK2 — lower side key','Programmable. Default: monitor (opens the squelch so you hear weak signals and static).','Programmable in Radio Setting 29–30.'],
+vfo:['VFO/MR','Switch between frequency (VFO) mode and channel (MR) mode.','Cycle the channel display: number, frequency or name.'],
+ab:['A/B','Choose the upper (A) or lower (B) line as the main band you transmit on.','Cycle dual watch: Double Wait, Signal Wait, Off.'],
+srch:['SEARCH — green key','One-touch frequency search: reads the frequency and tone of a nearby transmitting radio.',''],
+menu:['MENU','Open the menu, enter an item, and confirm/save. In FM mode it searches for stations. DTMF “A” while transmitting.',''],
+up:['▲ Up','Next channel / frequency step up / move up in menus. Changes scan direction. DTMF “B” while transmitting.',''],
+down:['▼ Down','Previous channel / frequency step down / move down in menus. DTMF “C” while transmitting.',''],
+exit:['EXIT','Back one menu level or cancel. Deletes a character when typing. DTMF “D” while transmitting.','Jump to GPS mode (My Position and the member list). Works only when GNSS is on.'],
+star:['✱ — lock / reverse','On a repeater channel: toggle reverse (R) or talkaround (T).','Lock or unlock the keypad (about 2 seconds).'],
+hash:['# — scan / input mode','Enter DTMF dialling. When typing names, switches between number and letter input. On the password screen it reveals what you typed.','Start or stop scanning.'],
+'0':['0','Digit 0; a space when typing names.','Open the NOAA weather menu.'],
+'1':['1','Digit 1; symbols and punctuation when typing names.','']};
+'23456789'.split('').forEach(d=>KEYS[d]=[d,'Digit '+d+'. Type frequencies, channel numbers and menu numbers. When naming a channel, press repeatedly for its letters.','']);
+const TR=Radio($('#tourRadio'));TR.show(CH1);
+function showKey(id){const k=KEYS[id];if(!k)return;$$('.pick',TR.host).forEach(e=>e.classList.remove('pick'));TR.K(id).classList.add('pick');
+  $('#kinfo').innerHTML=`<h3>${k[0]}</h3><dl><dt>Short press</dt><dd>${k[1]}</dd>${k[2]?`<dt>Long press</dt><dd>${k[2]}</dd>`:''}</dl>${id==='star'||id==='hash'?'<p class="note">The manual puts lock on ✱ and scan on #. If your keys are printed the other way round, follow the printing.</p>':''}`}
+TR.host.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)showKey(b.dataset.k)});
+
+/* ---------- menu table ---------- */
+const MENU=[
+['Zone',1,'Zone list / +Add Zone','Zone 1 … Zone 10','Switch to another zone, or create one. Each zone holds up to 64 channels.'],
+['Scan',1,'Freq Ranger','lower–upper MHz','Limits for scanning in frequency mode, e.g. 144148 for 144–148 MHz.'],
+['Scan',2,'Chan Ranger','ALL · MEMORY SCAN','Channel scan covers every channel in the zone, or only those with Scan Add on.'],
+['Scan',3,'Scan Mode','TO · CO · SE','What happens on a signal. TO: pause then resume. CO: resume when the signal ends. SE: stop.'],
+['Scan',4,'Scan SubCode','CTCSS · DCS','Detect the tone or code used on the current frequency.'],
+['Scan',5,'Scan Memory','ENCODER · DECODER · ALL','Store a detected tone for transmit only, receive only, or both (default).'],
+['Radio Setting',1,'Squelch','OFF, 1–9','Signal strength needed to open the speaker. OFF = always open. Suggested: 3.'],
+['Radio Setting',2,'Power Save','OFF · 1:1 · 1:2 · 1:4','Receiver sleeps between checks to save battery. Higher ratios save more but can clip the first syllable.'],
+['Radio Setting',3,'VOX Level','OFF, 1–9','Voice-activated transmit sensitivity. Leave OFF unless using a headset hands-free.'],
+['Radio Setting',4,'VOX Delay','1.0–10.0 s','How long VOX keeps transmitting after you stop speaking.'],
+['Radio Setting',5,'TOT','OFF, 15–210 s','Time-out timer: cuts a transmission after this long. Suggested: 60–180 s.'],
+['Radio Setting',6,'TOA','OFF, 1–10 s','Warning this many seconds before the time-out timer cuts you off.'],
+['Radio Setting',7,'Voice','OFF · Chinese · English','Spoken confirmation of key presses and modes.'],
+['Radio Setting',8,'Language','English · Chinese','Menu and screen language.'],
+['Radio Setting',9,'Beep','OFF · ON','Key-press beep.'],
+['Radio Setting',10,'ROGER','OFF · ROGER 1–3','End-of-transmission tone. Suggested: OFF.'],
+['Radio Setting',11,'BackLight','Always On, 5–30 s','How long the screen stays lit. Only takes effect with Power Save off.'],
+['Radio Setting',12,'Brightness','1–5','Screen brightness. Lower saves battery.'],
+['Radio Setting',13,'Power on Display','PICTURE · MESSAGE · VOLTAGE','What shows at start-up. VOLTAGE is a handy battery check.'],
+['Radio Setting',14,'Power on MSG','text','Edit the start-up message. MENU to edit, EXIT deletes.'],
+['Radio Setting',15,'LCD DIR','STAN · FAIL','Screen orientation. FAIL flips the display upside down for shoulder or belt carry.'],
+['Radio Setting',16,'MDF-A','CH · NAME · FREQ','How line A shows channels: number, name or frequency.'],
+['Radio Setting',17,'MDF-B','CH · NAME · FREQ','How line B shows channels.'],
+['Radio Setting',18,'Dual Watch','OFF · Double Wait · Signal Wait','Double Wait monitors A and B. Signal Wait shows both but uses only the main line. OFF shows one.'],
+['Radio Setting',19,'AutoLock','OFF · ON','ON locks the keypad automatically after a short idle time. Unlock: MENU then ✱.'],
+['Radio Setting',20,'Alarm Mode','On Site · Code+Sound · Code+Sound(No) · Code+Tone','What the emergency alarm does. On Site = local siren only, nothing transmitted. Suggested: On Site.'],
+['Radio Setting',21,'ID Verification','Contact 1–80','Choose the contact used for signalling calls.'],
+['Radio Setting',22,'SideTone','DTMF · 2 Tone · 5 Tone · BDC1200','Whether you hear signalling tones in your own speaker as they are sent.'],
+['Radio Setting',23,'PTT-ID','OFF · BOT · EOT · BOTH','Send your ID code at the beginning and/or end of each transmission. Suggested: OFF.'],
+['Radio Setting',24,'PTT-DLY','100–2500 ms','Delay before the ID code is sent after pressing PTT.'],
+['Radio Setting',25,'ALERT','1000 · 1450 · 1750 · 2100 Hz','Tone-burst pitch used to open some repeaters (1750 Hz is the European standard).'],
+['Radio Setting',26,'TAIL','OFF · 55 Hz · 120° · 180° · 240°','Squelch-tail elimination between Baofeng radios talking directly. Suggested: OFF for repeaters.'],
+['Radio Setting','27–30','Press / LongPress SK1, SK2','None · Scan · Monitor · Touch · FM Radio · SOS · GNSS System · One Touch Search · 1750Hz · Man Down · One Touch Call · Zone · Voltage · TX Power · VOX · Work Alone','Assign side-key functions for short and long presses.'],
+['Radio Setting',31,'FM Radio','Radio On/Off · Radio Interrupt','Switch the FM broadcast receiver on. Interrupt ON lets channel traffic break in.'],
+['Radio Setting',32,'APO','OFF · 30 · 60 · 120 · 240 · 480 min','Auto power off after this long unused.'],
+['Radio Setting',33,'Password','1–8 digits','Power-on password. To remove it, open the item and delete all digits with EXIT, then MENU. Write it down.'],
+['Radio Setting',34,'Reset','VFO · ALL','Factory reset of VFO settings only, or menus and VFO.'],
+['Program Channel',1,'CH.NAME','text','Name the current channel (channel mode only).'],
+['Program Channel',2,'RX Frequency','MHz','Receive frequency of the current channel. Type it, MENU saves, EXIT deletes a digit.'],
+['Program Channel',3,'TX Frequency','MHz','Transmit frequency. Same as RX for simplex; RX ± offset for a repeater.'],
+['Program Channel',4,'Trans Power','Low · Middle · High','Transmit power for this channel. Use the least that works.'],
+['Program Channel',5,'Bandwidth','Narrow (12.5 kHz) · Wide (25 kHz)','Channel width. Wide for US ham FM.'],
+['Program Channel',6,'RX CTCSS','OFF, 67.0–254.1 Hz','Only open the speaker for signals carrying this tone. OFF hears everything.'],
+['Program Channel',7,'RX DCS','OFF, D023N–D754I','Same idea using a digital code.'],
+['Program Channel',8,'TX CTCSS','OFF, 67.0–254.1 Hz','Tone sent with your transmission, usually to open a repeater.'],
+['Program Channel',9,'TX DCS','OFF, D023N–D754I','Digital code sent with your transmission.'],
+['Program Channel',10,'Signaling','DTMF · 2Tone · 5Tone · MDC','Default call ID type for this channel. Set the IDs up in the PC software first.'],
+['Program Channel',11,'SP-Mute','OFF · QT · Optional Signal · QT+DTMF','What must match before the speaker opens: nothing, the tone, the signalling, or both.'],
+['Program Channel',12,'Scan Add','OFF · ON','Include this channel in scanning.'],
+['Program Channel',13,'Scan Priority','OFF · ON','Make this the priority channel, checked far more often while scanning.'],
+['Program Channel',14,'TX Admit','Always · Channel Free · CTDS Correct','Block transmitting when the channel is busy (Channel Free), or busy with a different tone.'],
+['Program Channel',15,'Skip Frequency','OFF · ON','Described in the manual only as on/off; likely skips this entry during scans.'],
+['Program Channel',17,'CH_Memory','CH01–CH64','Save the current settings into a channel slot (creates or overwrites).'],
+['Program Channel',18,'CH_Delete','CH01–CH64','Erase a channel slot.'],
+['Radio Info',1,'Versions','Firmware · Hardware','Version information; useful when asking for support.'],
+['Radio Info',2,'My Radio','Radio ID · Radio Name','View and change this radio\'s ID (used for signalling and GPS sharing) and its name.'],
+['GNSS',1,'GNSS On/Off','OFF · ON','Switch the GPS receiver on or off.'],
+['GNSS',2,'GPS Info','My Position · Share Position · Request Position','View coordinates, and allow sharing your position and requesting others\'.'],
+['GNSS',3,'Time Zones','UTC−12:00 … UTC+13:00','Offset applied to satellite time for the clock.'],
+['NOAA Weather',1,'Weather On/Off','OFF, WX1–WX10','Tune a weather channel. Shortcut: hold 0.'],
+['NOAA Weather',2,'Weather Alert','OFF · ON','Watch the weather channel in the background and sound an alarm on a NOAA warning tone. North America only.']];
+$('#mt tbody').innerHTML=MENU.map((m,i)=>`<tr id="m${i}"><td><span class="tag">${m[0]}</span></td><td class="n">${m[1]}</td><td><b>${esc(m[2])}</b></td><td>${esc(m[3])}</td><td>${esc(m[4])}</td></tr>`).join('');
+$('#mf').oninput=e=>{const q=e.target.value.toLowerCase().trim();$$('#mt tbody tr').forEach(tr=>tr.style.display=!q||tr.textContent.toLowerCase().includes(q)?'':'none')};
+
+/* ---------- tables ---------- */
+const CTC='67.0 69.3 71.9 74.4 77.0 79.7 82.5 85.4 88.5 91.5 94.8 97.4 100.0 103.5 107.2 110.9 114.8 118.8 123.0 127.3 131.8 136.5 141.3 146.2 151.4 156.7 159.8 162.2 165.5 167.9 171.3 173.8 177.3 179.9 183.5 186.2 189.9 192.8 196.6 199.5 203.5 206.5 210.7 218.1 225.7 229.1 233.6 241.8 250.3 254.1'.split(' ');
+$('#ctc').innerHTML=CTC.map(c=>`<li>${c}</li>`).join('');
+const DCS='023 025 026 031 032 036 043 047 051 053 054 065 071 072 073 074 114 115 116 122 125 131 132 134 143 145 152 155 156 162 165 172 174 205 212 223 225 226 243 244 245 246 251 252 255 261 263 265 266 271 274 306 311 315 325 331 332 343 346 351 356 364 365 371 411 412 413 423 431 432 445 446 452 454 455 462 464 465 466 503 506 516 523 526 532 546 565 606 612 624 627 631 632 645 654 662 664 703 712 723 731 732 734 743 754'.split(' ');
+$('#dcs').innerHTML=DCS.map(c=>`<li>D${c}</li>`).join('');
+const FIX=[
+['Won\'t switch on','Battery flat, not seated, or dirty contacts','Recharge; remove and refit the battery until it clicks; wipe the contacts.'],
+['Weak or broken audio when receiving','Low battery, low volume, loose antenna or blocked speaker','Charge, turn up, re-seat the antenna, clear the speaker grille.'],
+['Can\'t talk to my other radio','Frequency, tone or bandwidth doesn\'t match, or you are out of range','Compare both radios\' channel settings side by side. Try with all tones OFF. Move closer or higher.'],
+['I can hear them but they can\'t hear me','Their radio has an RX tone set that you aren\'t sending; or you are on the wrong line','Set your TX CTCSS to their tone, or turn their RX CTCSS off. Check the highlighted line with A/B.'],
+['Can\'t open the repeater','Wrong offset or tone','Check TX Frequency and TX CTCSS against the repeater listing. Use a short ✱ press to confirm R appears.'],
+['Hear strangers or noise on my channel','Shared frequency, squelch too low','Raise Squelch a level, add matching RX/TX tones on your radios, or pick another frequency.'],
+['Constant hiss, can\'t hear anyone','Out of range, blocked by terrain or buildings, or local interference','Move to open or higher ground; step away from electronics and chargers.'],
+['Radio keeps transmitting by itself','VOX is on, or the headset plug isn\'t fully seated','Radio Setting › VOX Level › OFF. Push the plug fully in.'],
+['Keys do nothing','Keypad is locked','Hold ✱ for 2 seconds (with AutoLock on: MENU then ✱).'],
+['Menus and voice are in Chinese','Language reset','MENU › third entry › item 8 (Language) › English; item 7 (Voice) › English.'],
+['No GPS fix','Indoors, GNSS off, or cold start','Go outside with clear sky, confirm GNSS On, wait a few minutes with the radio still.'],
+['Position sharing doesn\'t work','Different channel, channel on the sub line, switches off, or duplicate IDs','Same channel on the main line; Share and Request Position ON; unique Radio ID per radio; both have a fix.'],
+['Can\'t transmit: radio refuses','Frequency is outside the transmit range, TX Admit blocking, or time-out timer','Transmit only works on 144–148 / 420–450 MHz (US). Check TX Admit = Always and TOT.'],
+['Screen goes dark quickly','Backlight timer','Radio Setting › BackLight (works when Power Save is off).'],
+['First word of each transmission is cut off','Power Save sleep cycle on the receiving radio, or speaking too soon','Pause half a second after pressing PTT; set Power Save to OFF or 1:1 on the receiving radio.'],
+['Forgot the power-on password','—','Read the radio with the CPS and clear the password there. See Unlock guides.'],
+['Mac doesn\'t see the programming cable','Counterfeit PL2303 chip, charge-only adapter, or plug not seated','Run ls /dev/cu.* in Terminal with the cable in and out. Use a CH340 or FTDI cable; don\'t install extra drivers.'],
+['CHIRP says the radio did not respond','GPS firmware isn\'t supported by official CHIRP builds','Use the experimental module or Baofeng\'s CPS in a Windows VM. See Programming on a Mac.'],
+['Charger light never turns green','Radio is switched on in the cradle','Switch the radio off while charging.'],
+['CPS in the Windows VM can\'t connect','Cable not passed through to the VM, wrong COM port, or missing Windows driver','Attach the USB device to the VM, check Device Manager for the COM number, push the plug in hard.']];
+$('#fixt').innerHTML='<tr><th>Problem</th><th>Likely cause</th><th>Fix</th></tr>'+(FIX.map((f,i)=>`<tr id="f${i}"><td><b>${f[0]}</b></td><td>${f[1]}</td><td>${f[2]}</td></tr>`).join(''));
+const GL=[
+['VFO (frequency mode)','Tune any frequency directly, like turning a dial.'],
+['MR (channel / memory mode)','Operate from saved channels.'],
+['Zone','A named group of up to 64 channels. The radio holds 10.'],
+['Simplex','Radio to radio on one frequency, no repeater.'],
+['Repeater','A station on a hill or tower that re-transmits you over a wide area. It listens on one frequency and transmits on another.'],
+['Input / output','A repeater\'s two frequencies: it listens on the input (you transmit there) and sends on the output (you listen there).'],
+['Courtesy tone / tail','The beep and brief carrier a repeater sends after you stop transmitting; proof it heard you.'],
+['Net','A scheduled on-air meeting on a repeater or frequency, run by a net control operator.'],
+['Linked repeater','A repeater joined to others by radio or internet links, so one transmission is heard on all of them.'],
+['Offset / shift','The gap between a repeater\'s output and input frequencies, e.g. −0.600 MHz.'],
+['CTCSS (also PL, tone, QT)','A sub-audible tone sent with your voice. Repeaters use it as a key; radios use it to ignore other users. It is not privacy.'],
+['DCS','A digital version of CTCSS, written like D023N.'],
+['Squelch','Mutes the speaker until a signal is strong enough.'],
+['Monitor','Temporarily opens the squelch to hear weak signals.'],
+['Dual watch','The radio alternates between two frequencies so you can catch calls on either.'],
+['Reverse','Swap transmit and receive frequencies to listen on a repeater\'s input.'],
+['Talkaround','Transmit on the repeater\'s output frequency to reach nearby radios directly.'],
+['Wide / narrow','Channel bandwidth: 25 kHz or 12.5 kHz. Both radios should match.'],
+['TOT','Time-out timer; limits how long one transmission can last.'],
+['VOX','Voice-operated transmit: the radio keys up when you speak.'],
+['DTMF','Touch-tone signalling, used for repeater commands and, on this radio, for IDs and position sharing.'],
+['PTT-ID / ANI','An ID code sent automatically when you press or release PTT.'],
+['GNSS','Global Navigation Satellite System: the general term that includes GPS.'],
+['NOAA Weather Radio','Continuous US government weather broadcasts on 162 MHz.'],
+['Roger beep','A beep sent when you release PTT.'],
+['Tone burst (1750 Hz)','A short audible tone that opens some repeaters, mainly in Europe.'],
+['CPS / codeplug','Customer Programming Software, and the settings file it reads from and writes to the radio.'],
+['K-plug','The two-pin Kenwood-style connector used for earpieces and the programming cable.'],
+['Airband','108–136 MHz, used by aircraft, in AM. Receive only on this radio.']];
+$('#gl').innerHTML=GL.map((g,i)=>`<div id="g${i}"><dt>${g[0]}</dt><dd>${g[1]}</dd></div>`).join('');
+
+/* ---------- channel plan ---------- */
+const TXR=[[144,148],[420,450]],RXR=[[108,136],[136,174],[220,260],[350,390],[400,520]];
+const inR=(f,R)=>R.some(r=>f>=r[0]&&f<=r[1]);
+const PLDEF=[{z:1,c:1,n:'CALL2M',f:'146.520',d:'',o:'',t:'',p:'High',w:'Wide',m:'2 m calling'},{z:1,c:2,n:'CALL70',f:'446.000',d:'',o:'',t:'',p:'High',w:'Wide',m:'70 cm calling'},{z:1,c:3,n:'',f:'',d:'',o:'',t:'',p:'Low',w:'Wide',m:''},{z:1,c:4,n:'',f:'',d:'',o:'',t:'',p:'Low',w:'Wide',m:''}];
+let PL=store.get('uvPlan')||JSON.parse(JSON.stringify(PLDEF));
+const sel=(k,v,opts)=>`<select data-k="${k}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+const inp=(k,v,a)=>`<input data-k="${k}" value="${esc(v??'').replace(/"/g,'&quot;')}" ${a||''}>`;
+function plStat(r){const f=parseFloat(r.f);if(!r.f)return'';if(isNaN(f)||!inR(f,RXR))return'<span class="tag bad">out of range</span>';
+  const tx=r.d==='+'?f+(parseFloat(r.o)||0):r.d==='-'?f-(parseFloat(r.o)||0):f;return inR(tx,TXR)?'<span class="tag tx">TX ok</span>':'<span class="tag">listen</span>'}
+function plDraw(){$('#plT tbody').innerHTML=PL.map((r,i)=>`<tr data-i="${i}"><td class="w1">${inp('z',r.z,'type="number" min="1" max="10"')}</td><td class="w1">${inp('c',r.c,'type="number" min="1" max="64"')}</td><td class="w2">${inp('n',r.n,'maxlength="6" placeholder="NAME"')}</td><td class="w3">${inp('f',r.f,'inputmode="decimal" placeholder="146.520"')}</td><td class="w1">${sel('d',r.d,[['','—'],['+','+'],['-','−']])}</td><td class="w2">${inp('o',r.o,'inputmode="decimal" placeholder="0.600"')}</td><td class="w2">${sel('t',r.t,[['','OFF']].concat(CTC.map(c=>[c,c])))}</td><td class="w2">${sel('p',r.p,[['Low','Low'],['Middle','Mid'],['High','High']])}</td><td class="w2">${sel('w',r.w,[['Wide','Wide'],['Narrow','Narrow']])}</td><td class="w4">${inp('m',r.m)}</td><td class="st">${plStat(r)}</td><td><button class="x" title="Remove">×</button></td></tr>`).join('');plCheat()}
+function plSave(){store.set('uvPlan',PL);plCheat();if(window.uvRefresh)uvRefresh()}
+function plMsg(t){$('#plMsg').textContent=t}
+$('#plT').addEventListener('input',e=>{const tr=e.target.closest('tr[data-i]'),k=e.target.dataset.k;if(!tr||!k)return;const r=PL[+tr.dataset.i];r[k]=e.target.value;$('.st',tr).innerHTML=plStat(r);plSave()});
+$('#plT').addEventListener('click',e=>{if(e.target.classList.contains('x')){PL.splice(+e.target.closest('tr').dataset.i,1);plSave();plDraw()}});
+$('#plAdd').onclick=()=>{const l=PL[PL.length-1]||{z:1,c:0};PL.push({z:l.z,c:Math.min(64,(+l.c||0)+1),n:'',f:'',d:'',o:'',t:'',p:'Low',w:'Wide',m:''});plSave();plDraw()};
+$('#plReset').onclick=()=>{if(confirm('Replace the plan with the starter rows?')){PL=JSON.parse(JSON.stringify(PLDEF));plSave();plDraw()}};
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('#plSave').onclick=()=>{dl('uv5rm-channel-plan.json',JSON.stringify(PL,null,1),'application/json');plMsg('Plan file saved to your Downloads folder.')};
+$('#plLoad').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!Array.isArray(d))throw 0;PL=d.map(r=>({z:r.z,c:r.c,n:r.n||'',f:r.f||'',d:r.d||'',o:r.o||'',t:r.t||'',p:r.p||'Low',w:r.w||'Wide',m:r.m||''}));plSave();plDraw();plMsg('Loaded '+PL.length+' channels.')}catch(x){plMsg('That file is not a channel plan saved from this guide.')}};rd.readAsText(f);e.target.value=''};
+$('#plCsv').onclick=()=>{const rows=PL.filter(r=>r.f&&!isNaN(parseFloat(r.f)));const seen={},dup=[];
+  const out=['Location,Name,Frequency,Duplex,Offset,Tone,rToneFreq,cToneFreq,DtcsCode,DtcsPolarity,RxDtcsCode,CrossMode,Mode,TStep,Skip,Power,Comment,URCALL,RPT1CALL,RPT2CALL,DVCODE'];
+  rows.map(r=>{const loc=(Math.max(1,Math.min(10,+r.z||1))-1)*64+Math.max(1,Math.min(64,+r.c||1));if(seen[loc])dup.push(loc);seen[loc]=1;return[loc,r]}).sort((a,b)=>a[0]-b[0]).forEach(([loc,r])=>{
+    const f=parseFloat(r.f),off=parseFloat(r.o)||0,tx=r.d==='+'?f+off:r.d==='-'?f-off:f,ok=inR(tx,TXR);
+    const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+    out.push([loc,q(r.n),f.toFixed(6),ok?r.d:'off',(ok&&r.d?off:0).toFixed(6),r.t?'Tone':'',r.t||'88.5',r.t||'88.5','023','NN','023','Tone->Tone',r.w==='Narrow'?'NFM':'FM','5.00','','',q(r.m),'','','',''].join(','))});
+  if(!rows.length){plMsg('Nothing to export yet: add a frequency first.');return}
+  dl('uv5rm-channel-plan.csv',out.join('\r\n')+'\r\n','text/csv');
+  plMsg('Exported '+rows.length+' channels.'+(dup.length?' Warning: more than one row uses the same zone and channel (row '+[...new Set(dup)].join(', ')+').':'')+' Power is left for you to set in the software.')};
+function plCheat(){const rows=PL.filter(r=>r.f).slice(0,12),t=$('#chCh');if(!t)return;
+  t.innerHTML='<tr><th>Zone</th><th>Ch</th><th>Name</th><th>MHz</th><th>Shift</th><th>Tone</th><th>Notes</th></tr>'+(rows.length?rows.map(r=>`<tr><td>${esc(r.z)}</td><td>${esc(r.c)}</td><td><b>${esc(r.n)}</b></td><td>${esc(r.f)}</td><td>${r.d?esc((r.d==='-'?'−':'+')+(r.o||'')):'—'}</td><td>${esc(r.t||'—')}</td><td>${esc(r.m)}</td></tr>`).join(''):'<tr><td colspan="7">Add channels in the channel plan and they appear here.</td></tr>')}
+function printSec(id){const s=$('#'+id);document.body.classList.add('pr');s.classList.add('pr-on');const done=()=>{document.body.classList.remove('pr');s.classList.remove('pr-on');removeEventListener('afterprint',done)};addEventListener('afterprint',done);print()}
+$('#qkPrint').onclick=()=>printSec('quick');$('#plPrint').onclick=()=>printSec('plan');$('#chPrint').onclick=()=>printSec('cheat');
+plDraw();
+
+/* ---------- emergency candidates + repeater import ---------- */
+function plBulk(z,list,tag){PL=PL.filter(r=>!((r.m||'').startsWith(tag)&&+r.z===z));const used=new Set(PL.filter(r=>+r.z===z).map(r=>+r.c));let c=1,n=0;
+  list.forEach(x=>{while(used.has(c))c++;if(c>64)return;used.add(c);PL.push({z,c,n:x[0],f:x[1],d:x[2]||'',o:x[3]||'',t:x[4]||'',p:'High',w:'Wide',m:tag+(x[5]?' '+x[5]:'')});n++});plSave();plDraw();return n}
+$('#emAdd').onclick=()=>{const n=plBulk(2,[['EM2-A','146.460'],['EM2-B','147.480'],['EM2-C','147.540'],['EM7-A','445.950'],['EM7-B','446.050'],['EM7-C','446.150']],'candidate:');
+  $('#emMsg').textContent='Zone 2 of your channel plan now holds these '+n+' candidates (any earlier candidate rows there were replaced).'};
+let RSL=[];
+$('#rsGo').onclick=()=>{const loc=$('#rsLoc').value.trim();if(!loc){$('#rsMsg').textContent='Type a city and state or a ZIP code first.';$('#rsLoc').focus();return}
+  const mi=Math.max(5,Math.min(100,+$('#rsMi').value||25));
+  window.open('https://www.repeaterbook.com/repeaters/prox_result.php?city='+encodeURIComponent(loc)+'&lat=&long=&distance='+mi+'&Dunit=m&band1=&band2=&freq=&call=&mode%5B%5D=1&status_id=1&use=OPEN&order=distance_calc%2C+state_id+ASC','_blank','noopener')};
+function rsUse(r){const f=parseFloat(r.f);if(isNaN(f))return'bad frequency';const tx=r.d==='+'?f+(+r.o||0):r.d==='-'?f-(+r.o||0):f;
+  if(!inR(f,RXR))return'band not covered';if(!inR(tx,TXR))return'outside transmit range';if(r.mode&&!/\bFM\b|^$/i.test(r.mode.replace(/FM-N/i,'FM')))return'digital only';return''}
+function rsText(t){const out=[];t.split(/\r?\n/).forEach(line=>{let c=line.split(/\t|\s\|\s|\s{2,}/).map(x=>x.trim());const i=c.findIndex(x=>/^\d{2,4}\.\d{2,5}$/.test(x));if(i<0)return;
+    const om=(c[i+1]||'').replace('−','-').match(/^([+-])\s*(\d+(?:\.\d+)?)\s*MHz$/i);if(!om)return;c=c.slice(i);
+    let acc=c[2]||'',rest=c.slice(3);if(/^[A-Z]{1,2}\d[A-Z]{1,4}$/i.test(acc)){rest=c.slice(2);acc=''}
+    const mi=rest.find(x=>/^\d+\.\d{1,2}$/.test(x)&&parseFloat(x)<500)||'',tone=/^\d{2,3}\.\d$/.test(acc)&&CTC.includes(acc)?acc:'';
+    out.push({f:(+c[0]).toFixed(3),d:om[1],o:(+om[2]).toFixed(3),t:tone,acc,call:rest[0]||'',loc:rest[1]||'',mode:rest.find(x=>/^(FM|DMR|D-?STAR|YSF|P-?25|NXDN)/i.test(x))||'',mi})});return out}
+function csvRows(t){const rows=[];let row=[],cur='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){cur+='"';i++}else q=false}else cur+=ch}else if(ch==='"')q=true;else if(ch===','){row.push(cur);cur=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(cur);cur='';if(row.some(x=>x!==''))rows.push(row);row=[]}else cur+=ch}
+  row.push(cur);if(row.some(x=>x!==''))rows.push(row);return rows}
+function rsCsvParse(t){const rows=csvRows(t);if(!rows.length)return[];const h=rows[0].map(x=>x.trim().toLowerCase()),ix=n=>h.indexOf(n),g=(r,n)=>ix(n)<0?'':(r[ix(n)]||'').trim();if(ix('frequency')<0)return[];
+  return rows.slice(1).map(r=>{const dup=g(r,'duplex'),tm=g(r,'tone'),rt=g(r,'rtonefreq'),md=g(r,'mode');const tone=/^tone|tsql/i.test(tm)&&CTC.includes((+rt).toFixed(1))?(+rt).toFixed(1):'';
+    return{f:(+g(r,'frequency')).toFixed(3),d:dup==='+'||dup==='-'?dup:'',o:(+g(r,'offset')||0).toFixed(3),t:tone,acc:tone||(/dtcs/i.test(tm)?'DCS '+g(r,'dtcscode'):''),call:g(r,'name'),loc:g(r,'comment'),mode:/^(N?FM)$/i.test(md)||!md?'FM':md,mi:''}}).filter(r=>!isNaN(parseFloat(r.f)))}
+function rsDraw(src){RSL.forEach(r=>{r.why=rsUse(r)});const ok=RSL.filter(r=>!r.why).length;
+  $('#rsMsg').textContent=RSL.length?'Read '+RSL.length+' repeaters from '+src+'; '+ok+' usable on this radio.':'No repeater rows found in '+src+'. Copy the table rows themselves, starting from a frequency.';
+  $('#rsAct').hidden=!ok;if(!RSL.length){$('#rsT').innerHTML='';return}
+  $('#rsT').innerHTML='<tr><th><input type="checkbox" id="rsAll" title="Tick all usable"></th><th>Listen MHz</th><th>Shift</th><th>Tone</th><th>Call sign</th><th>Location</th><th>Miles</th><th></th></tr>'+RSL.map((r,i)=>`<tr style="${r.why?'opacity:.45':''}"><td><input type="checkbox" data-i="${i}" ${r.why?'disabled':''}></td><td class="n">${esc(r.f)}</td><td>${r.d?(r.d==='-'?'−':'+')+esc(r.o):'—'}</td><td>${esc(r.t||r.acc||'—')}</td><td>${esc(r.call)}</td><td>${esc(r.loc)}</td><td>${esc(r.mi)}</td><td>${r.why?'<span class="tag">'+r.why+'</span>':(!r.t&&r.acc?'<span class="tag bad">set code by hand</span>':'')}</td></tr>`).join('')}
+$('#rsParse').onclick=()=>{RSL=rsText($('#rsTxt').value);rsDraw('the pasted text')};
+$('#rsCsv').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{RSL=rsCsvParse(String(rd.result));rsDraw('the CSV file')};rd.readAsText(f);e.target.value=''};
+$('#rsT').addEventListener('change',e=>{if(e.target.id==='rsAll')$$('#rsT input[data-i]:not(:disabled)').forEach(c=>c.checked=e.target.checked)});
+$('#rsAdd').onclick=()=>{const pick=$$('#rsT input[data-i]:checked').map(c=>RSL[+c.dataset.i]);if(!pick.length){$('#rsAddMsg').textContent='Tick at least one repeater first.';return}
+  const z=Math.max(1,Math.min(10,+$('#rsZone').value||3)),used=new Set(PL.filter(r=>+r.z===z).map(r=>+r.c)),names=new Set(PL.map(r=>(r.n||'').toUpperCase()));let c=1,n=0,skip=0;
+  pick.forEach(r=>{if(PL.some(p=>+p.z===z&&parseFloat(p.f)===parseFloat(r.f)&&(p.t||'')===(r.t||''))){skip++;return}while(used.has(c))c++;if(c>64){skip++;return}used.add(c);
+    let nm=(r.call||'RPT').toUpperCase().replace(/[^A-Z0-9 -]/g,'').slice(0,6)||'RPT';if(names.has(nm))nm=nm.slice(0,5)+(parseFloat(r.f)<200?'2':'7');let k=1;while(names.has(nm)&&k<10)nm=nm.slice(0,5)+(k++);names.add(nm);
+    PL.push({z,c,n:nm,f:r.f,d:r.d,o:r.d?r.o:'',t:r.t,p:'High',w:'Wide',m:('repeater: '+r.call+' '+r.loc+(r.mi?' ('+r.mi+' mi)':'')+(!r.t&&r.acc?' needs '+r.acc:'')).trim()});n++});
+  plSave();plDraw();$('#rsAddMsg').textContent='Added '+n+' to Zone '+z+' of your channel plan.'+(skip?' Skipped '+skip+' (already there, or the zone is full).':'')};
+
+/* ---------- test log ---------- */
+let LG=store.get('uvLog')||[];
+const RES={Listening:['Quiet','Busy'],'Range test':['Clear','Weak','Nothing']};
+function chList(){$('#chNames').innerHTML=[...new Set(PL.filter(r=>r.n).map(r=>r.n))].map(n=>`<option value="${esc(n)}">`).join('')}
+function lgDraw(){chList();$('#lgT tbody').innerHTML=LG.map((r,i)=>`<tr data-i="${i}"><td class="w3">${inp('d',r.d,'type="date"')}</td><td class="w2">${inp('t',r.t,'type="time"')}</td><td class="w3">${sel('k',r.k,[['Listening','Listening'],['Range test','Range test']])}</td><td class="w2">${inp('c',r.c,'list="chNames" placeholder="EM2-A"')}</td><td class="w4">${inp('l',r.l,'placeholder="home"')}</td><td class="w4">${inp('o',r.o,r.k==='Listening'?'placeholder="—" disabled':'placeholder="work"')}</td><td class="w2">${sel('r',r.r,[['','—']].concat(RES[r.k].map(x=>[x,x])))}</td><td class="w4">${inp('n',r.n)}</td><td><button class="x" title="Remove">×</button></td></tr>`).join('')||'<tr><td colspan="9" style="color:var(--mute)">No entries yet. Press “+ Add entry”.</td></tr>';lgSum()}
+function lgSum(){const m={};LG.forEach(r=>{if(!r.c||!r.r)return;const k=r.c.toUpperCase();m[k]=m[k]||{Quiet:0,Busy:0,Clear:0,Weak:0,Nothing:0,bad:new Set()};m[k][r.r]++;if(r.r==='Nothing'||r.r==='Weak')m[k].bad.add((r.l||'?')+(r.o?' ↔ '+r.o:''))});
+  const ks=Object.keys(m).sort();$('#lgS').innerHTML=ks.length?'<tr><th>Channel</th><th>Quiet</th><th>Busy</th><th>Clear</th><th>Weak</th><th>Nothing</th><th>Verdict</th><th>Trouble spots</th></tr>'+ks.map(k=>{const v=m[k],ls=v.Quiet+v.Busy,rt=v.Clear+v.Weak+v.Nothing;
+    let vd=[];if(ls)vd.push(v.Busy===0?(ls>=10?'quiet all week':'quiet so far ('+ls+' checks)'):v.Busy/ls>0.25?'too busy':'mostly quiet');if(rt)vd.push(v.Nothing?'has dead spots':v.Weak?'marginal in places':'reaches everywhere tested');
+    return`<tr><td><b>${esc(k)}</b></td><td>${v.Quiet}</td><td>${v.Busy}</td><td>${v.Clear}</td><td>${v.Weak}</td><td>${v.Nothing}</td><td>${vd.join('; ')}</td><td>${esc([...v.bad].join(', '))}</td></tr>`}).join(''):'<tr><td style="color:var(--mute)">Entries with a channel and a result are counted here.</td></tr>'}
+const lgSave=()=>store.set('uvLog',LG);
+$('#lgT').addEventListener('input',e=>{const tr=e.target.closest('tr[data-i]'),k=e.target.dataset.k;if(!tr||!k)return;const r=LG[+tr.dataset.i];r[k]=e.target.value;if(k==='k'){r.r='';r.o='';lgSave();lgDraw()}else{lgSave();lgSum()}});
+$('#lgT').addEventListener('click',e=>{if(e.target.classList.contains('x')){LG.splice(+e.target.closest('tr').dataset.i,1);lgSave();lgDraw()}});
+$('#lgAdd').onclick=()=>{const n=new Date(),p=x=>String(x).padStart(2,'0'),l=LG[LG.length-1]||{};LG.push({d:n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate()),t:p(n.getHours())+':'+p(n.getMinutes()),k:l.k||'Listening',c:'',l:l.l||'',o:'',r:'',n:''});lgSave();lgDraw()};
+$('#lgClear').onclick=()=>{if(LG.length&&confirm('Delete every log entry?')){LG=[];lgSave();lgDraw()}};
+$('#lgCsv').onclick=()=>{if(!LG.length){$('#lgMsg').textContent='Nothing to export yet.';return}const q=x=>'"'+String(x||'').replace(/"/g,'""')+'"';
+  dl('uv5rm-test-log.csv',['Date,Time,Kind,Channel,Where,Other radio,Result,Notes'].concat(LG.map(r=>[r.d,r.t,r.k,r.c,r.l,r.o,r.r,r.n].map(q).join(','))).join('\r\n')+'\r\n','text/csv');$('#lgMsg').textContent='Exported '+LG.length+' entries.'};
+$('#lgPrint').onclick=()=>printSec('log');
+lgDraw();
+
+/* ---------- radio labels ---------- */
+let LB=Object.assign({radios:[{n:'Radio 1',id:'',o:''},{n:'Radio 2',id:'',o:''},{n:'Radio 3',id:'',o:''}],c1:'',c2:'',c3:'',ck:'',lost:'',ph:'',w:45,h:34},store.get('uvLab')||{});
+function chTxt(v){if(!v)return'';const r=PL.find(x=>x.n&&x.n.toUpperCase()===v.trim().toUpperCase());if(!r)return esc(v);
+  return esc(r.n)+' Z'+esc(r.z)+'/'+esc(r.c)+' '+esc(r.f)+(r.d?' '+(r.d==='-'?'−':'+')+esc(String(parseFloat(r.o)||r.o)):'')+(r.t?' T'+esc(r.t):'')}
+function lbOut(){const w=Math.max(30,Math.min(100,+LB.w||45)),h=Math.max(20,Math.min(100,+LB.h||34));
+  $('#lab-out').innerHTML=LB.radios.map(r=>`<div class="lab" style="width:${w}mm;height:${h}mm"><b class="nm">${esc(r.n||'Radio')}</b><div class="id">${r.id?'ID '+esc(r.id):''}${r.id&&r.o?' · ':''}${esc(r.o||'')}&nbsp;</div>${[['1',chTxt(LB.c1)],['2',chTxt(LB.c2)],['R',chTxt(LB.c3)]].filter(x=>x[1]).map(x=>`<div><i>${x[0]}</i>${x[1]}</div>`).join('')}${LB.ck?`<div><i>⏱</i>${esc(LB.ck)}</div>`:''}${LB.lost?`<div><i>✕</i>${esc(LB.lost)}</div>`:''}${LB.ph?`<div><i>☎</i>${esc(LB.ph)}</div>`:''}</div>`).join('')||'<p style="color:var(--mute)">Add a radio to see its label.</p>'}
+function lbDraw(){$('#lbR tbody').innerHTML=LB.radios.map((r,i)=>`<tr data-i="${i}"><td>${inp('n',r.n,'placeholder="Radio 1"')}</td><td>${inp('id',r.id,'placeholder="101"')}</td><td>${inp('o',r.o,'placeholder="Name / call sign"')}</td><td><button class="x" title="Remove">×</button></td></tr>`).join('');
+  $$('.lbf [data-k]').forEach(e=>e.value=LB[e.dataset.k]??'');lbOut()}
+const lbSave=()=>{store.set('uvLab',LB);lbOut()};
+$('#lbR').addEventListener('input',e=>{const tr=e.target.closest('tr[data-i]');if(tr&&e.target.dataset.k){LB.radios[+tr.dataset.i][e.target.dataset.k]=e.target.value;lbSave()}});
+$('#lbR').addEventListener('click',e=>{if(e.target.classList.contains('x')){LB.radios.splice(+e.target.closest('tr').dataset.i,1);lbSave();lbDraw()}});
+$('#lbAdd').onclick=()=>{LB.radios.push({n:'Radio '+(LB.radios.length+1),id:'',o:''});lbSave();lbDraw()};
+$('.lbf').addEventListener('input',e=>{if(e.target.dataset.k){LB[e.target.dataset.k]=e.target.value;lbSave()}});
+$('#lbPrint').onclick=()=>printSec('labels');
+lbDraw();
+
+window.uvRefresh=()=>{chList();lbOut()};
+
+/* ---------- horizon calculator ---------- */
+function hz(){const a=Math.max(0,+$('#h1').value||0),b=Math.max(0,+$('#h2').value||0),mi=1.41*(Math.sqrt(a)+Math.sqrt(b));$('#hOut').textContent='Maximum line-of-sight distance: about '+mi.toFixed(mi<10?1:0)+' miles ('+(mi*1.609).toFixed(mi<10?1:0)+' km)'}
+$('#h1').oninput=$('#h2').oninput=hz;hz();
+
+/* ---------- checklist ---------- */
+const CK=['Every battery fully charged; spare battery or power bank packed','Antennas screwed on snug, belt clips tight','All radios on the same zone and channel, showing the same name','Tones match on every radio (or all OFF)','Radio check done at a real distance, not across the table','Backup channel agreed and programmed in every radio','Check-in times and the missed-check-in plan agreed','Strongest NOAA weather channel found; Weather Alert set if wanted','GPS on, fix obtained outdoors, time zone correct','Position share and request tested between two radios','Keypad locked once everyone is on the right channel','Cheat sheet printed with the plan written on it','Everyone knows how to hold SK2 to monitor and how to unlock the keys','Whoever will transmit holds a licence, or stays with someone who does'];
+const ckS=new Set(store.get('uvCk')||[]);
+function ckDraw(){$('#ckl').innerHTML=CK.map((c,i)=>`<label class="${ckS.has(i)?'dn':''}"><input type="checkbox" data-i="${i}" ${ckS.has(i)?'checked':''}><span>${c}</span></label>`).join('')}
+$('#ckl').onchange=e=>{const i=+e.target.dataset.i;e.target.checked?ckS.add(i):ckS.delete(i);store.set('uvCk',[...ckS]);ckDraw()};
+$('#ckReset').onclick=()=>{ckS.clear();store.set('uvCk',[]);ckDraw()};ckDraw();
+
+
+/* ---------- folder autosave (File System Access API: Chromium desktop only) ---------- */
+const AS={ok:'showDirectoryPicker' in window,dir:null,on:false,need:false,last:null,t:null,name:'uv5rm-guide-data.json',msg:'',err:'',saved:0};
+function idb(mode,fn){return new Promise((res,rej)=>{const o=indexedDB.open('uvGuide',1);o.onupgradeneeded=()=>o.result.createObjectStore('kv');o.onerror=()=>rej(o.error);
+  o.onsuccess=()=>{try{const tx=o.result.transaction('kv',mode),rq=fn(tx.objectStore('kv'));tx.oncomplete=()=>res(rq&&rq.result);tx.onerror=()=>rej(tx.error)}catch(e){rej(e)}}})}
+function asUI(){const b=$('#as'),st=$('#asStat'),pk=$('#asPick'),sp=$('#asStop');
+  if(!AS.ok){b.hidden=true;pk.hidden=true;st.textContent='Folder autosave isn’t available in this browser. Your data still saves in the browser itself.';return}
+  sp.hidden=!AS.dir;pk.textContent=AS.dir?'Choose a different folder':'Choose save folder';b.classList.toggle('un',AS.need||!!AS.err);
+  if(AS.need||AS.err){b.textContent='Reconnect folder';st.textContent=(AS.err||'The browser needs you to confirm access to the folder “'+AS.dir.name+'” again.')+' Click “Reconnect folder” at the top of the page.'}
+  else if(AS.on){b.textContent='Autosave on ✓';st.textContent='Autosaving to the folder “'+AS.dir.name+'”.'+(AS.saved?' Last written '+new Date(AS.saved).toLocaleTimeString()+'.':'')+(AS.msg?' '+AS.msg:'')}
+  else{b.textContent='Autosave: off';st.textContent='Folder autosave is off.'}}
+async function asRead(){try{const fh=await AS.dir.getFileHandle(AS.name),j=JSON.parse(await(await fh.getFile()).text());return j&&j.d&&typeof j.ts==='number'?j:null}catch(e){return null}}
+async function asWrite(name,obj){const fh=await AS.dir.getFileHandle(name,{create:true}),w=await fh.createWritable();await w.write(JSON.stringify(obj,null,1));await w.close()}
+function asSnap(){const d={};DK.forEach(k=>d[k]=raw.get(k));return{app:'uv5rm-plus-gps-guide',v:1,ts:raw.get('uvTs')||0,d}}
+function applyData(j){DK.forEach(k=>{if(j.d[k]!=null)raw.set(k,j.d[k])});raw.set('uvTs',j.ts);
+  PL=raw.get('uvPlan')||JSON.parse(JSON.stringify(PLDEF));LG=raw.get('uvLog')||[];Object.assign(LB,raw.get('uvLab')||{});
+  ckS.clear();(raw.get('uvCk')||[]).forEach(x=>ckS.add(x));doneSet.clear();(raw.get('uvDone')||[]).forEach(x=>doneSet.add(x));
+  plDraw();lgDraw();lbDraw();ckDraw();drawList();$('#wtDone').checked=doneSet.has(cur.id);dirty()}
+async function asSave(){try{const mine=raw.get('uvTs')||0,j=await asRead();
+    if(j&&AS.last!=null&&j.ts>AS.last&&j.ts!==mine){await asWrite('uv5rm-guide-data.conflict-'+j.ts+'.json',j);AS.msg='The file had been changed elsewhere; that version was kept as a conflict copy.'}
+    const s=asSnap();await asWrite(AS.name,s);AS.last=s.ts;AS.saved=Date.now();AS.err=''}
+  catch(e){AS.err='Could not write to the folder.';AS.on=false}asUI()}
+async function asSync(){const j=await asRead(),mine=raw.get('uvTs')||0;
+  if(j&&j.ts>mine){applyData(j);AS.last=j.ts;AS.msg='Loaded newer data from the folder.'}
+  else if(mine&&(!j||mine>j.ts))await asSave();
+  else AS.last=j?j.ts:null}
+function asQueue(){if(!AS.on)return;clearTimeout(AS.t);AS.t=setTimeout(asSave,900)}
+async function asConnect(h,ask){AS.dir=h;AS.err='';AS.msg='';let p='granted';
+  try{if(h.queryPermission){p=await h.queryPermission({mode:'readwrite'});if(p!=='granted'&&ask)p=await h.requestPermission({mode:'readwrite'})}}catch(e){p='denied'}
+  AS.need=p!=='granted';AS.on=!AS.need;if(AS.on)await asSync();asUI()}
+async function asPick(){try{const h=await showDirectoryPicker({mode:'readwrite',id:'uvguide'});try{await idb('readwrite',s=>s.put(h,'dir'))}catch(e){}await asConnect(h,true)}catch(e){}}
+$('#asPick').onclick=asPick;
+$('#asStop').onclick=async()=>{clearTimeout(AS.t);AS.on=false;AS.need=false;AS.dir=null;AS.err='';try{await idb('readwrite',s=>s.delete('dir'))}catch(e){}asUI()};
+$('#as').onclick=()=>{if(!AS.dir)asPick();else if(AS.need||AS.err)asConnect(AS.dir,true);else flash($('#start-data'))};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AS.on)asSync().then(asUI)});
+if(AS.ok)idb('readonly',s=>s.get('dir')).then(h=>{if(h)asConnect(h,false);else asUI()}).catch(()=>asUI());else asUI();
+
+/* ---------- nav ---------- */
+const secs=$$('section[data-nav]');
+$('#nav').innerHTML='<div class="grp">Guide</div>'+secs.map(s=>`<a href="#${s.id}">${s.dataset.nav}</a>`).join('');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>io.observe(s));
+$('#navb').onclick=()=>$('#nav').classList.toggle('open');
+$('#nav').onclick=()=>$('#nav').classList.remove('open');
+
+/* ---------- search ---------- */
+const strip=h=>h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+const IDX=[];
+function flash(el){if(!el)return;el.scrollIntoView({block:'center'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}
+$$('.blk[data-t]').forEach(b=>IDX.push({k:'Guide',t:b.dataset.t,x:b.textContent.replace(/\s+/g,' '),go:()=>flash(b)}));
+WT.forEach(w=>{IDX.push({k:'Walkthrough',t:w.t,x:w.s+' '+strip(w.after||''),w:3,go:()=>{openWT(w.id);flash($('#player'))}});
+  w.steps.forEach((s,i)=>IDX.push({k:'Step',t:w.t+' · step '+(i+1),x:strip(norm(s).d),go:()=>{openWT(w.id,i);flash($('#player'))}}))});
+MENU.forEach((m,i)=>IDX.push({k:'Setting',t:m[0]+' › '+m[2],x:m[3]+' — '+m[4],w:2,go:()=>{$('#mf').value='';$('#mf').oninput({target:$('#mf')});flash($('#m'+i))}}));
+Object.entries(KEYS).forEach(([id,k])=>{if(!/^[2-9]$/.test(id))IDX.push({k:'Key',t:k[0],x:k[1]+' '+k[2],go:()=>{showKey(id);flash($('.tour'))}})});
+FIX.forEach((f,i)=>IDX.push({k:'Fix',t:f[0],x:f[1]+'. '+f[2],w:2,go:()=>flash($('#f'+i))}));
+GL.forEach((g,i)=>IDX.push({k:'Term',t:g[0],x:g[1],go:()=>flash($('#g'+i))}));
+IDX.forEach(d=>{d.lt=d.t.toLowerCase();d.lx=d.x.toLowerCase()});
+const q=$('#q'),res=$('#res');let hits=[],hi=0;
+const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function search(){const terms=q.value.toLowerCase().split(/\s+/).filter(Boolean);
+  if(!terms.length){res.classList.remove('on');return}
+  hits=IDX.map(d=>{let sc=0;for(const t of terms){const a=d.lt.includes(t),b=d.lx.includes(t);if(!a&&!b)return null;sc+=(a?6:0)+(b?1:0)+(d.lt.startsWith(t)?3:0)}return{d,sc:sc+(d.w||0)}}).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,14);
+  hi=0;const re=new RegExp('('+terms.map(reEsc).join('|')+')','gi'),mk=s=>esc(s).replace(re,'<mark>$1</mark>');
+  res.innerHTML=hits.length?hits.map((h,i)=>{const p=Math.max(0,h.d.lx.indexOf(terms[0])-30);
+    return`<a href="#" data-i="${i}" class="${i?'':'cur'}"><span class="kind">${h.d.k}</span>${mk(h.d.t)}<small>${p?'…':''}${mk(h.d.x.slice(p,p+110))}</small></a>`}).join(''):'<a><small>No matches. Try a simpler word, like “tone” or “lock”.</small></a>';
+  res.classList.add('on')}
+function pick(i){const h=hits[i];if(!h)return;res.classList.remove('on');q.blur();h.d.go()}
+q.oninput=search;q.onfocus=search;
+q.onkeydown=e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();hi=(hi+(e.key==='ArrowDown'?1:-1)+hits.length)%Math.max(hits.length,1);$$('a',res).forEach((a,i)=>a.classList.toggle('cur',i===hi));const c=$('a.cur',res);c&&c.scrollIntoView({block:'nearest'})}
+  else if(e.key==='Enter'){e.preventDefault();pick(hi)}else if(e.key==='Escape'){res.classList.remove('on');q.blur()}};
+res.onmousedown=e=>{const a=e.target.closest('a[data-i]');if(a){e.preventDefault();pick(+a.dataset.i)}};
+document.addEventListener('click',e=>{if(!e.target.closest('.sbox'))res.classList.remove('on')});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();q.focus();q.select()}});
+
+/* ---------- start ---------- */
+openWT(store.get('uvWT')||'first',0,true);
+</script>
+</body>
+</html>
