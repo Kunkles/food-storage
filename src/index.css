@@ -230,5 +230,17 @@ footer a { color: var(--accent); }
 
 /* Version label and Check for updates button */
 .version-info { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.version-info .btn-small { padding: 2px 10px; font-size: 0.8rem; }
+.btn-small { padding: 2px 10px; font-size: 0.8rem; }
 .version-status { margin: 0; }
+
+/* Taking food out of storage */
+.use-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; padding: 6px 0; }
+.use-form label { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--muted); }
+.use-form label.num input { width: 80px; }
+.use-form label.grow { flex: 1 1 180px; }
+.use-form .chips { margin: 0; }
+.use-form-note { flex-basis: 100%; margin: 0; }
+td.nowrap { white-space: nowrap; }
+.made-this { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.made-this.done { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #eef6f0; }
+.made-this tr.muted td { color: var(--muted); }

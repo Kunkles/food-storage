@@ -25,6 +25,7 @@ export function itemsFromOrder(order, products = CHURCH_STORE_PRODUCTS) {
         category: product.category,
         unit: product.unit,
         perUnitKcal: product.perUnitKcal,
+        ...(product.cupsPerUnit ? { cupsPerUnit: product.cupsPerUnit } : {}),
         qty,
         source: order.id,
         added: order.date,

@@ -7,6 +7,8 @@ import { FOOD_DATABASE } from './data/foodDatabase.js'
 import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.js'
 import { addJournalEntry, markRotated, setRotationMonths } from './lib/inflation.js'
 import { daysCovered, importOrder } from './lib/inventory.js'
+import { recordUse, undoUse } from './lib/usage.js'
+import { todayIso } from './lib/rotation.js'
 import { DEFAULT_FUEL } from './data/fuel.js'
 import { DEFAULT_WATER } from './data/water.js'
 import { containerGallons } from './lib/water.js'
@@ -77,6 +79,9 @@ export default function App() {
   const [stock, setStock] = useLocalStorage('food.stock', () => ({}))
   // What's already stored (as opposed to the plan, which is what to buy).
   const [inventory, setInventory] = useLocalStorage('food.inventory', () => [])
+  // Food taken out of storage, newest first, so it can be undone and the
+  // On Hand tab can tell how fast it's going.
+  const [usage, setUsage] = useLocalStorage('food.usage', () => [])
   // Loose gallons (the original On Hand field), plus the Water tab's containers.
   const [waterOnHand, setWaterOnHand] = useLocalStorage('food.waterOnHand', 0)
   const [storedWater, setWater] = useLocalStorage('food.water', DEFAULT_WATER)
@@ -113,7 +118,8 @@ export default function App() {
     'food.pantry': pantry,
     'food.shopping': storedShopping,
     'food.myRecipes': storedMyRecipes,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping, storedMyRecipes])
+    'food.usage': usage,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping, storedMyRecipes, usage])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -130,9 +136,10 @@ export default function App() {
       'food.pantry': setPantry,
       'food.shopping': setShopping,
       'food.myRecipes': setMyRecipes,
+      'food.usage': setUsage,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping, setMyRecipes])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping, setMyRecipes, setUsage])
   const drive = useDriveSync(snapshot, applyData)
   const offline = useOffline()
   const online = useOnline()
@@ -158,6 +165,25 @@ export default function App() {
   const onMarkRotated = (foodId, date) => setStock((s) => markRotated(foodId, s, date))
   const onSetRotation = (foodId, months) => setStock((s) => setRotationMonths(foodId, s, months))
   const onImportOrder = (order) => setInventory((inv) => importOrder(inv, order))
+
+  // ---- using food from storage ----
+  // lines: [{ itemId | productId, qty }] in cans/units. Opening and cooking
+  // with a can also counts as rotating it.
+  const onUseFood = (lines, note = '', date = todayIso()) => {
+    const r = recordUse(inventory, usage, lines, { date, note })
+    if (!r.entries.length) return r.entries
+    setInventory(r.inventory)
+    setUsage(r.log.slice(0, 1000))
+    for (const e of r.entries) onMarkRotated(`onhand:${e.productId || e.parts[0].itemId}`, date)
+    return r.entries
+  }
+  // One log entry id, or several (a recipe takes out a few foods at once).
+  const onUndoUse = (ids) => {
+    let r = { inventory, log: usage }
+    for (const id of [].concat(ids)) r = undoUse(r.inventory, r.log, id)
+    setInventory(r.inventory)
+    setUsage(r.log)
+  }
 
   const state = { people, days, plan, library, hygieneWater, sortMode }
 
@@ -185,7 +211,7 @@ export default function App() {
             people={people} setPeople={setPeople}
             days={days} setDays={setDays}
             hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
-            plan={plan} inventory={inventory} fuel={fuel} waterGallons={waterGallons}
+            plan={plan} inventory={inventory} usage={usage} fuel={fuel} waterGallons={waterGallons}
             onScale={onScale}
             goTo={(v) => setView(v)}
           />
@@ -198,6 +224,7 @@ export default function App() {
           <InventoryView
             people={people} hygieneWater={hygieneWater}
             inventory={inventory} setInventory={setInventory}
+            usage={usage} onUseFood={onUseFood} onUndoUse={onUndoUse}
             waterGallons={waterGallons}
             onImportOrder={onImportOrder}
             goTo={(v) => setView(v)}
@@ -218,6 +245,7 @@ export default function App() {
         {view === 'recipes' && (
           <RecipesView
             recipes={recipes} people={people} inventory={inventory} pantry={pantry} setPantry={setPantry}
+            onUseFood={onUseFood} onUndoUse={onUndoUse}
             onSaveRecipe={onSaveRecipe} onRemoveRecipe={onRemoveRecipe}
             online={online} goTo={(v) => setView(v)}
           />

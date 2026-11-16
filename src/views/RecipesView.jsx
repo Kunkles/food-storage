@@ -6,13 +6,14 @@ import DietIssues from '../components/DietIssues.jsx'
 import { avoidedBy, dietIssues, personRestrictions, recipeItems } from '../lib/diets.js'
 import RecipeEditor from '../components/RecipeEditor.jsx'
 import OnlineRecipes from '../components/OnlineRecipes.jsx'
+import MadeThis from '../components/MadeThis.jsx'
 
 const fuelLabel = (min) => (min == null ? null : min === 0 ? 'no cooking' : `~${min} min of fuel`)
 
 // Recipes that use the storage foods on the On Hand tab: the built-in ones,
 // your own, and ones saved from online. Pantry extras (salt, oil, spices…)
 // are listed too, with a checklist of the ones you have.
-export default function RecipesView({ recipes, people, inventory, pantry, setPantry, onSaveRecipe, onRemoveRecipe, online, goTo }) {
+export default function RecipesView({ recipes, people, inventory, pantry, setPantry, onSaveRecipe, onRemoveRecipe, onUseFood, onUndoUse, online, goTo }) {
   const [meal, setMeal] = useState('all')
   const [readyOnly, setReadyOnly] = useState(false)
   const [noOven, setNoOven] = useState(false)
@@ -189,6 +190,9 @@ export default function RecipesView({ recipes, people, inventory, pantry, setPan
             <>
               <DietIssues issues={issues} />
               <RecipeBody recipe={r} status={s} />
+              <div className="no-print" style={{ marginTop: 10 }}>
+                <MadeThis recipe={r} status={s} inventory={inventory} onUseFood={onUseFood} onUndoUse={onUndoUse} />
+              </div>
               <div className="toolbar no-print" style={{ marginTop: 10 }}>
                 <button className="btn" onClick={() => setEditing(r.id)}>Edit</button>
                 {(r.custom || r.edited) && (
