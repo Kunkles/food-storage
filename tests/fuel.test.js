@@ -12,7 +12,7 @@ import {
   solidOnHandBtu,
   BTU_PER_GALLON_BOILED,
 } from '../src/lib/fuel.js'
-import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB, WOOD_BTU_PER_LB, CHARCOAL_BTU_PER_LB } from '../src/data/fuel.js'
+import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB, WOOD_BTU_PER_LB, CHARCOAL_BTU_PER_LB, KEROSENE_LB_PER_GAL } from '../src/data/fuel.js'
 import { makePerson } from '../src/data/ageTiers.js'
 
 const household = (n) => Array.from({ length: n }, (_, i) => makePerson({ name: `A${i}`, age: 35 }))
@@ -158,5 +158,23 @@ describe('charcoal', () => {
     const s = fuelSummary({ ...DEFAULT_FUEL, charcoal: { 'briquettes-20lb': 3 } }, household(2), 14)
     expect(s.charcoal.days).toBe(0)
     expect(s.daysCovered).toBe(s.gasDays)
+  })
+})
+
+describe('kerosene', () => {
+  it('burns a small amount a day on a pressure stove', () => {
+    // 4,200 BTU into the pot at 45%, at 135,000 BTU a gallon
+    const lb = solidLbPerDay('kerosene', { ...DEFAULT_FUEL, keroseneStove: 'pressure' }, household(2))
+    expect(lb / KEROSENE_LB_PER_GAL).toBeCloseTo((10500 * 0.4) / 0.45 / 135000, 5) // ≈ 0.07 gal
+    expect(solidLbPerDay('kerosene', { ...DEFAULT_FUEL, keroseneStove: 'wick' }, household(2))).toBeGreaterThan(lb)
+  })
+  it('counts cans in gallons', () => {
+    expect(solidOnHandBtu('kerosene', { 'kerosene-5gal': 1, 'kerosene-gal': 0.5 })).toBeCloseTo(5.5 * 135000, 3)
+  })
+  it('adds kerosene days to the rest', () => {
+    const fuel = { ...DEFAULT_FUEL, containers: { 'propane-20lb': 1 }, keroseneStove: 'wick', kerosene: { 'kerosene-5gal': 1 } }
+    const s = fuelSummary(fuel, household(2), 100)
+    expect(s.kerosene.days).toBeCloseTo((5 * KEROSENE_LB_PER_GAL) / s.kerosene.lbPerDay, 5)
+    expect(s.daysCovered).toBeCloseTo(s.gasDays + s.kerosene.days, 5)
   })
 })

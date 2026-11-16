@@ -78,11 +78,31 @@ export const CHARCOAL_STOVES = [
   { id: 'grill', short: 'a charcoal grill', label: 'Charcoal grill (pot on the grate)', efficiency: 0.15 },
 ]
 
-// Wood and charcoal work the same way: a cooker that gets some of the heat into
-// the pot, and amounts on hand. `field`/`stoveField` are where they're saved.
+// ---- kerosene ----
+// About 135,000 BTU per gallon, and a gallon weighs about 6.8 lb.
+export const KEROSENE_LB_PER_GAL = 6.8
+export const KEROSENE_BTU_PER_LB = 135000 / KEROSENE_LB_PER_GAL
+
+export const KEROSENE_AMOUNTS = [
+  { id: 'kerosene-gal', name: 'Kerosene (gallons)', lb: KEROSENE_LB_PER_GAL, btuPerLb: KEROSENE_BTU_PER_LB },
+  { id: 'kerosene-1gal', name: '1 gallon jug (store-bought, 1-K)', lb: KEROSENE_LB_PER_GAL, btuPerLb: KEROSENE_BTU_PER_LB },
+  { id: 'kerosene-5gal', name: '5 gallon blue kerosene can', lb: 5 * KEROSENE_LB_PER_GAL, btuPerLb: KEROSENE_BTU_PER_LB },
+]
+
+export const KEROSENE_STOVES = [
+  { id: 'none', label: 'No kerosene stove', efficiency: 0 },
+  { id: 'pressure', short: 'a pressure stove', label: 'Kerosene pressure stove (Primus style)', efficiency: 0.45 },
+  { id: 'wick', short: 'a wick stove', label: 'Kerosene wick stove', efficiency: 0.35 },
+  { id: 'heater', short: 'a kerosene heater', label: 'Kerosene heater with a cooking top', efficiency: 0.25 },
+]
+
+// Wood, charcoal and kerosene work the same way: a cooker that gets some of the
+// heat into the pot, and amounts on hand. `field`/`stoveField` are where
+// they're saved.
 export const SOLID_FUELS = [
   { kind: 'wood', label: 'Wood', field: 'wood', stoveField: 'woodStove', btuPerLb: WOOD_BTU_PER_LB, stoves: WOOD_STOVES, amounts: WOOD_AMOUNTS },
   { kind: 'charcoal', label: 'Charcoal', field: 'charcoal', stoveField: 'charcoalStove', btuPerLb: CHARCOAL_BTU_PER_LB, stoves: CHARCOAL_STOVES, amounts: CHARCOAL_AMOUNTS },
+  { kind: 'kerosene', label: 'Kerosene', field: 'kerosene', stoveField: 'keroseneStove', btuPerLb: KEROSENE_BTU_PER_LB, stoves: KEROSENE_STOVES, amounts: KEROSENE_AMOUNTS },
 ]
 
 // How much burner time a day of cooking takes, for a household of up to four,
@@ -106,4 +126,6 @@ export const DEFAULT_FUEL = {
   wood: {}, // WOOD_AMOUNTS id -> how many
   charcoalStove: 'none', // a CHARCOAL_STOVES id
   charcoal: {}, // CHARCOAL_AMOUNTS id -> how many
+  keroseneStove: 'none', // a KEROSENE_STOVES id
+  kerosene: {}, // KEROSENE_AMOUNTS id -> how many
 }

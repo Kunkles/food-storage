@@ -1,4 +1,4 @@
-import { COOKING_STYLES, FUEL_CONTAINERS, SOLID_FUELS, STOVES } from '../data/fuel.js'
+import { COOKING_STYLES, FUEL_CONTAINERS, KEROSENE_LB_PER_GAL, SOLID_FUELS, STOVES } from '../data/fuel.js'
 import { fuelSummary } from '../lib/fuel.js'
 import { fmtNum } from '../lib/format.js'
 
@@ -16,9 +16,19 @@ const fmtWood = (lb) =>
 const fmtCharcoal = (lb) =>
   lb >= 12 ? `${Math.ceil(lb / 16)} × 16 lb bag${Math.ceil(lb / 16) === 1 ? '' : 's'} (${Math.round(lb)} lb)`
     : `${(Number(lb) || 0).toFixed(1)} lb`
+// Kerosene in gallons, rounded up to the next whole gallon when buying.
+const fmtGal = (lb) => `${(lb / KEROSENE_LB_PER_GAL).toFixed(1)} gal`
+const fmtKeroseneBuy = (lb) => `${Math.ceil(lb / KEROSENE_LB_PER_GAL - 1e-9)} gal`
+const fmtLbPlain = (lb) => `${fmtNum(lb)} lb`
+// fmt: amounts in sentences · buyFmt: amounts to buy · tableFmt: the table's last column
 const SOLID_UI = {
-  wood: { fmt: fmtWood, cooker: 'wood stove', unit: 'a cord', unitLb: 3000 },
-  charcoal: { fmt: fmtCharcoal, cooker: 'charcoal cooker', unit: 'a 16 lb bag', unitLb: 16 },
+  wood: { fmt: fmtWood, buyFmt: fmtWood, tableFmt: fmtLbPlain, rateFmt: fmtLb, cooker: 'wood stove', unit: 'a cord', unitLb: 3000 },
+  charcoal: { fmt: fmtCharcoal, buyFmt: fmtCharcoal, tableFmt: fmtLbPlain, rateFmt: fmtLb, cooker: 'charcoal cooker', unit: 'a 16 lb bag', unitLb: 16 },
+  kerosene: {
+    fmt: fmtGal, buyFmt: fmtKeroseneBuy, tableFmt: fmtGal,
+    rateFmt: (lb) => `${(lb / KEROSENE_LB_PER_GAL).toFixed(2)} gal`,
+    cooker: 'kerosene stove', unit: 'a 5 gallon can', unitLb: 5 * KEROSENE_LB_PER_GAL,
+  },
 }
 const fmtDays = (d) => {
   const days = Math.floor(d)
@@ -48,7 +58,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
   // What to buy to cover some days short: gas, or wood or charcoal if there's a cooker for them.
   const buyText = (count, key) =>
     [`buy ${plural(count, s.buyLabel)}`,
-      ...activeSolids.filter((x) => x.x[key] > 0).map((x) => `${x.ui.fmt(x.x[key])} of ${x.def.label.toLowerCase()}`),
+      ...activeSolids.filter((x) => x.x[key] > 0).map((x) => `${x.ui.buyFmt(x.x[key])} of ${x.def.label.toLowerCase()}`),
     ].join(', or ')
 
   return (
@@ -58,20 +68,20 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
         <p className="hint">
           Rice, beans and wheat need a lot of cooking, so a power outage is also a fuel problem.
           This works out how much fuel your household burns a day and how long the propane,
-          butane, wood and charcoal you've stored lasts.
+          butane, wood, charcoal and kerosene you've stored lasts.
         </p>
         <div className="stat-grid">
           <div className="stat">
             <div className="k">Fuel on hand lasts</div>
             <div className="v">{fmtDays(s.daysCovered)}</div>
             <div className="s">
-              {fmtLb(s.onHandLb)} gas ({Math.floor(s.gasDays)} days)
-              {s.butane.count > 0 && (
-                <>: {fmtLb(s.propane.lb)} propane + {s.butane.count} butane canister{s.butane.count === 1 ? '' : 's'}</>
-              )}
-              {activeSolids.map(({ def, ui, x }) => (
-                <span key={def.kind}> · {ui.fmt(x.onHandLb)} of {def.label.toLowerCase()} ({Math.floor(x.days)} days)</span>
-              ))}
+              {[
+                (s.onHandLb > 0 || activeSolids.length === 0) &&
+                  `${fmtLb(s.onHandLb)} gas (${Math.floor(s.gasDays)} days)${s.butane.count > 0
+                    ? `: ${fmtLb(s.propane.lb)} propane + ${s.butane.count} butane canister${s.butane.count === 1 ? '' : 's'}`
+                    : ''}`,
+                ...activeSolids.map(({ def, ui, x }) => `${ui.fmt(x.onHandLb)} of ${def.label.toLowerCase()} (${Math.floor(x.days)} days)`),
+              ].filter(Boolean).join(' · ')}
             </div>
           </div>
           <div className="stat">
@@ -87,7 +97,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
           {activeSolids.map(({ def, ui, x }) => (
             <div className="stat" key={def.kind}>
               <div className="k">{def.label} burn rate</div>
-              <div className="v">{fmtLb(x.lbPerDay)}/day</div>
+              <div className="v">{ui.rateFmt(x.lbPerDay)}/day</div>
               <div className="s">
                 on {x.stove.short} · {ui.unit} lasts about{' '}
                 {fmtDays(ui.unitLb / x.lbPerDay)}
@@ -189,7 +199,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
           10,000 per burner, butane tabletop stoves 7,600–15,000, and backpacking stoves about 8,000.
           Picking a stove fills in a typical number — change it to match yours.
           A pressure cooker roughly halves the fuel for beans and wheat.
-          {activeSolids.length > 0 && ` With a ${activeSolids.map((x) => x.ui.cooker).join(' or ')}, the days from each fuel add together — use one, then the next. ${activeSolids.map((x) => x.def.label).join(' and ')} ${activeSolids.length > 1 ? 'get' : 'gets'} less heat into the pot than gas, so the same meals take a few pounds a day.`}
+          {activeSolids.length > 0 && ` With a ${activeSolids.map((x) => x.ui.cooker).join(' or ')}, the days from each fuel add together — use one, then the next. ${activeSolids.map((x) => x.def.label).join(' and ')} ${activeSolids.length > 1 ? 'get' : 'gets'} less heat into the pot than a gas stove, so the same meals take more of ${activeSolids.length > 1 ? 'them' : 'it'}.`}
         </p>
       </section>
 
@@ -233,11 +243,11 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
                   <td>{t.name}</td>
                   <td>
                     <input
-                      className="cellnum" type="number" min="0" step={t.lb >= 1000 ? 0.25 : 1} value={n}
+                      className="cellnum" type="number" min="0" step={t.lb >= 1000 || def.kind === 'kerosene' ? 0.25 : 1} value={n}
                       onChange={(e) => setSolid(def.field, t.id, e.target.value)}
                     />
                   </td>
-                  <td>{n > 0 ? `${fmtNum(n * t.lb)} lb` : '—'}</td>
+                  <td>{n > 0 ? SOLID_UI[def.kind].tableFmt(n * t.lb) : '—'}</td>
                 </tr>
               )
             })}
@@ -248,7 +258,8 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
           Use decimals for tanks that aren't full — 0.5 for a half-full tank. Butane and isobutane
           hold about as much heat per pound as propane, so it's all counted as pounds of fuel.
           Wood weights are rough: a cord of seasoned hardwood is 2,500–4,000 lb, so 3,000 is used.
-          Lump charcoal burns hotter than briquettes, so a pound of it counts for more.
+          Lump charcoal burns hotter than briquettes, so a pound of it counts for more. Use decimals
+          for part-full kerosene cans.
         </p>
         {solids.filter((x) => x.entered && !x.active).map(({ def, ui }) => (
           <p key={def.kind} className="hint sync-error">
@@ -305,6 +316,19 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               <li><strong>Dutch oven</strong>: for about 350°F, a 12-inch oven takes roughly 25 briquettes — about 17 on the lid and 8 underneath for baking, or more underneath for simmering and boiling. Add fresh coals every 45–60 minutes.</li>
               <li>Briquettes burn steady and long, which suits Dutch ovens; lump charcoal burns hotter and faster.</li>
               <li><strong>Ashes stay hot for a day or more.</strong> Soak them with water and keep them in a metal can with a lid, away from the house.</li>
+            </ul>
+          </>
+        )}
+        {shown('kerosene') && (
+          <>
+            <h4 style={{ margin: '14px 0 4px' }}>Kerosene</h4>
+            <ul className="tips">
+              <li><strong>Use only clear 1-K kerosene</strong>, never gasoline or camp fuel, which can explode in a kerosene stove. Keep kerosene in <strong>blue</strong> cans (red is gasoline, yellow is diesel) so nobody mixes them up.</li>
+              <li><strong>Indoors, only use a stove or heater made for indoor use</strong>, open a window a little, keep a CO detector nearby, and never leave it burning while you sleep. Kerosene burns up oxygen and gives off carbon monoxide.</li>
+              <li><strong>Refuel outside, with the stove off and cool.</strong> Never fill a hot or lit stove, and don't overfill.</li>
+              <li>Store cans outside the living space — a shed or detached garage — away from heat and sun, with the caps tight.</li>
+              <li>Sealed kerosene keeps a couple of years. Old, yellowed or cloudy kerosene burns smoky and clogs wicks; use it up and replace it.</li>
+              <li>Keep spare wicks (or a pressure stove's spare parts and a pricker) with the fuel, plus matches and a funnel.</li>
             </ul>
           </>
         )}
