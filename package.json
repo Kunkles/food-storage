@@ -10,9 +10,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:pages": "VITE_BASE=/food-storage/ vite build",
+    "build:pages": "node scripts/fetch-references.mjs && VITE_BASE=/food-storage/ vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "fetch:references": "node scripts/fetch-references.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

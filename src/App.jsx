@@ -23,11 +23,12 @@ import InventoryView from './views/InventoryView.jsx'
 import FuelView from './views/FuelView.jsx'
 import WaterView from './views/WaterView.jsx'
 import RecipesView from './views/RecipesView.jsx'
+import ReferenceView from './views/ReferenceView.jsx'
 import BackupCard from './components/BackupCard.jsx'
 import OfflineCard from './components/OfflineCard.jsx'
 import UpdateBar from './components/UpdateBar.jsx'
 
-const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'recipes', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal']
+const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'recipes', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal', 'reference']
 
 const VIEW_LABELS = {
   dashboard: 'Dashboard',
@@ -40,6 +41,7 @@ const VIEW_LABELS = {
   shoppinglist: 'Shopping List',
   rotation: 'Rotation',
   journal: 'Price Journal',
+  reference: 'Reference',
 }
 
 export default function App() {
@@ -243,6 +245,7 @@ export default function App() {
             onMarkRotated={onMarkRotated} onSetRotation={onSetRotation}
           />
         )}
+        {view === 'reference' && <ReferenceView />}
         {view === 'journal' && (
           <JournalView foods={library} stock={stock} onLogPrice={onLogPrice} />
         )}

@@ -9,3 +9,5 @@ yarn-*.log
 *.local
 .vscode/
 .idea/
+# Copies of reference documents, fetched at build time
+public/reference/

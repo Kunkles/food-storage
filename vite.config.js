@@ -27,8 +27,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png}'],
-        // The policy pages are their own documents, not routes in the app.
-        navigateFallbackDenylist: [/privacy\.html$/, /terms\.html$/],
+        // The policy pages and reference copies are their own documents, not routes in the app.
+        navigateFallbackDenylist: [/privacy\.html$/, /terms\.html$/, /\/reference\//],
         cleanupOutdatedCaches: true,
         // Photos of recipes saved from TheMealDB, so they still show offline.
         runtimeCaching: [{
