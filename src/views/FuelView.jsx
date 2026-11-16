@@ -1,4 +1,4 @@
-import { COOKING_STYLES, FUEL_CONTAINERS, STOVES, WOOD_AMOUNTS, WOOD_STOVES } from '../data/fuel.js'
+import { COOKING_STYLES, FUEL_CONTAINERS, SOLID_FUELS, STOVES } from '../data/fuel.js'
 import { fuelSummary } from '../lib/fuel.js'
 import { fmtNum } from '../lib/format.js'
 
@@ -8,11 +8,18 @@ const FUEL_GROUPS = [
   { kind: 'propane', title: 'Propane' },
   { kind: 'butane', title: 'Butane and isobutane canisters' },
 ]
-// Wood in the units people buy it: cords, bundles or pounds.
+// Wood and charcoal in the units people buy them: cords, bundles, bags or pounds.
 const fmtWood = (lb) =>
   lb >= 900 ? `${(lb / 3000).toFixed(1)} cord${lb === 3000 ? "" : "s"} (${Math.round(lb).toLocaleString()} lb)`
     : lb >= 40 ? `${Math.ceil(lb / 20)} bundles (${Math.round(lb)} lb)`
       : `${(Number(lb) || 0).toFixed(1)} lb`
+const fmtCharcoal = (lb) =>
+  lb >= 12 ? `${Math.ceil(lb / 16)} × 16 lb bag${Math.ceil(lb / 16) === 1 ? '' : 's'} (${Math.round(lb)} lb)`
+    : `${(Number(lb) || 0).toFixed(1)} lb`
+const SOLID_UI = {
+  wood: { fmt: fmtWood, cooker: 'wood stove', unit: 'a cord', unitLb: 3000 },
+  charcoal: { fmt: fmtCharcoal, cooker: 'charcoal cooker', unit: 'a 16 lb bag', unitLb: 16 },
+}
 const fmtDays = (d) => {
   const days = Math.floor(d)
   return days < 60 ? `${days} days` : `${fmtNum(days)} days (≈ ${(d / 30.4).toFixed(1)} months)`
@@ -24,15 +31,25 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
   const s = fuelSummary(fuel, people, days, foodDays)
   const set = (patch) => setFuel((f) => ({ ...f, ...patch }))
   const hasButane = s.butane.count > 0 || s.stove.id !== 'propane'
-  const hasWoodStove = s.wood.stove.id !== 'none'
-  const hasWood = hasWoodStove || WOOD_AMOUNTS.some((t) => Number(fuel.wood?.[t.id]) > 0)
+  // Wood and charcoal: whether there's a cooker for each, and whether any is entered.
+  const solids = SOLID_FUELS.map((def) => ({
+    def,
+    ui: SOLID_UI[def.kind],
+    x: s[def.kind],
+    active: s[def.kind].stove.id !== 'none',
+    entered: def.amounts.some((t) => Number(fuel[def.field]?.[t.id]) > 0),
+  }))
+  const activeSolids = solids.filter((x) => x.active)
+  const shown = (kind) => solids.find((x) => x.def.kind === kind && (x.active || x.entered))
   const setCount = (id, value) =>
     setFuel((f) => ({ ...f, containers: { ...f.containers, [id]: Math.max(0, Number(value) || 0) } }))
-  const setWood = (id, value) =>
-    setFuel((f) => ({ ...f, wood: { ...f.wood, [id]: Math.max(0, Number(value) || 0) } }))
-  // What to buy to cover some days short: gas, or wood if there's a wood stove.
-  const buyText = (count, woodLb) =>
-    `buy ${plural(count, s.buyLabel)}${hasWoodStove && woodLb > 0 ? `, or ${fmtWood(woodLb)} of wood` : ''}`
+  const setSolid = (field, id, value) =>
+    setFuel((f) => ({ ...f, [field]: { ...f[field], [id]: Math.max(0, Number(value) || 0) } }))
+  // What to buy to cover some days short: gas, or wood or charcoal if there's a cooker for them.
+  const buyText = (count, key) =>
+    [`buy ${plural(count, s.buyLabel)}`,
+      ...activeSolids.filter((x) => x.x[key] > 0).map((x) => `${x.ui.fmt(x.x[key])} of ${x.def.label.toLowerCase()}`),
+    ].join(', or ')
 
   return (
     <>
@@ -41,7 +58,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
         <p className="hint">
           Rice, beans and wheat need a lot of cooking, so a power outage is also a fuel problem.
           This works out how much fuel your household burns a day and how long the propane,
-          butane and wood you've stored lasts.
+          butane, wood and charcoal you've stored lasts.
         </p>
         <div className="stat-grid">
           <div className="stat">
@@ -52,11 +69,13 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               {s.butane.count > 0 && (
                 <>: {fmtLb(s.propane.lb)} propane + {s.butane.count} butane canister{s.butane.count === 1 ? '' : 's'}</>
               )}
-              {hasWoodStove && <> · {fmtWood(s.wood.onHandLb)} of wood ({Math.floor(s.wood.days)} days)</>}
+              {activeSolids.map(({ def, ui, x }) => (
+                <span key={def.kind}> · {ui.fmt(x.onHandLb)} of {def.label.toLowerCase()} ({Math.floor(x.days)} days)</span>
+              ))}
             </div>
           </div>
           <div className="stat">
-            <div className="k">{hasWoodStove ? 'Gas burn rate' : 'Burn rate'}</div>
+            <div className="k">{activeSolids.length ? 'Gas burn rate' : 'Burn rate'}</div>
             <div className="v">{fmtLb(s.lbPerDay)}/day</div>
             <div className="s">
               {s.stove.id !== 'propane' && s.containersPerDay > 0 && (
@@ -65,21 +84,21 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               {fmtNum(s.btuPerDay)} BTU · {s.minutesPerDay} burner-min/day
             </div>
           </div>
-          {hasWoodStove && (
-            <div className="stat">
-              <div className="k">Wood burn rate</div>
-              <div className="v">{fmtLb(s.wood.lbPerDay)}/day</div>
+          {activeSolids.map(({ def, ui, x }) => (
+            <div className="stat" key={def.kind}>
+              <div className="k">{def.label} burn rate</div>
+              <div className="v">{fmtLb(x.lbPerDay)}/day</div>
               <div className="s">
-                on a {s.wood.stove.label.split(' (')[0].toLowerCase()} · a cord lasts about{' '}
-                {fmtDays(3000 / s.wood.lbPerDay)}
+                on {x.stove.short} · {ui.unit} lasts about{' '}
+                {fmtDays(ui.unitLb / x.lbPerDay)}
               </div>
             </div>
-          )}
+          ))}
           <div className="stat">
             <div className="k">For your {days}-day plan</div>
             <div className="v">{s.shortDays > 0 ? `${Math.ceil(s.shortDays)} days short` : 'Covered'}</div>
             <div className="s">
-              {s.shortDays > 0 ? buyText(s.buyCount, s.wood.neededLb) : 'by the fuel you have'}
+              {s.shortDays > 0 ? buyText(s.buyCount, 'neededLb') : 'by the fuel you have'}
             </div>
           </div>
           <div className="stat">
@@ -90,7 +109,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
             <div className="s">
               {s.foodDays <= 0
                 ? 'add food on the On Hand tab'
-                : `${fmtDays(s.foodDays)} of food at emergency rations${s.shortDaysFood > 0 ? ` — ${buyText(s.buyCountForFood, s.wood.neededLbForFood)}` : ''}`}
+                : `${fmtDays(s.foodDays)} of food at emergency rations${s.shortDaysFood > 0 ? ` — ${buyText(s.buyCountForFood, 'neededLbForFood')}` : ''}`}
             </div>
           </div>
         </div>
@@ -113,14 +132,16 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               ))}
             </select>
           </label>
-          <label className="grow">
-            <span>Wood stove</span>
-            <select value={s.wood.stove.id} onChange={(e) => set({ woodStove: e.target.value })}>
-              {WOOD_STOVES.map((w) => (
-                <option key={w.id} value={w.id}>{w.label}</option>
-              ))}
-            </select>
-          </label>
+          {solids.map(({ def, ui, x }) => (
+            <label className="grow" key={def.kind}>
+              <span>{ui.cooker[0].toUpperCase() + ui.cooker.slice(1)}</span>
+              <select value={x.stove.id} onChange={(e) => set({ [def.stoveField]: e.target.value })}>
+                {def.stoves.map((w) => (
+                  <option key={w.id} value={w.id}>{w.label}</option>
+                ))}
+              </select>
+            </label>
+          ))}
           <label className="grow">
             <span>Cooking style</span>
             <select
@@ -168,7 +189,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
           10,000 per burner, butane tabletop stoves 7,600–15,000, and backpacking stoves about 8,000.
           Picking a stove fills in a typical number — change it to match yours.
           A pressure cooker roughly halves the fuel for beans and wheat.
-          {hasWoodStove && ' With a wood stove, the days from gas and wood add together — use one, then the other. Wood gets less of its heat into the pot, so the same meals take several pounds of wood a day.'}
+          {activeSolids.length > 0 && ` With a ${activeSolids.map((x) => x.ui.cooker).join(' or ')}, the days from each fuel add together — use one, then the next. ${activeSolids.map((x) => x.def.label).join(' and ')} ${activeSolids.length > 1 ? 'get' : 'gets'} less heat into the pot than gas, so the same meals take a few pounds a day.`}
         </p>
       </section>
 
@@ -202,17 +223,18 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
             })}
           </tbody>
           ))}
-          <tbody>
-            <tr className="group-row"><td colSpan={3}>Wood</td></tr>
-            {WOOD_AMOUNTS.map((t) => {
-              const n = Number(fuel.wood?.[t.id]) || 0
+          {SOLID_FUELS.map((def) => (
+          <tbody key={def.kind}>
+            <tr className="group-row"><td colSpan={3}>{def.label}</td></tr>
+            {def.amounts.map((t) => {
+              const n = Number(fuel[def.field]?.[t.id]) || 0
               return (
                 <tr key={t.id}>
                   <td>{t.name}</td>
                   <td>
                     <input
                       className="cellnum" type="number" min="0" step={t.lb >= 1000 ? 0.25 : 1} value={n}
-                      onChange={(e) => setWood(t.id, e.target.value)}
+                      onChange={(e) => setSolid(def.field, t.id, e.target.value)}
                     />
                   </td>
                   <td>{n > 0 ? `${fmtNum(n * t.lb)} lb` : '—'}</td>
@@ -220,15 +242,19 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               )
             })}
           </tbody>
+          ))}
         </table>
         <p className="hint">
           Use decimals for tanks that aren't full — 0.5 for a half-full tank. Butane and isobutane
           hold about as much heat per pound as propane, so it's all counted as pounds of fuel.
           Wood weights are rough: a cord of seasoned hardwood is 2,500–4,000 lb, so 3,000 is used.
+          Lump charcoal burns hotter than briquettes, so a pound of it counts for more.
         </p>
-        {hasWood && !hasWoodStove && (
-          <p className="hint sync-error">Pick a wood stove under "How you'll cook" to count your wood.</p>
-        )}
+        {solids.filter((x) => x.entered && !x.active).map(({ def, ui }) => (
+          <p key={def.kind} className="hint sync-error">
+            Pick a {ui.cooker} under "How you'll cook" to count your {def.label.toLowerCase()}.
+          </p>
+        ))}
       </section>
 
       <section className="card">
@@ -253,7 +279,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
             </ul>
           </>
         )}
-        {hasWood && (
+        {shown('wood') && (
           <>
             <h4 style={{ margin: '14px 0 4px' }}>Wood</h4>
             <ul className="tips">
@@ -265,6 +291,20 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
               <li>Cooking over wood blackens pots. Rub dish soap on the outside first and the soot washes off.</li>
               <li>This is wood for cooking only. Heating a house takes far more — often several cords a winter.</li>
               <li>Check for burn bans before cooking over an open fire, and keep water or a shovel of dirt nearby.</li>
+            </ul>
+          </>
+        )}
+        {shown('charcoal') && (
+          <>
+            <h4 style={{ margin: '14px 0 4px' }}>Charcoal</h4>
+            <ul className="tips">
+              <li><strong>Never burn charcoal indoors</strong> — not in the house, garage, tent or car, not even with the door open, and not to stay warm. It gives off carbon monoxide with no smoke to warn you, and it's one of the most common causes of death after storms.</li>
+              <li>Cook at least <strong>10 ft from the house</strong>, away from doors, windows and vents.</li>
+              <li><strong>Keep it dry.</strong> Charcoal lasts for years in a sealed bin or bucket, but damp charcoal is hard to light. Seal opened "match-light" bags, which lose their lighter fluid as they sit.</li>
+              <li>A <strong>chimney starter</strong> lights coals with a sheet of newspaper and no lighter fluid. Store matches or lighters and newspaper with the charcoal.</li>
+              <li><strong>Dutch oven</strong>: for about 350°F, a 12-inch oven takes roughly 25 briquettes — about 17 on the lid and 8 underneath for baking, or more underneath for simmering and boiling. Add fresh coals every 45–60 minutes.</li>
+              <li>Briquettes burn steady and long, which suits Dutch ovens; lump charcoal burns hotter and faster.</li>
+              <li><strong>Ashes stay hot for a day or more.</strong> Soak them with water and keep them in a metal can with a lid, away from the house.</li>
             </ul>
           </>
         )}

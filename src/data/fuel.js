@@ -52,9 +52,37 @@ export const WOOD_AMOUNTS = [
 export const GAS_POT_EFFICIENCY = 0.4
 export const WOOD_STOVES = [
   { id: 'none', label: 'No wood stove', efficiency: 0 },
-  { id: 'rocket', label: 'Rocket stove (outdoors, burns sticks)', efficiency: 0.25 },
-  { id: 'indoor', label: 'Wood-burning stove in the house (cook on top)', efficiency: 0.12 },
-  { id: 'fire', label: 'Campfire or fire pit with a grate', efficiency: 0.1 },
+  { id: 'rocket', short: 'a rocket stove', label: 'Rocket stove (outdoors, burns sticks)', efficiency: 0.25 },
+  { id: 'indoor', short: 'a wood stove', label: 'Wood-burning stove in the house (cook on top)', efficiency: 0.12 },
+  { id: 'fire', short: 'a campfire', label: 'Campfire or fire pit with a grate', efficiency: 0.1 },
+]
+
+// ---- charcoal ----
+// Briquettes hold about 9,000 BTU per pound (they include binders); lump
+// charcoal about 12,000. A standard briquette weighs about 1 oz.
+export const CHARCOAL_BTU_PER_LB = 9000
+
+export const CHARCOAL_AMOUNTS = [
+  { id: 'briquettes-lb', name: 'Briquettes (pounds)', lb: 1, btuPerLb: CHARCOAL_BTU_PER_LB },
+  { id: 'briquettes-8lb', name: 'Bag of briquettes, about 8 lb', lb: 8, btuPerLb: CHARCOAL_BTU_PER_LB },
+  { id: 'briquettes-16lb', name: 'Bag of briquettes, about 16 lb', lb: 16, btuPerLb: CHARCOAL_BTU_PER_LB },
+  { id: 'briquettes-20lb', name: 'Bag of briquettes, about 20 lb', lb: 20, btuPerLb: CHARCOAL_BTU_PER_LB },
+  { id: 'lump-8lb', name: 'Bag of lump charcoal, about 8 lb', lb: 8, btuPerLb: 12000 },
+  { id: 'lump-20lb', name: 'Bag of lump charcoal, about 20 lb', lb: 20, btuPerLb: 12000 },
+]
+
+export const CHARCOAL_STOVES = [
+  { id: 'none', label: 'No charcoal cooking', efficiency: 0 },
+  { id: 'dutch', short: 'a Dutch oven', label: 'Dutch oven with coals on the lid and under it', efficiency: 0.2 },
+  { id: 'cookstove', short: 'a charcoal cookstove', label: 'Charcoal cookstove or hibachi', efficiency: 0.2 },
+  { id: 'grill', short: 'a charcoal grill', label: 'Charcoal grill (pot on the grate)', efficiency: 0.15 },
+]
+
+// Wood and charcoal work the same way: a cooker that gets some of the heat into
+// the pot, and amounts on hand. `field`/`stoveField` are where they're saved.
+export const SOLID_FUELS = [
+  { kind: 'wood', label: 'Wood', field: 'wood', stoveField: 'woodStove', btuPerLb: WOOD_BTU_PER_LB, stoves: WOOD_STOVES, amounts: WOOD_AMOUNTS },
+  { kind: 'charcoal', label: 'Charcoal', field: 'charcoal', stoveField: 'charcoalStove', btuPerLb: CHARCOAL_BTU_PER_LB, stoves: CHARCOAL_STOVES, amounts: CHARCOAL_AMOUNTS },
 ]
 
 // How much burner time a day of cooking takes, for a household of up to four,
@@ -76,4 +104,6 @@ export const DEFAULT_FUEL = {
   containers: {}, // container id -> how many (decimals for partly full)
   woodStove: 'none', // a WOOD_STOVES id
   wood: {}, // WOOD_AMOUNTS id -> how many
+  charcoalStove: 'none', // a CHARCOAL_STOVES id
+  charcoal: {}, // CHARCOAL_AMOUNTS id -> how many
 }

@@ -8,9 +8,11 @@ import {
   stoveFor,
   woodLbPerDay,
   woodOnHandBtu,
+  solidLbPerDay,
+  solidOnHandBtu,
   BTU_PER_GALLON_BOILED,
 } from '../src/lib/fuel.js'
-import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB, WOOD_BTU_PER_LB } from '../src/data/fuel.js'
+import { DEFAULT_FUEL, PROPANE_BTU_PER_LB, BUTANE_BTU_PER_LB, ISOBUTANE_BTU_PER_LB, WOOD_BTU_PER_LB, CHARCOAL_BTU_PER_LB } from '../src/data/fuel.js'
 import { makePerson } from '../src/data/ageTiers.js'
 
 const household = (n) => Array.from({ length: n }, (_, i) => makePerson({ name: `A${i}`, age: 35 }))
@@ -125,5 +127,36 @@ describe('wood', () => {
   })
   it('counts pellets by their higher heat', () => {
     expect(woodOnHandBtu({ 'pellets-40lb': 1 })).toBe(40 * 8000)
+  })
+})
+
+describe('charcoal', () => {
+  it('burns a couple of pounds a day in a Dutch oven', () => {
+    // 4,200 BTU into the pot at 20% from 9,000 BTU/lb briquettes
+    const lb = solidLbPerDay('charcoal', { ...DEFAULT_FUEL, charcoalStove: 'dutch' }, household(2))
+    expect(lb).toBeCloseTo((10500 * 0.4) / 0.2 / CHARCOAL_BTU_PER_LB, 5)
+    expect(solidLbPerDay('charcoal', { ...DEFAULT_FUEL, charcoalStove: 'grill' }, household(2))).toBeGreaterThan(lb)
+    expect(solidLbPerDay('charcoal', DEFAULT_FUEL, household(2))).toBe(0)
+  })
+  it('counts lump charcoal by its higher heat', () => {
+    expect(solidOnHandBtu('charcoal', { 'briquettes-16lb': 1, 'lump-8lb': 1 })).toBe(16 * 9000 + 8 * 12000)
+  })
+  it('adds charcoal days to gas and wood days', () => {
+    const fuel = {
+      ...DEFAULT_FUEL,
+      containers: { 'propane-20lb': 1 },
+      woodStove: 'rocket', wood: { 'wood-bundle': 2 },
+      charcoalStove: 'dutch', charcoal: { 'briquettes-16lb': 2 },
+    }
+    const s = fuelSummary(fuel, household(2), 100)
+    expect(s.charcoal.onHandLb).toBe(32)
+    expect(s.charcoal.days).toBeCloseTo(32 / s.charcoal.lbPerDay, 5)
+    expect(s.daysCovered).toBeCloseTo(s.gasDays + s.wood.days + s.charcoal.days, 5)
+    expect(s.charcoal.neededLb).toBeCloseTo(s.shortDays * s.charcoal.lbPerDay, 5)
+  })
+  it('ignores charcoal without a cooker for it', () => {
+    const s = fuelSummary({ ...DEFAULT_FUEL, charcoal: { 'briquettes-20lb': 3 } }, household(2), 14)
+    expect(s.charcoal.days).toBe(0)
+    expect(s.daysCovered).toBe(s.gasDays)
   })
 })
