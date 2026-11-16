@@ -227,3 +227,8 @@ footer a { color: var(--accent); }
   .card { border: none; padding: 0; }
   #root { max-width: none; padding: 0; }
 }
+
+/* Version label and Check for updates button */
+.version-info { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.version-info .btn-small { padding: 2px 10px; font-size: 0.8rem; }
+.version-status { margin: 0; }

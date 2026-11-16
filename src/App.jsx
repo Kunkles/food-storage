@@ -26,6 +26,7 @@ import RecipesView from './views/RecipesView.jsx'
 import ReferenceView from './views/ReferenceView.jsx'
 import BackupCard from './components/BackupCard.jsx'
 import OfflineCard from './components/OfflineCard.jsx'
+import VersionInfo from './components/VersionInfo.jsx'
 import UpdateBar from './components/UpdateBar.jsx'
 
 const VIEWS = ['dashboard', 'onhand', 'water', 'fuel', 'recipes', 'calculator', 'foodlibrary', 'shoppinglist', 'rotation', 'journal', 'reference']
@@ -262,6 +263,9 @@ export default function App() {
         <p>
           <a href={`${import.meta.env.BASE_URL}privacy.html`}>Privacy Policy</a> ·{' '}
           <a href={`${import.meta.env.BASE_URL}terms.html`}>Terms of Service</a>
+        </p>
+        <p className="no-print">
+          <VersionInfo offline={offline} compact />
         </p>
       </footer>
       <UpdateBar offline={offline} online={online} />

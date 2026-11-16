@@ -1,11 +1,34 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
+
+// Which build this is, shown in the app and written to version.json so a
+// running copy can tell when a newer one has been deployed.
+function gitId() {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7)
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'dev'
+  }
+}
+const BUILD = { id: gitId(), date: new Date().toISOString() }
+
+const versionFile = {
+  name: 'version-file',
+  apply: 'build',
+  generateBundle() {
+    this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify(BUILD) })
+  },
+}
 
 // Set base to your repo name when deploying to GitHub Pages, e.g. '/FoodStorage/'
 export default defineConfig({
+  define: { __APP_BUILD__: JSON.stringify(BUILD) },
   plugins: [
     react(),
+    versionFile,
     // Installable, works offline, and picks up new versions when online.
     // 'prompt' waits for the person to press Reload rather than swapping the
     // app out from under them mid-edit.

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { APP_BUILD, checkForUpdates } from '../lib/updates.js'
 
 const HOUR = 60 * 60 * 1000
 
@@ -32,6 +33,7 @@ export function useOnline() {
 // The offline copy of the app: whether it's ready, whether a new version is
 // waiting, installing it, and keeping its storage from being cleared.
 export function useOffline() {
+  const registrationRef = useRef(null)
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     offlineReady: [offlineReady],
@@ -40,6 +42,7 @@ export function useOffline() {
     // Look for a new version every hour and whenever the app comes back into view.
     onRegisteredSW(_url, registration) {
       if (!registration) return
+      registrationRef.current = registration
       const check = () => {
         if (navigator.onLine !== false) registration.update().catch(() => {})
       }
@@ -90,7 +93,24 @@ export function useOffline() {
     }).catch(() => {})
   }, [keepData])
 
+  // The Check for updates button: null, 'checking', 'current', 'updating' or 'offline'.
+  const [updateStatus, setUpdateStatus] = useState(null)
+  const [latest, setLatest] = useState(null)
+  const checkUpdates = useCallback(async () => {
+    setUpdateStatus('checking')
+    const result = await checkForUpdates({
+      registration: registrationRef.current,
+      activate: () => updateServiceWorker(true),
+    })
+    setLatest(result.latest || null)
+    setUpdateStatus(result.status)
+  }, [updateServiceWorker])
+
   return {
+    build: APP_BUILD,
+    latest,
+    updateStatus,
+    checkUpdates,
     ready: offlineReady || !!navigator.serviceWorker?.controller,
     needRefresh,
     dismissUpdate: () => setNeedRefresh(false),

@@ -1,5 +1,7 @@
 // Using the app offline: install it, whether it's ready without internet, and
 // keeping the data on this device from being cleared.
+import VersionInfo from './VersionInfo.jsx'
+
 export default function OfflineCard({ offline }) {
   const o = offline
   return (
@@ -28,6 +30,9 @@ export default function OfflineCard({ offline }) {
             <>Use your browser's <strong>Install</strong> option (in the address bar or menu), or{' '}
               <strong>Add to Home Screen</strong> on a phone.</>
           )}
+        </li>
+        <li>
+          <strong>Version:</strong> <VersionInfo offline={o} />
         </li>
         {o.persisted !== null && (
           <li>
