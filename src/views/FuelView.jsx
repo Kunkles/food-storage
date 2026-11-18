@@ -1,6 +1,11 @@
-import { COOKING_STYLES, FUEL_CONTAINERS, KEROSENE_LB_PER_GAL, SOLID_FUELS, STOVES } from '../data/fuel.js'
+import { useState } from 'react'
+import { COOKING_STYLES, FUEL_CONTAINERS, KEROSENE_LB_PER_GAL, PROPANE_BTU_PER_LB, SOLID_FUELS, STOVES } from '../data/fuel.js'
 import { fuelSummary } from '../lib/fuel.js'
 import { fmtNum } from '../lib/format.js'
+import { FUEL_SOURCES, fuelPace, isGas, planDaysUsed } from '../lib/supplyUse.js'
+import { todayIso } from '../lib/rotation.js'
+import { SupplyLog, SupplyUseForm } from '../components/SupplyUse.jsx'
+import { fmtQty } from '../components/UseFood.jsx'
 
 const fmtLb = (n) => `${(Number(n) || 0).toFixed(n < 10 ? 1 : 0)} lb`
 const plural = (n, word) => `${n} × ${word}${n === 1 ? '' : 's'}`
@@ -34,11 +39,70 @@ const fmtDays = (d) => {
   const days = Math.floor(d)
   return days < 60 ? `${days} days` : `${fmtNum(days)} days (≈ ${(d / 30.4).toFixed(1)} months)`
 }
+const fmtDate = (iso) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+
+// What one of a container or amount is called when counting them ("2 tanks"),
+// or null when it's counted in plain pounds or gallons.
+function fuelWord(type, n = 2) {
+  const id = type.id
+  const word = id === 'propane-1lb' ? 'cylinder'
+    : id.startsWith('propane') ? 'tank'
+      : /butane/.test(id) ? 'canister'
+        : id === 'wood-bundle' ? 'bundle'
+          : id === 'wood-face-cord' ? 'face cord'
+            : id === 'wood-cord' ? 'cord'
+              : id === 'kerosene-1gal' ? 'jug'
+                : id === 'kerosene-5gal' ? 'can'
+                  : /-lb$|-gal$/.test(id) ? null
+                    : 'bag'
+  return word && (Number(n) === 1 ? word : `${word}s`)
+}
+
+// The fuel you can take some out of, for the Use fuel form. Each measure's
+// `per` is how many of the container one of that measure is.
+function fuelSources(fuel) {
+  const gasBtuPerHour = (Number(fuel.stoveBtu) || 0) * ((Number(fuel.flamePct) || 0) / 100)
+  return FUEL_SOURCES.filter((src) => Number(fuel[src.field]?.[src.type.id]) > 0).map((src) => {
+    const t = src.type
+    const n = Number(fuel[src.field][t.id])
+    const word = fuelWord(t)
+    const kerosene = src.fuelKind === 'kerosene'
+    const measures = [
+      ...(word ? [{ id: 'unit', label: word, per: 1 }] : []),
+      kerosene
+        ? { id: 'gal', label: 'gallons', per: KEROSENE_LB_PER_GAL / t.lb }
+        : { id: 'lb', label: 'lb', per: 1 / t.lb },
+      ...(isGas(src.fuelKind) && gasBtuPerHour > 0
+        ? [{ id: 'hours', label: 'hours on the burner', per: gasBtuPerHour / (t.lb * t.btuPerLb) }]
+        : []),
+    ]
+    return {
+      key: `${src.field}:${t.id}`,
+      label: `${t.name} — ${word ? `${fmtQty(n)} on hand` : kerosene ? fmtGal(n * t.lb) : `${fmtQty(n)} lb`}`,
+      available: n,
+      ...src,
+      measures,
+    }
+  })
+}
 
 // Cooking fuel: how fast the household burns propane, butane or wood, how
 // long what's stored lasts, and what to buy to cover the plan and the stored food.
-export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
+export default function FuelView({ people, days, foodDays, fuel, setFuel, supplyUse = [], onUseFuel, onUndoSupply }) {
   const s = fuelSummary(fuel, people, days, foodDays)
+  const [using, setUsing] = useState(false)
+  // How fast it's actually going, from what you've logged.
+  const today = todayIso()
+  const used = supplyUse.filter((e) => e.kind === 'fuel')
+  const pace = fuelPace(used, today, s)
+  const runOutDate = pace?.days != null
+    ? new Date(Date.parse(today) + Math.floor(pace.days) * 86400000).toISOString().slice(0, 10)
+    : null
+  const sources = fuelSources(fuel)
+  // An amount of one fuel in the units it's bought in.
+  const fmtAmount = (kind, lb) => (isGas(kind) || kind === 'gas' ? fmtLb(lb) : SOLID_UI[kind].fmt(lb))
+  const planned = (kind) => (kind === 'gas' ? s.lbPerDay : s[kind]?.lbPerDay || 0)
   const set = (patch) => setFuel((f) => ({ ...f, ...patch }))
   const hasButane = s.butane.count > 0 || s.stove.id !== 'propane'
   // Wood and charcoal: whether there's a cooker for each, and whether any is entered.
@@ -83,6 +147,26 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
                 ...activeSolids.map(({ def, ui, x }) => `${ui.fmt(x.onHandLb)} of ${def.label.toLowerCase()} (${Math.floor(x.days)} days)`),
               ].filter(Boolean).join(' · ')}
             </div>
+          </div>
+          <div className="stat">
+            <div className="k">At the rate you're using it</div>
+            {pace?.days != null ? (
+              <>
+                <div className="v">{fmtDays(pace.days)}</div>
+                <div className="s">
+                  until about {fmtDate(runOutDate)} · {Math.round(pace.ratio * 100)}% of the planned burn over the last{' '}
+                  {pace.logDays === 1 ? 'day' : `${pace.logDays} days`}
+                  {pace.logDays < 7 && ' — rough until you\'ve logged a week or so'}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="v">—</div>
+                <div className="s">
+                  {pace ? 'pick a cooker for the fuel you used under "How you\'ll cook"' : <>press <strong>Use fuel</strong> below when you cook</>}
+                </div>
+              </>
+            )}
           </div>
           <div className="stat">
             <div className="k">{activeSolids.length ? 'Gas burn rate' : 'Burn rate'}</div>
@@ -223,7 +307,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
                   <td>{t.name}</td>
                   <td>
                     <input
-                      className="cellnum" type="number" min="0" step="0.5" value={n}
+                      className="cellnum" type="number" min="0" step="any" value={n}
                       onChange={(e) => setCount(t.id, e.target.value)}
                     />
                   </td>
@@ -243,7 +327,7 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
                   <td>{t.name}</td>
                   <td>
                     <input
-                      className="cellnum" type="number" min="0" step={t.lb >= 1000 || def.kind === 'kerosene' ? 0.25 : 1} value={n}
+                      className="cellnum" type="number" min="0" step="any" value={n}
                       onChange={(e) => setSolid(def.field, t.id, e.target.value)}
                     />
                   </td>
@@ -266,6 +350,63 @@ export default function FuelView({ people, days, foodDays, fuel, setFuel }) {
             Pick a {ui.cooker} under "How you'll cook" to count your {def.label.toLowerCase()}.
           </p>
         ))}
+        <div className="toolbar" style={{ marginTop: 8 }}>
+          {!using && (
+            <button className="btn" onClick={() => setUsing(true)} disabled={!sources.length}>Use fuel</button>
+          )}
+        </div>
+        {using && (
+          <SupplyUseForm
+            sources={sources}
+            notePlaceholder="e.g. dinner, boiling water"
+            summary={(units, src) => {
+              const lb = units * src.type.lb
+              const lbEq = isGas(src.fuelKind) ? (lb * src.type.btuPerLb) / PROPANE_BTU_PER_LB : undefined
+              const planDays = planDaysUsed({ kind: 'fuel', fuelKind: src.fuelKind, lb, lbEq }, s)
+              return `That's ${fmtAmount(src.fuelKind, lb)}${planDays > 0 ? ` · ${planDays < 1 ? `${Math.round(planDays * 100)}% of a day` : `${planDays.toFixed(1)} days`} of cooking as planned` : ''}`
+            }}
+            onUse={({ key, units, date, note }) => {
+              const [field, sourceId] = key.split(':')
+              onUseFuel({ field, sourceId, units, date, note })
+            }}
+            onClose={() => setUsing(false)}
+          />
+        )}
+      </section>
+
+      <section className="card">
+        <h3>Fuel you've used</h3>
+        {used.length ? (
+          <>
+            <p className="hint">
+              Each time you press <strong>Use fuel</strong>, it comes off the counts above and the
+              days it lasts update.
+              {pace && Object.keys(pace.byKind).length > 0 && (
+                <> Lately you're burning{' '}
+                  {Object.entries(pace.byKind).map(([kind, perDay]) => {
+                    const plan = planned(kind)
+                    const name = kind === 'gas' ? 'gas' : kind
+                    return `${fmtAmount(kind, perDay)} of ${name} a day${plan > 0 ? ` (the plan says ${fmtAmount(kind, plan)})` : ''}`
+                  }).join(', ')}.</>
+              )}
+            </p>
+            <SupplyLog
+              entries={used}
+              onUndo={onUndoSupply}
+              describe={(e) => {
+                const word = fuelWord({ id: e.sourceId }, e.units)
+                const amount = fmtAmount(e.fuelKind, e.lb)
+                return word ? `${amount} (${fmtQty(e.units)} ${word})` : amount
+              }}
+            />
+          </>
+        ) : (
+          <p className="hint">
+            Nothing used yet. After you cook on stored fuel, press <strong>Use fuel</strong> above —
+            in tanks, pounds or hours on the burner. It comes off the counts, and you'll see how long
+            the rest lasts at your real pace. Mistakes can be undone here.
+          </p>
+        )}
       </section>
 
       <section className="card">

@@ -8,6 +8,7 @@ import { defaultPlan, planItemFromLibrary, scalePlanToTarget } from './lib/calc.
 import { addJournalEntry, markRotated, setRotationMonths } from './lib/inflation.js'
 import { daysCovered, importOrder } from './lib/inventory.js'
 import { recordUse, undoUse } from './lib/usage.js'
+import { recordFuelUse, recordWaterUse, undoSupplyUse } from './lib/supplyUse.js'
 import { todayIso } from './lib/rotation.js'
 import { DEFAULT_FUEL } from './data/fuel.js'
 import { DEFAULT_WATER } from './data/water.js'
@@ -88,6 +89,8 @@ export default function App() {
   const water = { ...DEFAULT_WATER, ...storedWater }
   const waterGallons = containerGallons(water.containers) + (Number(waterOnHand) || 0)
   const [storedFuel, setFuel] = useLocalStorage('food.fuel', DEFAULT_FUEL)
+  // Water and fuel taken out of storage, newest first, for Undo and pace.
+  const [supplyUse, setSupplyUse] = useLocalStorage('food.supplyUse', () => [])
   // Pantry extras (salt, oil, spices…) ticked as on hand, for the Recipes tab.
   const [pantry, setPantry] = useLocalStorage('food.pantry', () => ({}))
   // Shopping list check-offs and your own items beyond the plan.
@@ -119,7 +122,8 @@ export default function App() {
     'food.shopping': storedShopping,
     'food.myRecipes': storedMyRecipes,
     'food.usage': usage,
-  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping, storedMyRecipes, usage])
+    'food.supplyUse': supplyUse,
+  }), [people, days, hygieneWater, plan, library, stock, inventory, waterOnHand, storedWater, storedFuel, pantry, storedShopping, storedMyRecipes, usage, supplyUse])
   // Replaces the data with a loaded backup. Keys missing from it are left alone.
   const applyData = useCallback((data) => {
     const setters = {
@@ -137,9 +141,10 @@ export default function App() {
       'food.shopping': setShopping,
       'food.myRecipes': setMyRecipes,
       'food.usage': setUsage,
+      'food.supplyUse': setSupplyUse,
     }
     for (const [key, value] of Object.entries(data)) setters[key]?.(value)
-  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping, setMyRecipes, setUsage])
+  }, [setPeople, setDays, setHygieneWater, setPlan, setLibrary, setStock, setInventory, setWaterOnHand, setWater, setFuel, setPantry, setShopping, setMyRecipes, setUsage, setSupplyUse])
   const drive = useDriveSync(snapshot, applyData)
   const offline = useOffline()
   const online = useOnline()
@@ -185,6 +190,32 @@ export default function App() {
     setUsage(r.log)
   }
 
+  // ---- using water and fuel ----
+  // { sourceId, units, date, note }: units are containers (or loose gallons).
+  const onUseWater = (use) => {
+    const r = recordWaterUse({ water, loose: waterOnHand }, supplyUse, use)
+    if (!r) return null
+    setWater(r.water)
+    if (r.loose !== waterOnHand) setWaterOnHand(r.loose)
+    setSupplyUse(r.log)
+    return r.entry
+  }
+  // { field, sourceId, units, date, note }: field is 'containers' or a solid fuel's field.
+  const onUseFuel = (use) => {
+    const r = recordFuelUse(fuel, supplyUse, use)
+    if (!r) return null
+    setFuel(r.fuel)
+    setSupplyUse(r.log)
+    return r.entry
+  }
+  const onUndoSupply = (id) => {
+    const r = undoSupplyUse({ water, loose: waterOnHand, fuel }, supplyUse, id)
+    if (r.water !== water) setWater(r.water)
+    if (r.loose !== waterOnHand) setWaterOnHand(r.loose)
+    if (r.fuel !== fuel) setFuel(r.fuel)
+    setSupplyUse(r.log)
+  }
+
   const state = { people, days, plan, library, hygieneWater, sortMode }
 
   return (
@@ -211,7 +242,7 @@ export default function App() {
             people={people} setPeople={setPeople}
             days={days} setDays={setDays}
             hygieneWater={hygieneWater} setHygieneWater={setHygieneWater}
-            plan={plan} inventory={inventory} usage={usage} fuel={fuel} waterGallons={waterGallons}
+            plan={plan} inventory={inventory} usage={usage} supplyUse={supplyUse} fuel={fuel} waterGallons={waterGallons}
             onScale={onScale}
             goTo={(v) => setView(v)}
           />
@@ -237,10 +268,14 @@ export default function App() {
             water={water} setWater={setWater}
             looseGallons={waterOnHand} setLooseGallons={setWaterOnHand}
             inventory={inventory}
+            supplyUse={supplyUse} onUseWater={onUseWater} onUndoSupply={onUndoSupply}
           />
         )}
         {view === 'fuel' && (
-          <FuelView people={people} days={days} foodDays={foodDays} fuel={fuel} setFuel={setFuel} />
+          <FuelView
+            people={people} days={days} foodDays={foodDays} fuel={fuel} setFuel={setFuel}
+            supplyUse={supplyUse} onUseFuel={onUseFuel} onUndoSupply={onUndoSupply}
+          />
         )}
         {view === 'recipes' && (
           <RecipesView

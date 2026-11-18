@@ -199,19 +199,30 @@ const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / DAY)
 // `windowDays` (counting from the first use in that window, so a week of
 // logging isn't averaged over a month). null when nothing has been logged.
 export function usagePace(log, today, windowDays = 30) {
-  const since = new Date(Date.parse(today) - (windowDays - 1) * DAY).toISOString().slice(0, 10)
-  const recent = log.filter((e) => e.date >= since && e.date <= today && e.kcal > 0)
-  if (!recent.length) return null
-  const first = recent.reduce((m, e) => (e.date < m ? e.date : m), today)
-  const days = Math.max(1, daysBetween(first, today) + 1)
-  const kcal = recent.reduce((s, e) => s + e.kcal, 0)
-  return { kcalPerDay: kcal / days, kcal, days, uses: recent.length }
+  const r = dailyRate(log, today, (e) => e.kcal, windowDays)
+  return r && { kcalPerDay: r.perDay, perDay: r.perDay, kcal: r.total, days: r.days, uses: r.uses }
 }
 
-// When the stored calories run out at that pace.
-export function projectRunOut(totalKcal, pace, today) {
-  if (!pace || pace.kcalPerDay <= 0) return null
-  const days = totalKcal / pace.kcalPerDay
+// The same for any amount on a log entry (kcal, gallons, pounds…): the total
+// over the last `windowDays` and how much that is a day. null when nothing counts.
+export function dailyRate(log, today, valueOf, windowDays = 30) {
+  const since = new Date(Date.parse(today) - (windowDays - 1) * DAY).toISOString().slice(0, 10)
+  const recent = log
+    .filter((e) => e.date >= since && e.date <= today)
+    .map((e) => [e, Number(valueOf(e)) || 0])
+    .filter(([, v]) => v > 0)
+  if (!recent.length) return null
+  const first = recent.reduce((m, [e]) => (e.date < m ? e.date : m), today)
+  const days = Math.max(1, daysBetween(first, today) + 1)
+  const total = recent.reduce((s, [, v]) => s + v, 0)
+  return { perDay: total / days, total, days, uses: recent.length }
+}
+
+// When a stock runs out at that pace (in the same units as the pace).
+export function projectRunOut(total, pace, today) {
+  const perDay = pace ? pace.perDay ?? pace.kcalPerDay : 0
+  if (!(perDay > 0)) return null
+  const days = Math.max(0, total) / perDay
   const date = new Date(Date.parse(today) + Math.floor(days) * DAY).toISOString().slice(0, 10)
   return { days, date }
 }

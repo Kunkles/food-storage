@@ -2,6 +2,44 @@ import { useState } from 'react'
 import { BLEACH_STRENGTHS, REFILL_MONTHS, WATER_CONTAINERS } from '../data/water.js'
 import { bleachFor, hasRefillable, nextRefill, waterSummary } from '../lib/water.js'
 import { fmtGallons, fmtNum } from '../lib/format.js'
+import { LOOSE, waterPace } from '../lib/supplyUse.js'
+import { projectRunOut } from '../lib/usage.js'
+import { todayIso } from '../lib/rotation.js'
+import { SupplyLog, SupplyUseForm } from '../components/SupplyUse.jsx'
+import { fmtQty } from '../components/UseFood.jsx'
+
+const fmtDate = (iso) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+
+// What one of each container is called when counting them: "2 jugs", "3 bottles".
+function containerWord(t, n = 2) {
+  const word = /^case/.test(t.id) ? 'case' : /^barrel/.test(t.id) ? 'barrel' : /^drum/.test(t.id) ? 'drum'
+    : /container/.test(t.name) ? 'container' : 'jug'
+  return Number(n) === 1 ? word : `${word}s`
+}
+const BOTTLES_PER_CASE = { 'case-24': 24, 'case-40': 40 }
+
+// The water you can take some out of, for the Use water form.
+function waterSources(water, looseGallons) {
+  const list = WATER_CONTAINERS.filter((t) => Number(water.containers[t.id]) > 0).map((t) => ({
+    key: t.id,
+    label: `${t.name} — ${fmtQty(water.containers[t.id])} on hand`,
+    available: Number(water.containers[t.id]),
+    type: t,
+    measures: [
+      { id: 'gal', label: 'gallons', per: 1 / t.gallons },
+      { id: 'unit', label: containerWord(t), per: 1 },
+      ...(BOTTLES_PER_CASE[t.id] ? [{ id: 'bottle', label: 'bottles', per: 1 / BOTTLES_PER_CASE[t.id] }] : []),
+    ],
+  }))
+  if (Number(looseGallons) > 0) {
+    list.push({
+      key: LOOSE, label: `Other water — ${fmtGallons(looseGallons)}`, available: Number(looseGallons),
+      type: { gallons: 1 }, measures: [{ id: 'gal', label: 'gallons', per: 1 }],
+    })
+  }
+  return list
+}
 
 const fmtDays = (d) => {
   const days = Math.floor(d)
@@ -23,11 +61,19 @@ function fmtTsp(tsp) {
 export default function WaterView({
   people, days, foodDays, hygieneWater, setHygieneWater,
   water, setWater, looseGallons, setLooseGallons, inventory,
+  supplyUse = [], onUseWater, onUndoSupply,
 }) {
   const [bleachGallons, setBleachGallons] = useState(5)
+  const [using, setUsing] = useState(false)
   const [strength, setStrength] = useState(BLEACH_STRENGTHS[1].id)
 
   const s = waterSummary({ water, looseGallons, people, hygieneWater, days, foodDays })
+  // How fast it's actually going, from what you've logged.
+  const today = todayIso()
+  const used = supplyUse.filter((e) => e.kind === 'water')
+  const pace = waterPace(used, today)
+  const runOut = projectRunOut(s.onHand, pace, today)
+  const sources = waterSources(water, looseGallons)
   const setCount = (id, value) =>
     setWater((w) => ({ ...w, containers: { ...w.containers, [id]: Math.max(0, Number(value) || 0) } }))
 
@@ -60,6 +106,24 @@ export default function WaterView({
             <div className="s">
               {fmtGallons(s.drinkPerDay)} drinking + {fmtGallons(s.hygienePerDay)} washing
             </div>
+          </div>
+          <div className="stat">
+            <div className="k">At the rate you're using it</div>
+            {runOut ? (
+              <>
+                <div className="v">{fmtDays(runOut.days)}</div>
+                <div className="s">
+                  until about {fmtDate(runOut.date)} · {fmtGallons(pace.perDay)}/day over the last{' '}
+                  {pace.days === 1 ? 'day' : `${pace.days} days`}
+                  {pace.days < 7 && ' — rough until you\'ve logged a week or so'}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="v">—</div>
+                <div className="s">press <strong>Use water</strong> below when you open some</div>
+              </>
+            )}
           </div>
           <div className="stat">
             <div className="k">For your {days}-day plan</div>
@@ -113,7 +177,7 @@ export default function WaterView({
                   <td>{t.name}</td>
                   <td>
                     <input
-                      className="cellnum" type="number" min="0" step="1" value={n}
+                      className="cellnum" type="number" min="0" step="any" value={n}
                       onChange={(e) => setCount(t.id, e.target.value)}
                     />
                   </td>
@@ -125,7 +189,7 @@ export default function WaterView({
               <td>Other water (gallons)</td>
               <td>
                 <input
-                  className="cellnum" type="number" min="0" step="1" value={looseGallons}
+                  className="cellnum" type="number" min="0" step="any" value={looseGallons}
                   onChange={(e) => setLooseGallons(Math.max(0, Number(e.target.value) || 0))}
                 />
               </td>
@@ -133,6 +197,20 @@ export default function WaterView({
             </tr>
           </tbody>
         </table>
+        <div className="toolbar" style={{ marginTop: 8 }}>
+          {!using && (
+            <button className="btn" onClick={() => setUsing(true)} disabled={!sources.length}>Use water</button>
+          )}
+        </div>
+        {using && (
+          <SupplyUseForm
+            sources={sources}
+            notePlaceholder="e.g. drinking, cooking, washing"
+            summary={(units, src) => `That's ${fmtGallons(units * src.type.gallons)}`}
+            onUse={({ key, units, date, note }) => onUseWater({ sourceId: key, units, date, note })}
+            onClose={() => setUsing(false)}
+          />
+        )}
         <p className="hint">
           Don't count your water heater (40–50 gallons) or a bathtub you'd fill when a storm is
           coming. They're good backups, but you can't count on having them.
@@ -159,6 +237,35 @@ export default function WaterView({
               )}
             </p>
           </div>
+        )}
+      </section>
+
+      <section className="card">
+        <h3>Water you've used</h3>
+        {used.length ? (
+          <>
+            <p className="hint">
+              Each time you press <strong>Use water</strong>, it comes off the counts above and the
+              days it lasts update.
+              {pace && s.perDay > 0 && (
+                <> Lately you're using {Math.round((pace.perDay / s.perDay) * 100)}% of the{' '}
+                  {fmtGallons(s.perDay)} a day planned for your household.</>
+              )}
+            </p>
+            <SupplyLog
+              entries={used}
+              onUndo={onUndoSupply}
+              describe={(e) => (e.sourceId === LOOSE
+                ? fmtGallons(e.gallons)
+                : `${fmtGallons(e.gallons)} (${fmtQty(e.units)} ${containerWord(WATER_CONTAINERS.find((t) => t.id === e.sourceId) || { id: '', name: '' }, e.units)})`)}
+            />
+          </>
+        ) : (
+          <p className="hint">
+            Nothing used yet. When you open stored water, press <strong>Use water</strong> above. It
+            comes off the counts, and you'll see how long the rest lasts at your real pace. Mistakes
+            can be undone here.
+          </p>
         )}
       </section>
 

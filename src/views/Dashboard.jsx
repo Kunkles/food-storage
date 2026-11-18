@@ -6,17 +6,22 @@ import StatBadge from '../components/StatBadge.jsx'
 import { describePerson } from '../lib/diets.js'
 import { projectRunOut, usagePace } from '../lib/usage.js'
 import { todayIso } from '../lib/rotation.js'
+import { fuelPace, waterPace } from '../lib/supplyUse.js'
 
 export default function Dashboard({
   people, setPeople, days, setDays,
-  hygieneWater, setHygieneWater, plan, inventory, usage = [], fuel, waterGallons, onScale, goTo,
+  hygieneWater, setHygieneWater, plan, inventory, usage = [], supplyUse = [], fuel, waterGallons, onScale, goTo,
 }) {
   const summary = planSummary(people, days, plan, hygieneWater)
   const barPct = Math.min(100, Math.round((summary.ratio ?? 0) * 100))
   const onHand = daysCovered(inventory, people)
   const runOut = projectRunOut(onHand.kcal, usagePace(usage, todayIso()), todayIso())
-  const fuelDays = fuelSummary(fuel, people, days).daysCovered
+  const fuelSum = fuelSummary(fuel, people, days)
+  const fuelDays = fuelSum.daysCovered
   const waterDays = waterDaysCovered(waterGallons, people, hygieneWater)
+  // The same, at the pace water and fuel have actually been used.
+  const waterRunOut = projectRunOut(waterGallons, waterPace(supplyUse, todayIso()), todayIso())
+  const fuelRunOutDays = fuelPace(supplyUse, todayIso(), fuelSum)?.days
 
   return (
     <>
@@ -91,7 +96,8 @@ export default function Dashboard({
             <div className="k">Stored water</div>
             <div className="v">{Math.floor(waterDays)} days</div>
             <div className="s">
-              {fmtGallons(waterGallons)} on hand ·{' '}
+              {fmtGallons(waterGallons)} on hand
+              {waterRunOut && <> · {Math.floor(waterRunOut.days)} days at the rate you're using it</>} ·{' '}
               <a href="#" onClick={(e) => { e.preventDefault(); goTo('water') }}>details</a>
             </div>
           </div>
@@ -99,7 +105,8 @@ export default function Dashboard({
             <div className="k">Cooking fuel</div>
             <div className="v">{Math.floor(fuelDays)} days</div>
             <div className="s">
-              fuel on hand ·{' '}
+              fuel on hand
+              {fuelRunOutDays != null && <> · {Math.floor(fuelRunOutDays)} days at the rate you're using it</>} ·{' '}
               <a href="#" onClick={(e) => { e.preventDefault(); goTo('fuel') }}>details</a>
             </div>
           </div>

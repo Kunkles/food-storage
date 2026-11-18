@@ -19,6 +19,7 @@ export const BACKUP_KEYS = [
   'food.shopping',
   'food.myRecipes',
   'food.usage',
+  'food.supplyUse',
 ]
 
 const APP_TAG = 'food-storage'

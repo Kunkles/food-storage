@@ -14,7 +14,7 @@ const fmtDate = (iso) =>
 // Days as a whole number, with months alongside once it runs past ~2 months.
 function fmtDays(d) {
   const days = Math.floor(d)
-  if (days < 60) return `${days} days`
+  if (days < 60) return `${days} ${days === 1 ? 'day' : 'days'}`
   return `${fmtNum(days)} days (≈ ${(d / 30.4).toFixed(1)} months)`
 }
 
@@ -24,7 +24,7 @@ function fmtDays(d) {
 export default function InventoryView({
   people, hygieneWater, inventory, setInventory, usage = [], onUseFood, onUndoUse, waterGallons, onImportOrder, goTo,
 }) {
-  const [draft, setDraft] = useState({ name: '', unit: '', qty: 1, perUnitKcal: 0 })
+  const [draft, setDraft] = useState({ name: '', unit: '', qty: 1, perUnitKcal: 0, noCook: false })
   const [using, setUsing] = useState(null) // id of the row whose Use form is open
 
   const cover = daysCovered(inventory, people)
@@ -36,11 +36,18 @@ export default function InventoryView({
   const pctOfRation = pace && cover.emergencyPerDay > 0 ? Math.round((pace.kcalPerDay / cover.emergencyPerDay) * 100) : null
   const foods = inventory.filter((it) => it.category !== 'supply')
   const supplies = inventory.filter((it) => it.category === 'supply')
+  // Food you can eat without a stove, for when the fuel runs out.
+  const noCookKcal = foods
+    .filter((it) => it.category === 'noCook')
+    .reduce((t, it) => t + (Number(it.qty) || 0) * (Number(it.perUnitKcal) || 0), 0)
+  const noCookDays = cover.emergencyPerDay > 0 ? noCookKcal / cover.emergencyPerDay : 0
   // Stored foods that don't fit someone's allergies or diet.
   const issues = dietIssues(foods.filter((it) => it.qty > 0).map((it) => ({ label: it.name, text: it.name })), people)
 
   const setNum = (id, field) => (e) =>
     setInventory((inv) => inv.map((it) => (it.id === id ? { ...it, [field]: Number(e.target.value) || 0 } : it)))
+  const setNoCook = (id, on) =>
+    setInventory((inv) => inv.map((it) => (it.id === id ? { ...it, category: on ? 'noCook' : 'staple' } : it)))
   const onRemove = (id) => setInventory((inv) => inv.filter((it) => it.id !== id))
 
   const onAddCustom = (e) => {
@@ -51,14 +58,14 @@ export default function InventoryView({
       {
         id: `inv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         name: draft.name.trim(),
-        category: Number(draft.perUnitKcal) > 0 ? 'staple' : 'supply',
+        category: Number(draft.perUnitKcal) > 0 ? (draft.noCook ? 'noCook' : 'staple') : 'supply',
         unit: draft.unit.trim() || 'unit',
         qty: Number(draft.qty) || 0,
         perUnitKcal: Number(draft.perUnitKcal) || 0,
         source: 'manual',
       },
     ])
-    setDraft({ name: '', unit: '', qty: 1, perUnitKcal: 0 })
+    setDraft({ name: '', unit: '', qty: 1, perUnitKcal: 0, noCook: false })
   }
 
   return (
@@ -114,8 +121,15 @@ export default function InventoryView({
           </div>
         </div>
         <p className="hint" style={{ marginTop: 12 }}>
-          Days covered counts calories only. Most of this needs cooking water and a heat source,
-          and stored grains and beans are low in fat — pair them with oil, salt and some protein.
+          Days covered counts calories only.{' '}
+          {noCookKcal > 0 ? (
+            <>
+              {noCookKcal >= cover.kcal ? 'All of it' : `${fmtKcal(noCookKcal)} of it`} needs no cooking — about{' '}
+              {noCookDays < 10 ? `${noCookDays.toFixed(1)} days` : fmtDays(noCookDays)} of emergency rations
+              if the fuel runs out.{noCookKcal < cover.kcal && ' The rest needs cooking water and a heat source.'}
+            </>
+          ) : 'Most of this needs cooking water and a heat source.'}{' '}
+          Stored grains and beans are low in fat — pair them with oil, salt and some protein.
         </p>
       </section>
 
@@ -192,7 +206,13 @@ export default function InventoryView({
             {foods.map((it) => (
               <Fragment key={it.id}>
                 <tr className={it.category === 'noCook' ? 'row-nocook' : 'row-staple'}>
-                  <td>{it.name}</td>
+                  <td>
+                    {it.name}
+                    <label className="check nocook-toggle no-print" title="Ready to eat or just add water — still there if the fuel runs out">
+                      <input type="checkbox" checked={it.category === 'noCook'} onChange={(e) => setNoCook(it.id, e.target.checked)} />
+                      no cooking needed
+                    </label>
+                  </td>
                   <td>{it.unit}</td>
                   <td>
                     <input className="cellnum" type="number" min="0" step="any" value={Math.round((Number(it.qty) || 0) * 1000) / 1000} onChange={setNum(it.id, 'qty')} />
@@ -245,6 +265,10 @@ export default function InventoryView({
           <label className="num">
             <span>kcal/unit</span>
             <input type="number" min="0" value={draft.perUnitKcal} onChange={(e) => setDraft({ ...draft, perUnitKcal: e.target.value })} />
+          </label>
+          <label className="check" style={{ alignSelf: 'end' }}>
+            <input type="checkbox" checked={draft.noCook} onChange={(e) => setDraft({ ...draft, noCook: e.target.checked })} />
+            No cooking needed
           </label>
           <button className="btn" type="submit">+ Add</button>
         </form>

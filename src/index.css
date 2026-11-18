@@ -244,3 +244,4 @@ td.nowrap { white-space: nowrap; }
 .made-this { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
 .made-this.done { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #eef6f0; }
 .made-this tr.muted td { color: var(--muted); }
+label.check.nocook-toggle { display: flex; gap: 4px; margin: 2px 0 0; font-size: 0.75rem; color: var(--muted); font-weight: normal; }
