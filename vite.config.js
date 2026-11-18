@@ -62,6 +62,20 @@ export default defineConfig({
             expiration: { maxEntries: 200 },
             cacheableResponse: { statuses: [0, 200] },
           },
+        }, {
+          // The barcode reader's engine, kept after the first scan so it works offline.
+          urlPattern: /\.wasm$/,
+          handler: 'CacheFirst',
+          options: { cacheName: 'barcode-reader', expiration: { maxEntries: 4 } },
+        }, {
+          // The label reader (text recognition), downloaded the first time it's used.
+          urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/npm\/(tesseract\.js|tesseract\.js-core|@tesseract\.js-data)/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'label-reader',
+            expiration: { maxEntries: 20 },
+            cacheableResponse: { statuses: [0, 200] },
+          },
         }],
       },
     }),

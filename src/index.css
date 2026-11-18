@@ -245,3 +245,12 @@ td.nowrap { white-space: nowrap; }
 .made-this.done { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #eef6f0; }
 .made-this tr.muted td { color: var(--muted); }
 label.check.nocook-toggle { display: flex; gap: 4px; margin: 2px 0 0; font-size: 0.75rem; color: var(--muted); font-weight: normal; }
+.scan-buttons { margin-top: 12px; }
+.scan-panel { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.scan-panel .toolbar { margin: 6px 0; }
+.scan-video { display: block; width: 100%; max-width: 420px; max-height: 50vh; border-radius: 6px; background: #000; object-fit: cover; }
+.scan-status { margin: 6px 0; }
+.scan-result { margin: 6px 0; }
+.file-btn { display: inline-flex; align-items: center; cursor: pointer; }
+.inline-form { display: flex; gap: 6px; align-items: center; }
+.inline-form input { width: 170px; }

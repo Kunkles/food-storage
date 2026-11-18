@@ -1,9 +1,10 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { CHURCH_STORE_ORDERS } from '../data/churchStore.js'
 import { daysCovered, hasOrder, waterDaysCovered } from '../lib/inventory.js'
 import { fmtKcal, fmtNum } from '../lib/format.js'
 import { dietIssues } from '../lib/diets.js'
 import DietIssues from '../components/DietIssues.jsx'
+import ScanToAdd from '../components/ScanToAdd.jsx'
 import { UseFoodForm, UsageLog } from '../components/UseFood.jsx'
 import { projectRunOut, usagePace } from '../lib/usage.js'
 import { todayIso } from '../lib/rotation.js'
@@ -26,6 +27,8 @@ export default function InventoryView({
 }) {
   const [draft, setDraft] = useState({ name: '', unit: '', qty: 1, perUnitKcal: 0, noCook: false })
   const [using, setUsing] = useState(null) // id of the row whose Use form is open
+  // The last name a barcode scan filled in, so a later scan doesn't keep it.
+  const scannedName = useRef('')
 
   const cover = daysCovered(inventory, people)
   const waterDays = waterDaysCovered(waterGallons, people, hygieneWater)
@@ -249,6 +252,22 @@ export default function InventoryView({
           </tbody>
         </table>
 
+        <ScanToAdd
+          onFill={(found) => {
+            const lastScanned = scannedName.current
+            setDraft((d) => {
+              // A name typed by hand stays; one left from an earlier scan goes.
+              const fromScan = d.name && d.name === lastScanned
+              return {
+                ...d,
+                ...found,
+                name: found.name || (fromScan ? '' : d.name),
+                noCook: found.noCook ?? (fromScan ? false : d.noCook),
+              }
+            })
+            scannedName.current = found.name || ''
+          }}
+        />
         <form className="journal-form no-print" onSubmit={onAddCustom}>
           <label className="grow">
             <span>Item</span>
